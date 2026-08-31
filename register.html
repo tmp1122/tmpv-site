@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت‌نام | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.12);padding:40px 36px;width:100%;max-width:480px;margin:24px}
+.logo{text-align:center;margin-bottom:28px}
+.logo h1{color:#2d7a3a;font-size:1.3rem;font-weight:700;line-height:1.6}
+.logo p{color:#666;font-size:.85rem;margin-top:4px}
+.step{display:none}
+.step.active{display:block}
+.field{margin-bottom:18px}
+label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
+input,select{width:100%;padding:11px 14px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.95rem;color:#222;background:#fff;transition:border .2s}
+input:focus,select:focus{outline:none;border-color:#2d7a3a}
+input.error{border-color:#e53935}
+.btn{width:100%;padding:13px;background:#2d7a3a;color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn:hover{background:#235f2c}
+.btn:disabled{background:#aaa;cursor:not-allowed}
+.btn-outline{background:transparent;border:2px solid #2d7a3a;color:#2d7a3a;margin-top:8px}
+.btn-outline:hover{background:#f0f7f1}
+.msg{padding:12px 16px;border-radius:8px;font-size:.9rem;margin-bottom:16px;display:none}
+.msg.error{background:#fdecea;color:#c62828;display:block}
+.msg.success{background:#e8f5e9;color:#2e7d32;display:block}
+.steps-bar{display:flex;gap:8px;margin-bottom:28px}
+.step-dot{flex:1;height:4px;border-radius:2px;background:#d0e8d4;transition:background .3s}
+.step-dot.done{background:#2d7a3a}
+h2{font-size:1.1rem;color:#2d7a3a;margin-bottom:20px;font-weight:700}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:.78rem;color:#888;margin-top:4px}
+.success-box{text-align:center;padding:20px 0}
+.success-box .icon{font-size:4rem;margin-bottom:16px}
+.success-box h2{color:#2d7a3a;font-size:1.4rem}
+.success-box p{color:#555;margin-top:8px;line-height:1.7}
+.login-link{text-align:center;margin-top:20px;font-size:.88rem;color:#666}
+.login-link a{color:#2d7a3a;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>🏠 تعاونی مسکن<br>پالایشگاه گاز ولیعصر (عج)</h1>
+    <p>ثبت‌نام اعضای جدید</p>
+  </div>
+
+  <div class="steps-bar">
+    <div class="step-dot done" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <!-- مرحله ۱: اطلاعات فردی -->
+  <div class="step active" id="step1">
+    <h2>مرحله ۱ از ۳ — اطلاعات فردی</h2>
+    <div class="row2">
+      <div class="field">
+        <label>نام *</label>
+        <input type="text" id="firstName" placeholder="علی">
+      </div>
+      <div class="field">
+        <label>نام خانوادگی *</label>
+        <input type="text" id="lastName" placeholder="احمدی">
+      </div>
+    </div>
+    <div class="field">
+      <label>کد ملی *</label>
+      <input type="text" id="nationalId" placeholder="۱۰ رقم" maxlength="10">
+    </div>
+    <div class="field">
+      <label>شماره تماس *</label>
+      <input type="tel" id="phone" placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+    </div>
+    <div class="field">
+      <label>واحد سازمانی *</label>
+      <select id="department">
+        <option value="">انتخاب کنید</option>
+        <option>واحد عملیات</option>
+        <option>واحد فنی و مهندسی</option>
+        <option>واحد مالی</option>
+        <option>واحد اداری و پشتیبانی</option>
+        <option>واحد HSE</option>
+        <option>واحد بازرگانی</option>
+        <option>سایر</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>شماره پرسنلی</label>
+      <input type="text" id="empId" placeholder="اختیاری">
+    </div>
+    <button class="btn" onclick="goStep2()">مرحله بعد →</button>
+  </div>
+
+  <!-- مرحله ۲: اطلاعات حساب -->
+  <div class="step" id="step2">
+    <h2>مرحله ۲ از ۳ — اطلاعات حساب کاربری</h2>
+    <div class="field">
+      <label>ایمیل *</label>
+      <input type="email" id="email" placeholder="example@email.com">
+      <p class="hint">این ایمیل برای ورود استفاده می‌شود</p>
+    </div>
+    <div class="field">
+      <label>رمز عبور *</label>
+      <input type="password" id="password" placeholder="حداقل ۶ کاراکتر">
+    </div>
+    <div class="field">
+      <label>تکرار رمز عبور *</label>
+      <input type="password" id="password2" placeholder="رمز عبور را تکرار کنید">
+    </div>
+    <button class="btn" onclick="goStep3()">مرحله بعد →</button>
+    <button class="btn btn-outline" onclick="goBack(1)">← بازگشت</button>
+  </div>
+
+  <!-- مرحله ۳: تأیید نهایی -->
+  <div class="step" id="step3">
+    <h2>مرحله ۳ از ۳ — تأیید اطلاعات</h2>
+    <div id="preview" style="background:#f8f9fa;border-radius:10px;padding:16px;margin-bottom:20px;font-size:.9rem;line-height:2.2;color:#333"></div>
+    <button class="btn" onclick="submitRegister()" id="btnSubmit">✅ ثبت‌نام نهایی</button>
+    <button class="btn btn-outline" onclick="goBack(2)">← ویرایش</button>
+  </div>
+
+  <!-- موفقیت -->
+  <div class="step" id="stepDone">
+    <div class="success-box">
+      <div class="icon">🎉</div>
+      <h2>ثبت‌نام موفق!</h2>
+      <p>حساب کاربری شما با موفقیت ایجاد شد.<br>اطلاعات شما برای بررسی به مدیریت ارسال گردید.</p>
+    </div>
+    <button class="btn" onclick="location.href='index.html'">بازگشت به سایت</button>
+  </div>
+
+  <div class="login-link">
+    قبلاً ثبت‌نام کرده‌اید؟ <a href="login.html">وارد شوید</a>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",
+  authDomain: "tmpv-cooperative.firebaseapp.com",
+  projectId: "tmpv-cooperative",
+  storageBucket: "tmpv-cooperative.firebasestorage.app",
+  messagingSenderId: "644066134252",
+  appId: "1:644066134252:web:2e678c4128ac35b203fdc9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+function showMsg(text, type="error"){
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+  el.scrollIntoView({behavior:'smooth'});
+}
+function hideMsg(){ document.getElementById('msg').className='msg'; }
+
+function setStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  [1,2,3].forEach(i=>{
+    document.getElementById('dot'+i).classList.toggle('done', i<=n);
+  });
+  hideMsg();
+}
+
+window.goStep2 = function(){
+  const first=document.getElementById('firstName').value.trim();
+  const last=document.getElementById('lastName').value.trim();
+  const nid=document.getElementById('nationalId').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const dept=document.getElementById('department').value;
+  if(!first||!last){return showMsg('نام و نام خانوادگی الزامی است');}
+  if(nid.length!==10||isNaN(nid)){return showMsg('کد ملی باید ۱۰ رقم باشد');}
+  if(!phone){return showMsg('شماره تماس الزامی است');}
+  if(!dept){return showMsg('واحد سازمانی را انتخاب کنید');}
+  setStep(2);
+}
+
+window.goStep3 = function(){
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('password').value;
+  const pass2=document.getElementById('password2').value;
+  if(!email||!email.includes('@')){return showMsg('ایمیل معتبر وارد کنید');}
+  if(pass.length<6){return showMsg('رمز عبور باید حداقل ۶ کاراکتر باشد');}
+  if(pass!==pass2){return showMsg('رمز عبور و تکرار آن یکسان نیستند');}
+  
+  const preview=document.getElementById('preview');
+  preview.innerHTML=`
+    <b>نام:</b> ${document.getElementById('firstName').value} ${document.getElementById('lastName').value}<br>
+    <b>کد ملی:</b> ${document.getElementById('nationalId').value}<br>
+    <b>تلفن:</b> ${document.getElementById('phone').value}<br>
+    <b>واحد:</b> ${document.getElementById('department').value}<br>
+    <b>ایمیل:</b> ${email}
+  `;
+  setStep(3);
+}
+
+window.goBack = function(n){ setStep(n); }
+
+window.submitRegister = async function(){
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;
+  btn.textContent='در حال ثبت...';
+  hideMsg();
+
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('password').value;
+
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    const uid = cred.user.uid;
+
+    await setDoc(doc(db,'users',uid),{
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName: document.getElementById('lastName').value.trim(),
+      nationalId: document.getElementById('nationalId').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      department: document.getElementById('department').value,
+      empId: document.getElementById('empId').value.trim(),
+      email: email,
+      role: 'member',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.querySelector('.steps-bar').style.display='none';
+    document.getElementById('stepDone').classList.add('active');
+    document.querySelector('.login-link').style.display='none';
+
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='✅ ثبت‌نام نهایی';
+    let msg='خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.';
+    if(e.code==='auth/email-already-in-use') msg='این ایمیل قبلاً ثبت شده است.';
+    if(e.code==='auth/invalid-email') msg='ایمیل معتبر نیست.';
+    showMsg(msg);
+  }
+}
+</script>
+</body>
+</html>
