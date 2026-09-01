@@ -1,3 +1,7 @@
+
+
+
+Admin · HTML
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -155,17 +159,13 @@ tr:hover td{background:#f8fdf9}
           <div class="field"><label>مبلغ / عدد (اختیاری)</label><input type="text" id="msgAmount" placeholder="مثال: ۵,۰۰۰,۰۰۰ تومان"></div>
           <div class="field"><label>توضیحات *</label><textarea id="msgBody" placeholder="متن پیام را اینجا بنویسید..."></textarea></div>
           <div class="field">
-            <label>فایل پیوست (اختیاری)</label>
-            <div class="file-upload">
-              <input type="file" id="msgFile" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx" onchange="previewFile()">
-              <div class="icon">📎</div>
-              <p>کلیک کنید یا فایل را اینجا بکشید</p>
-              <p style="font-size:.75rem;color:#aaa;margin-top:4px">PDF، تصویر، Excel، Word — حداکثر ۵ مگابایت</p>
-            </div>
-            <div class="file-preview" id="filePreview">
-              <span>📄</span><span id="fileName"></span>
-              <button onclick="clearFile()" title="حذف">✕</button>
-            </div>
+            <label>لینک فایل (اختیاری)</label>
+            <input type="url" id="msgFileURL" placeholder="لینک Google Drive یا هر لینک دیگری را وارد کنید">
+            <p style="font-size:.75rem;color:#888;margin-top:6px">💡 فایل را در Google Drive آپلود کنید، لینک اشتراک‌گذاری را اینجا وارد کنید</p>
+          </div>
+          <div class="field">
+            <label>نام فایل (اختیاری)</label>
+            <input type="text" id="msgFileName" placeholder="مثال: فیش واریزی اردیبهشت ۱۴۰۴">
           </div>
           <button class="send-btn" onclick="sendMessage()" id="btnSend">📨 ارسال اطلاعات</button>
           <div class="result-msg" id="sendResult"></div>
@@ -189,10 +189,10 @@ tr:hover td{background:#f8fdf9}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
+ 
 const firebaseConfig={apiKey:"AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",authDomain:"tmpv-cooperative.firebaseapp.com",projectId:"tmpv-cooperative",storageBucket:"tmpv-cooperative.firebasestorage.app",messagingSenderId:"644066134252",appId:"1:644066134252:web:2e678c4128ac35b203fdc9"};
 const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);const db=getFirestore(app);const storage=getStorage(app);
+const auth=getAuth(app);const db=getFirestore(app);
 const ADMIN_EMAIL="tmpv1372@gmail.com";
 let allUsers=[],allMessages=[];
 onAuthStateChanged(auth,user=>{
@@ -212,21 +212,20 @@ function renderPending(){const tb=document.getElementById('pendingTable');const 
 function renderUsers(){const search=document.getElementById('searchInput').value.toLowerCase();const status=document.getElementById('statusFilter').value;let list=allUsers;if(search)list=list.filter(u=>(u.firstName+' '+u.lastName).toLowerCase().includes(search)||(u.nationalId||'').includes(search));if(status)list=list.filter(u=>u.status===status);const tb=document.getElementById('usersTable');if(!list.length){tb.innerHTML='<tr><td colspan="6" class="empty">کاربری یافت نشد</td></tr>';return;}tb.innerHTML=list.map(u=>`<tr><td>${u.firstName||''} ${u.lastName||''}</td><td>${u.nationalId||'-'}</td><td>${u.phone||'-'}</td><td>${u.department||'-'}</td><td><span class="badge ${u.status||'pending'}">${statusLabel(u.status)}</span></td><td><div class="actions">${u.status!=='active'?`<button class="btn-approve" onclick="approveUser('${u.id}')">✅</button>`:''} ${u.status!=='rejected'?`<button class="btn-reject" onclick="rejectUser('${u.id}')">❌</button>`:''}<button class="btn-msg" onclick="quickSend('${u.id}')">📨</button><button class="btn-view" onclick="viewUser('${u.id}')">👁</button></div></td></tr>`).join('');}
 window.filterUsers=renderUsers;
 function renderSendTo(){const sel=document.getElementById('sendTo');sel.innerHTML='<option value="">انتخاب کنید...</option>';allUsers.filter(u=>u.status==='active').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=`${u.firstName} ${u.lastName} — ${u.department||''}`;sel.appendChild(o);});}
-window.previewFile=function(){const file=document.getElementById('msgFile').files[0];if(!file)return;if(file.size>5*1024*1024){alert('حجم فایل بیشتر از ۵ مگابایت است');clearFile();return;}document.getElementById('fileName').textContent=file.name;document.getElementById('filePreview').classList.add('show');};
-window.clearFile=function(){document.getElementById('msgFile').value='';document.getElementById('filePreview').classList.remove('show');document.getElementById('fileName').textContent='';};
 window.sendMessage=async function(){
-  const to=document.getElementById('sendTo').value;const type=document.getElementById('msgType').value;const amount=document.getElementById('msgAmount').value.trim();const body=document.getElementById('msgBody').value.trim();const fileInput=document.getElementById('msgFile');const res=document.getElementById('sendResult');const btn=document.getElementById('btnSend');
+  const to=document.getElementById('sendTo').value;const type=document.getElementById('msgType').value;const amount=document.getElementById('msgAmount').value.trim();const body=document.getElementById('msgBody').value.trim();const res=document.getElementById('sendResult');const btn=document.getElementById('btnSend');
+  const fileURL=document.getElementById('msgFileURL').value.trim();
+  const fileName=document.getElementById('msgFileName').value.trim();
   res.className='result-msg';
   if(!to){res.textContent='لطفاً عضو را انتخاب کنید';res.classList.add('fail');return;}
   if(!body){res.textContent='توضیحات را وارد کنید';res.classList.add('fail');return;}
   btn.disabled=true;btn.textContent='در حال ارسال...';
   const user=allUsers.find(u=>u.id===to);
-  let fileURL='',fileName='';
   try{
-    if(fileInput.files[0]){const file=fileInput.files[0];fileName=file.name;const storageRef=ref(storage,`messages/${Date.now()}_${fileName}`);await uploadBytes(storageRef,file);fileURL=await getDownloadURL(storageRef);}
     await addDoc(collection(db,'messages'),{userId:to,userName:`${user.firstName} ${user.lastName}`,type,amount,body,fileURL,fileName,createdAt:serverTimestamp(),sentBy:ADMIN_EMAIL});
     res.textContent='✅ اطلاعات با موفقیت ارسال شد';res.classList.add('ok');
-    document.getElementById('msgBody').value='';document.getElementById('msgAmount').value='';clearFile();
+    document.getElementById('msgBody').value='';document.getElementById('msgAmount').value='';
+    document.getElementById('msgFileURL').value='';document.getElementById('msgFileName').value='';
     await loadMessages();renderDashboard();
   }catch(e){res.textContent='خطا: '+e.message;res.classList.add('fail');}
   btn.disabled=false;btn.textContent='📨 ارسال اطلاعات';
@@ -244,3 +243,4 @@ function fmtDate(ts){if(!ts)return '-';const d=ts.toDate?ts.toDate():new Date(ts
 </script>
 </body>
 </html>
+ 
