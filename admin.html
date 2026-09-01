@@ -13,98 +13,93 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .login-card h1{color:#2d7a3a;font-size:1.2rem;margin-bottom:24px;text-align:center}
 .field{margin-bottom:16px}
 label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
-input{width:100%;padding:11px 14px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.95rem}
-input:focus{outline:none;border-color:#2d7a3a}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.9rem;color:#333;background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#2d7a3a}
+textarea{resize:vertical;min-height:90px}
 .btn{width:100%;padding:12px;background:#2d7a3a;color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer}
 .btn:hover{background:#235f2c}
 .err{color:#c62828;font-size:.85rem;margin-top:10px;text-align:center}
-
-/* پنل اصلی */
 #adminPanel{display:none}
 .topbar{background:#2d7a3a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
-.topbar h2{font-size:1.1rem}
+.topbar h2{font-size:1.05rem}
 .topbar button{background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem}
-.topbar button:hover{background:rgba(255,255,255,.3)}
 .layout{display:flex;min-height:calc(100vh - 54px)}
-.sidebar{width:220px;background:#fff;border-left:1px solid #e0ede2;padding:16px 0;flex-shrink:0}
-.sidebar a{display:block;padding:12px 20px;color:#444;text-decoration:none;font-size:.9rem;transition:background .2s;cursor:pointer}
+.sidebar{width:210px;background:#fff;border-left:1px solid #e0ede2;padding:16px 0;flex-shrink:0}
+.sidebar a{display:block;padding:12px 20px;color:#444;text-decoration:none;font-size:.9rem;cursor:pointer;transition:background .2s}
 .sidebar a:hover,.sidebar a.active{background:#f0f7f1;color:#2d7a3a;font-weight:600}
-.main{flex:1;padding:24px;overflow-auto}
-.page{display:none}
-.page.active{display:block}
-.section-title{font-size:1.1rem;color:#2d7a3a;font-weight:700;margin-bottom:20px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:28px}
-.stat{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(45,122,58,.08)}
-.stat .num{font-size:2rem;font-weight:700;color:#2d7a3a}
-.stat .lbl{font-size:.82rem;color:#666;margin-top:4px}
+.main{flex:1;padding:24px;overflow:auto}
+.page{display:none}.page.active{display:block}
+.section-title{font-size:1.05rem;color:#2d7a3a;font-weight:700;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:#fff;border-radius:12px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(45,122,58,.08)}
+.stat .num{font-size:1.8rem;font-weight:700;color:#2d7a3a}
+.stat .lbl{font-size:.8rem;color:#666;margin-top:4px}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(45,122,58,.08)}
-th{background:#2d7a3a;color:#fff;padding:12px 14px;font-size:.85rem;font-weight:600;text-align:right}
-td{padding:11px 14px;font-size:.85rem;color:#333;border-bottom:1px solid #f0f0f0}
+th{background:#2d7a3a;color:#fff;padding:11px 14px;font-size:.82rem;font-weight:600;text-align:right}
+td{padding:10px 14px;font-size:.82rem;color:#333;border-bottom:1px solid #f0f0f0}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8fdf9}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:600}
 .badge.pending{background:#fff3e0;color:#e65100}
 .badge.active{background:#e8f5e9;color:#2e7d32}
 .badge.rejected{background:#fdecea;color:#c62828}
-.actions{display:flex;gap:8px}
-.actions button{padding:5px 12px;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:600}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions button{padding:5px 10px;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.75rem;font-weight:600}
 .btn-approve{background:#e8f5e9;color:#2e7d32}
 .btn-reject{background:#fdecea;color:#c62828}
 .btn-msg{background:#e3f2fd;color:#1565c0}
 .btn-view{background:#f3e5f5;color:#6a1b9a}
-.btn-edit{background:#fff8e1;color:#f57f17}
-.btn-delete{background:#fdecea;color:#c62828}
-
-/* مودال ارسال پیام */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
-.modal.open{display:flex}
-.modal-box{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:500px;margin:16px}
-.modal-box h3{color:#2d7a3a;margin-bottom:20px;font-size:1rem}
-.modal-box textarea{width:100%;border:1.5px solid #d0e8d4;border-radius:8px;padding:12px;font-family:inherit;font-size:.9rem;resize:vertical;min-height:100px}
-.modal-box textarea:focus{outline:none;border-color:#2d7a3a}
-.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.modal-row .btn{font-size:.9rem;padding:10px}
-.btn-cancel{background:#f5f5f5;color:#444}
-.btn-cancel:hover{background:#eee}
-.msg-list{margin-top:8px}
-.msg-item{background:#f8fdf9;border-radius:8px;padding:12px;margin-bottom:10px;border:1px solid #e0ede2}
-.msg-item .meta{font-size:.75rem;color:#888;margin-bottom:6px}
-.msg-item .body{font-size:.88rem;color:#333;line-height:1.7}
-.msg-item .type{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:6px}
-.type.variz{background:#e8f5e9;color:#2e7d32}
-.type.kasri{background:#fdecea;color:#c62828}
-.type.other{background:#e3f2fd;color:#1565c0}
-.empty{text-align:center;color:#aaa;padding:40px;font-size:.9rem}
-.filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.filter-bar select,.filter-bar input{padding:8px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem;color:#333;background:#fff}
-.filter-bar input{flex:1;min-width:160px}
 .send-form{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(45,122,58,.08)}
 .send-form .field{margin-bottom:14px}
-.send-form select,.send-form input,.send-form textarea{width:100%;padding:10px 14px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.9rem}
-.send-form textarea{min-height:100px;resize:vertical}
-.send-form .btn{width:auto;padding:10px 28px}
+.send-btn{background:#2d7a3a;color:#fff;border:none;border-radius:10px;padding:11px 28px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer}
+.send-btn:hover{background:#235f2c}
+.send-btn:disabled{background:#aaa;cursor:not-allowed}
+.file-upload{border:2px dashed #d0e8d4;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border .2s;position:relative}
+.file-upload:hover{border-color:#2d7a3a;background:#f8fdf9}
+.file-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.file-upload .icon{font-size:2rem;margin-bottom:8px}
+.file-upload p{font-size:.85rem;color:#666}
+.file-preview{margin-top:10px;padding:10px 14px;background:#f0f7f1;border-radius:8px;font-size:.83rem;color:#2d7a3a;display:none;align-items:center;gap:8px}
+.file-preview.show{display:flex}
+.file-preview button{margin-right:auto;background:none;border:none;color:#c62828;cursor:pointer;font-size:1.1rem}
+.msg-list{display:flex;flex-direction:column;gap:10px}
+.msg-item{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(45,122,58,.07);border-right:4px solid #2d7a3a}
+.msg-item.kasri{border-right-color:#e53935}
+.msg-item.madarek{border-right-color:#1565c0}
+.msg-item.sayer{border-right-color:#888}
+.msg-item .meta{font-size:.75rem;color:#888;margin-bottom:6px}
+.msg-item .body{font-size:.87rem;color:#333;line-height:1.7}
+.msg-item .type-badge{font-size:.72rem;font-weight:600;padding:2px 10px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.type-variz{background:#e8f5e9;color:#2e7d32}
+.type-kasri{background:#fdecea;color:#c62828}
+.type-madarek{background:#e3f2fd;color:#1565c0}
+.type-sayer{background:#f3e5f5;color:#6a1b9a}
+.file-link{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 12px;background:#f0f7f1;border-radius:6px;font-size:.8rem;color:#2d7a3a;text-decoration:none;font-weight:600}
+.file-link:hover{background:#e0ede2}
+.filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{padding:8px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.83rem;color:#333;background:#fff}
+.filter-bar input{flex:1;min-width:160px}
+.empty{text-align:center;color:#aaa;padding:40px;font-size:.9rem}
+.result-msg{margin-top:12px;font-size:.88rem;padding:10px 14px;border-radius:8px;display:none}
+.result-msg.ok{background:#e8f5e9;color:#2e7d32;display:block}
+.result-msg.fail{background:#fdecea;color:#c62828;display:block}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:480px;margin:16px}
+.modal-box h3{color:#2d7a3a;margin-bottom:16px}
+.btn-cancel{background:#f5f5f5;color:#444;margin-top:16px}
 </style>
 </head>
 <body>
-
-<!-- صفحه لاگین -->
 <div class="login-wrap" id="loginPage">
   <div class="login-card">
     <h1>🔐 پنل مدیریت تعاونی</h1>
-    <div class="field">
-      <label>ایمیل مدیر</label>
-      <input type="email" id="adminEmail" value="tmpv1372@gmail.com">
-    </div>
-    <div class="field">
-      <label>رمز عبور</label>
-      <input type="password" id="adminPass" placeholder="رمز عبور">
-    </div>
+    <div class="field"><label>ایمیل مدیر</label><input type="email" id="adminEmail" value="tmpv1372@gmail.com"></div>
+    <div class="field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور"></div>
     <button class="btn" onclick="doAdminLogin()">ورود به پنل مدیریت</button>
     <div class="err" id="loginErr"></div>
   </div>
 </div>
-
-<!-- پنل ادمین -->
 <div id="adminPanel">
   <div class="topbar">
     <h2>🏠 پنل مدیریت تعاونی مسکن</h2>
@@ -112,14 +107,12 @@ tr:hover td{background:#f8fdf9}
   </div>
   <div class="layout">
     <div class="sidebar">
-      <a class="active" onclick="showPage('dashboard')">📊 داشبورد</a>
-      <a onclick="showPage('users')">👥 اعضا</a>
-      <a onclick="showPage('send')">📨 ارسال اطلاعات</a>
-      <a onclick="showPage('messages')">📋 پیام‌های ارسالی</a>
+      <a class="active" onclick="showPage('dashboard',this)">📊 داشبورد</a>
+      <a onclick="showPage('users',this)">👥 اعضا</a>
+      <a onclick="showPage('send',this)">📨 ارسال اطلاعات</a>
+      <a onclick="showPage('messages',this)">📋 پیام‌های ارسالی</a>
     </div>
     <div class="main">
-
-      <!-- داشبورد -->
       <div class="page active" id="page-dashboard">
         <div class="section-title">داشبورد</div>
         <div class="stats">
@@ -132,8 +125,6 @@ tr:hover td{background:#f8fdf9}
         <table><thead><tr><th>نام</th><th>واحد</th><th>تاریخ ثبت</th><th>عملیات</th></tr></thead>
         <tbody id="pendingTable"><tr><td colspan="4" class="empty">در حال بارگذاری...</td></tr></tbody></table>
       </div>
-
-      <!-- لیست اعضا -->
       <div class="page" id="page-users">
         <div class="section-title">لیست اعضا</div>
         <div class="filter-bar">
@@ -148,386 +139,108 @@ tr:hover td{background:#f8fdf9}
         <table><thead><tr><th>نام</th><th>کد ملی</th><th>تلفن</th><th>واحد</th><th>وضعیت</th><th>عملیات</th></tr></thead>
         <tbody id="usersTable"><tr><td colspan="6" class="empty">در حال بارگذاری...</td></tr></tbody></table>
       </div>
-
-      <!-- ارسال اطلاعات -->
       <div class="page" id="page-send">
         <div class="section-title">ارسال اطلاعات به عضو</div>
         <div class="send-form">
+          <div class="field"><label>انتخاب عضو *</label><select id="sendTo"><option value="">انتخاب کنید...</option></select></div>
           <div class="field">
-            <label>انتخاب عضو</label>
-            <select id="sendTo">
-              <option value="">انتخاب کنید...</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>نوع اطلاعات</label>
+            <label>نوع اطلاعات *</label>
             <select id="msgType">
               <option value="variz">💰 اطلاعات واریزی</option>
               <option value="kasri">⚠️ کسری دارک</option>
-              <option value="other">📋 سایر</option>
+              <option value="madarek">📄 مدارک</option>
+              <option value="sayer">📋 سایر</option>
             </select>
           </div>
+          <div class="field"><label>مبلغ / عدد (اختیاری)</label><input type="text" id="msgAmount" placeholder="مثال: ۵,۰۰۰,۰۰۰ تومان"></div>
+          <div class="field"><label>توضیحات *</label><textarea id="msgBody" placeholder="متن پیام را اینجا بنویسید..."></textarea></div>
           <div class="field">
-            <label>مبلغ / عدد (اختیاری)</label>
-            <input type="text" id="msgAmount" placeholder="مثال: ۵,۰۰۰,۰۰۰ تومان">
+            <label>فایل پیوست (اختیاری)</label>
+            <div class="file-upload">
+              <input type="file" id="msgFile" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx" onchange="previewFile()">
+              <div class="icon">📎</div>
+              <p>کلیک کنید یا فایل را اینجا بکشید</p>
+              <p style="font-size:.75rem;color:#aaa;margin-top:4px">PDF، تصویر، Excel، Word — حداکثر ۵ مگابایت</p>
+            </div>
+            <div class="file-preview" id="filePreview">
+              <span>📄</span><span id="fileName"></span>
+              <button onclick="clearFile()" title="حذف">✕</button>
+            </div>
           </div>
-          <div class="field">
-            <label>توضیحات</label>
-            <textarea id="msgBody" placeholder="متن پیام را اینجا بنویسید..."></textarea>
-          </div>
-          <button class="btn" style="width:auto;padding:11px 28px" onclick="sendMessage()">📨 ارسال اطلاعات</button>
-          <div id="sendResult" style="margin-top:12px;font-size:.88rem"></div>
+          <button class="send-btn" onclick="sendMessage()" id="btnSend">📨 ارسال اطلاعات</button>
+          <div class="result-msg" id="sendResult"></div>
         </div>
       </div>
-
-      <!-- پیام‌های ارسالی -->
       <div class="page" id="page-messages">
         <div class="section-title">پیام‌های ارسالی</div>
         <div id="msgListContainer" class="msg-list"><div class="empty">در حال بارگذاری...</div></div>
       </div>
-
     </div>
   </div>
 </div>
-
-<!-- مودال مشاهده کاربر -->
 <div class="modal" id="userModal">
   <div class="modal-box">
     <h3>📄 اطلاعات کامل عضو</h3>
     <div id="userModalContent" style="font-size:.9rem;line-height:2.2;color:#333"></div>
-    <div class="modal-row">
-      <button class="btn btn-cancel" onclick="closeModal('userModal')">بستن</button>
-    </div>
+    <button class="btn btn-cancel" onclick="closeModal('userModal')">بستن</button>
   </div>
 </div>
-
-<!-- مودال ویرایش کاربر -->
-<div class="modal" id="editModal">
-  <div class="modal-box">
-    <h3>✏️ ویرایش اطلاعات عضو</h3>
-    <input type="hidden" id="editUserId">
-    <div class="field">
-      <label>نام</label>
-      <input type="text" id="editFirstName">
-    </div>
-    <div class="field">
-      <label>نام خانوادگی</label>
-      <input type="text" id="editLastName">
-    </div>
-    <div class="field">
-      <label>کد ملی</label>
-      <input type="text" id="editNationalId" maxlength="10">
-    </div>
-    <div class="field">
-      <label>شماره تماس</label>
-      <input type="text" id="editPhone">
-    </div>
-    <div class="field">
-      <label>واحد سازمانی</label>
-      <select id="editDepartment">
-        <option>واحد عملیات</option>
-        <option>واحد فنی و مهندسی</option>
-        <option>واحد مالی</option>
-        <option>واحد اداری و پشتیبانی</option>
-        <option>واحد HSE</option>
-        <option>واحد بازرگانی</option>
-        <option>سایر</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>شماره پرسنلی</label>
-      <input type="text" id="editEmpId">
-    </div>
-    <div id="editResult" style="font-size:.85rem;margin-bottom:8px"></div>
-    <div class="modal-row">
-      <button class="btn" onclick="saveUserEdit()">💾 ذخیره تغییرات</button>
-      <button class="btn btn-cancel" onclick="closeModal('editModal')">انصراف</button>
-    </div>
-  </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",
-  authDomain: "tmpv-cooperative.firebaseapp.com",
-  projectId: "tmpv-cooperative",
-  storageBucket: "tmpv-cooperative.firebasestorage.app",
-  messagingSenderId: "644066134252",
-  appId: "1:644066134252:web:2e678c4128ac35b203fdc9"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const ADMIN_EMAIL = "tmpv1372@gmail.com";
-let allUsers = [];
-let allMessages = [];
-
-// احراز هویت
-onAuthStateChanged(auth, user => {
-  if(user && user.email === ADMIN_EMAIL){
-    document.getElementById('loginPage').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
-    loadAll();
-  } else {
-    document.getElementById('loginPage').style.display='';
-    document.getElementById('adminPanel').style.display='none';
-  }
+import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
+const firebaseConfig={apiKey:"AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",authDomain:"tmpv-cooperative.firebaseapp.com",projectId:"tmpv-cooperative",storageBucket:"tmpv-cooperative.firebasestorage.app",messagingSenderId:"644066134252",appId:"1:644066134252:web:2e678c4128ac35b203fdc9"};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);const db=getFirestore(app);const storage=getStorage(app);
+const ADMIN_EMAIL="tmpv1372@gmail.com";
+let allUsers=[],allMessages=[];
+onAuthStateChanged(auth,user=>{
+  if(user&&user.email===ADMIN_EMAIL){document.getElementById('loginPage').style.display='none';document.getElementById('adminPanel').style.display='block';loadAll();}
+  else{document.getElementById('loginPage').style.display='';document.getElementById('adminPanel').style.display='none';}
 });
-
-window.doAdminLogin = async function(){
-  const email=document.getElementById('adminEmail').value;
-  const pass=document.getElementById('adminPass').value;
-  try{
-    await signInWithEmailAndPassword(auth, email, pass);
-  }catch(e){
-    document.getElementById('loginErr').textContent='ایمیل یا رمز عبور اشتباه است';
-  }
+window.doAdminLogin=async function(){
+  try{await signInWithEmailAndPassword(auth,document.getElementById('adminEmail').value,document.getElementById('adminPass').value);}
+  catch(e){document.getElementById('loginErr').textContent='ایمیل یا رمز عبور اشتباه است';}
 };
-
-window.doLogout = ()=> signOut(auth);
-
-// بارگذاری داده‌ها
-async function loadAll(){
-  await loadUsers();
-  await loadMessages();
-  renderDashboard();
-}
-
-async function loadUsers(){
-  const snap = await getDocs(collection(db,'users'));
-  allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderUsers();
-  renderPending();
-  renderSendTo();
-}
-
-async function loadMessages(){
-  try{
-    const q = query(collection(db,'messages'), orderBy('createdAt','desc'));
-    const snap = await getDocs(q);
-    allMessages = snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderMessages();
-  }catch(e){ allMessages=[]; }
-}
-
-// داشبورد
-function renderDashboard(){
-  const total=allUsers.length;
-  const active=allUsers.filter(u=>u.status==='active').length;
-  const pending=allUsers.filter(u=>u.status==='pending').length;
-  document.getElementById('statTotal').textContent=total;
-  document.getElementById('statActive').textContent=active;
-  document.getElementById('statPending').textContent=pending;
-  document.getElementById('statMsgs').textContent=allMessages.length;
-}
-
-function renderPending(){
-  const tb=document.getElementById('pendingTable');
-  const list=allUsers.filter(u=>u.status==='pending');
-  if(!list.length){ tb.innerHTML='<tr><td colspan="4" class="empty">عضو در انتظار تأیید نیست</td></tr>'; return; }
-  tb.innerHTML=list.map(u=>`
-    <tr>
-      <td>${u.firstName||''} ${u.lastName||''}</td>
-      <td>${u.department||'-'}</td>
-      <td>${fmtDate(u.createdAt)}</td>
-      <td><div class="actions">
-        <button class="btn-approve" onclick="approveUser('${u.id}')">✅ تأیید</button>
-        <button class="btn-reject" onclick="rejectUser('${u.id}')">❌ رد</button>
-        <button class="btn-view" onclick="viewUser('${u.id}')">👁 مشاهده</button>
-      </div></td>
-    </tr>`).join('');
-}
-
-// لیست اعضا
-function renderUsers(){
-  const search=document.getElementById('searchInput').value.toLowerCase();
-  const status=document.getElementById('statusFilter').value;
-  let list=allUsers;
-  if(search) list=list.filter(u=>(u.firstName+' '+u.lastName).toLowerCase().includes(search)||(u.nationalId||'').includes(search));
-  if(status) list=list.filter(u=>u.status===status);
-  const tb=document.getElementById('usersTable');
-  if(!list.length){ tb.innerHTML='<tr><td colspan="6" class="empty">کاربری یافت نشد</td></tr>'; return; }
-  tb.innerHTML=list.map(u=>`
-    <tr>
-      <td>${u.firstName||''} ${u.lastName||''}</td>
-      <td>${u.nationalId||'-'}</td>
-      <td>${u.phone||'-'}</td>
-      <td>${u.department||'-'}</td>
-      <td><span class="badge ${u.status||'pending'}">${statusLabel(u.status)}</span></td>
-      <td><div class="actions">
-        ${u.status!=='active'?`<button class="btn-approve" onclick="approveUser('${u.id}')">✅ تأیید</button>`:''}
-        ${u.status!=='rejected'?`<button class="btn-reject" onclick="rejectUser('${u.id}')">❌ رد</button>`:''}
-        <button class="btn-msg" onclick="quickSend('${u.id}')">📨 پیام</button>
-        <button class="btn-edit" onclick="editUser('${u.id}')">✏️ ویرایش</button>
-        <button class="btn-delete" onclick="deleteUser('${u.id}')">🗑 حذف</button>
-        <button class="btn-view" onclick="viewUser('${u.id}')">👁</button>
-      </div></td>
-    </tr>`).join('');
-}
-
-window.filterUsers = renderUsers;
-
-// ارسال به dropdown
-function renderSendTo(){
-  const sel=document.getElementById('sendTo');
-  sel.innerHTML='<option value="">انتخاب کنید...</option>';
-  allUsers.filter(u=>u.status==='active').forEach(u=>{
-    const o=document.createElement('option');
-    o.value=u.id;
-    o.textContent=`${u.firstName} ${u.lastName} — ${u.department||''}`;
-    sel.appendChild(o);
-  });
-}
-
-// ارسال پیام
-window.sendMessage = async function(){
-  const to=document.getElementById('sendTo').value;
-  const type=document.getElementById('msgType').value;
-  const amount=document.getElementById('msgAmount').value.trim();
-  const body=document.getElementById('msgBody').value.trim();
-  const res=document.getElementById('sendResult');
-  if(!to){ res.style.color='#c62828'; res.textContent='لطفاً عضو را انتخاب کنید'; return; }
-  if(!body){ res.style.color='#c62828'; res.textContent='توضیحات را وارد کنید'; return; }
+window.doLogout=()=>signOut(auth);
+async function loadAll(){await loadUsers();await loadMessages();renderDashboard();}
+async function loadUsers(){const snap=await getDocs(collection(db,'users'));allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));renderUsers();renderPending();renderSendTo();}
+async function loadMessages(){try{const q=query(collection(db,'messages'),orderBy('createdAt','desc'));const snap=await getDocs(q);allMessages=snap.docs.map(d=>({id:d.id,...d.data()}));renderMessages();}catch(e){allMessages=[];}}
+function renderDashboard(){document.getElementById('statTotal').textContent=allUsers.length;document.getElementById('statActive').textContent=allUsers.filter(u=>u.status==='active').length;document.getElementById('statPending').textContent=allUsers.filter(u=>u.status==='pending').length;document.getElementById('statMsgs').textContent=allMessages.length;}
+function renderPending(){const tb=document.getElementById('pendingTable');const list=allUsers.filter(u=>u.status==='pending');if(!list.length){tb.innerHTML='<tr><td colspan="4" class="empty">عضو در انتظار تأیید نیست</td></tr>';return;}tb.innerHTML=list.map(u=>`<tr><td>${u.firstName||''} ${u.lastName||''}</td><td>${u.department||'-'}</td><td>${fmtDate(u.createdAt)}</td><td><div class="actions"><button class="btn-approve" onclick="approveUser('${u.id}')">✅ تأیید</button><button class="btn-reject" onclick="rejectUser('${u.id}')">❌ رد</button><button class="btn-view" onclick="viewUser('${u.id}')">👁</button></div></td></tr>`).join('');}
+function renderUsers(){const search=document.getElementById('searchInput').value.toLowerCase();const status=document.getElementById('statusFilter').value;let list=allUsers;if(search)list=list.filter(u=>(u.firstName+' '+u.lastName).toLowerCase().includes(search)||(u.nationalId||'').includes(search));if(status)list=list.filter(u=>u.status===status);const tb=document.getElementById('usersTable');if(!list.length){tb.innerHTML='<tr><td colspan="6" class="empty">کاربری یافت نشد</td></tr>';return;}tb.innerHTML=list.map(u=>`<tr><td>${u.firstName||''} ${u.lastName||''}</td><td>${u.nationalId||'-'}</td><td>${u.phone||'-'}</td><td>${u.department||'-'}</td><td><span class="badge ${u.status||'pending'}">${statusLabel(u.status)}</span></td><td><div class="actions">${u.status!=='active'?`<button class="btn-approve" onclick="approveUser('${u.id}')">✅</button>`:''} ${u.status!=='rejected'?`<button class="btn-reject" onclick="rejectUser('${u.id}')">❌</button>`:''}<button class="btn-msg" onclick="quickSend('${u.id}')">📨</button><button class="btn-view" onclick="viewUser('${u.id}')">👁</button></div></td></tr>`).join('');}
+window.filterUsers=renderUsers;
+function renderSendTo(){const sel=document.getElementById('sendTo');sel.innerHTML='<option value="">انتخاب کنید...</option>';allUsers.filter(u=>u.status==='active').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=`${u.firstName} ${u.lastName} — ${u.department||''}`;sel.appendChild(o);});}
+window.previewFile=function(){const file=document.getElementById('msgFile').files[0];if(!file)return;if(file.size>5*1024*1024){alert('حجم فایل بیشتر از ۵ مگابایت است');clearFile();return;}document.getElementById('fileName').textContent=file.name;document.getElementById('filePreview').classList.add('show');};
+window.clearFile=function(){document.getElementById('msgFile').value='';document.getElementById('filePreview').classList.remove('show');document.getElementById('fileName').textContent='';};
+window.sendMessage=async function(){
+  const to=document.getElementById('sendTo').value;const type=document.getElementById('msgType').value;const amount=document.getElementById('msgAmount').value.trim();const body=document.getElementById('msgBody').value.trim();const fileInput=document.getElementById('msgFile');const res=document.getElementById('sendResult');const btn=document.getElementById('btnSend');
+  res.className='result-msg';
+  if(!to){res.textContent='لطفاً عضو را انتخاب کنید';res.classList.add('fail');return;}
+  if(!body){res.textContent='توضیحات را وارد کنید';res.classList.add('fail');return;}
+  btn.disabled=true;btn.textContent='در حال ارسال...';
   const user=allUsers.find(u=>u.id===to);
+  let fileURL='',fileName='';
   try{
-    await addDoc(collection(db,'messages'),{
-      userId: to,
-      userName: `${user.firstName} ${user.lastName}`,
-      type, amount, body,
-      createdAt: serverTimestamp(),
-      sentBy: ADMIN_EMAIL
-    });
-    res.style.color='#2e7d32';
-    res.textContent='✅ پیام با موفقیت ارسال شد';
-    document.getElementById('msgBody').value='';
-    document.getElementById('msgAmount').value='';
-    await loadMessages();
-    renderDashboard();
-  }catch(e){
-    res.style.color='#c62828'; res.textContent='خطا در ارسال پیام';
-  }
+    if(fileInput.files[0]){const file=fileInput.files[0];fileName=file.name;const storageRef=ref(storage,`messages/${Date.now()}_${fileName}`);await uploadBytes(storageRef,file);fileURL=await getDownloadURL(storageRef);}
+    await addDoc(collection(db,'messages'),{userId:to,userName:`${user.firstName} ${user.lastName}`,type,amount,body,fileURL,fileName,createdAt:serverTimestamp(),sentBy:ADMIN_EMAIL});
+    res.textContent='✅ اطلاعات با موفقیت ارسال شد';res.classList.add('ok');
+    document.getElementById('msgBody').value='';document.getElementById('msgAmount').value='';clearFile();
+    await loadMessages();renderDashboard();
+  }catch(e){res.textContent='خطا: '+e.message;res.classList.add('fail');}
+  btn.disabled=false;btn.textContent='📨 ارسال اطلاعات';
 };
-
-// پیام‌های ارسالی
-function renderMessages(){
-  const c=document.getElementById('msgListContainer');
-  if(!allMessages.length){ c.innerHTML='<div class="empty">هیچ پیامی ارسال نشده</div>'; return; }
-  c.innerHTML=allMessages.map(m=>`
-    <div class="msg-item">
-      <span class="type ${m.type}">${typeLabel(m.type)}</span>
-      <div class="meta">📤 برای: <b>${m.userName}</b> — ${fmtDate(m.createdAt)}</div>
-      ${m.amount?`<div class="meta">💰 مبلغ: ${m.amount}</div>`:''}
-      <div class="body">${m.body}</div>
-    </div>`).join('');
-}
-
-// تأیید / رد
-window.approveUser = async function(id){
-  await updateDoc(doc(db,'users',id),{status:'active'});
-  await loadUsers(); renderDashboard();
-};
-window.rejectUser = async function(id){
-  if(!confirm('آیا از رد این عضو مطمئنید؟')) return;
-  await updateDoc(doc(db,'users',id),{status:'rejected'});
-  await loadUsers(); renderDashboard();
-};
-
-// ویرایش کاربر
-window.editUser = function(id){
-  const u=allUsers.find(x=>x.id===id);
-  if(!u) return;
-  document.getElementById('editUserId').value=u.id;
-  document.getElementById('editFirstName').value=u.firstName||'';
-  document.getElementById('editLastName').value=u.lastName||'';
-  document.getElementById('editNationalId').value=u.nationalId||'';
-  document.getElementById('editPhone').value=u.phone||'';
-  document.getElementById('editDepartment').value=u.department||'واحد عملیات';
-  document.getElementById('editEmpId').value=u.empId||'';
-  document.getElementById('editResult').textContent='';
-  document.getElementById('editModal').classList.add('open');
-};
-
-window.saveUserEdit = async function(){
-  const id=document.getElementById('editUserId').value;
-  const res=document.getElementById('editResult');
-  const firstName=document.getElementById('editFirstName').value.trim();
-  const lastName=document.getElementById('editLastName').value.trim();
-  const nationalId=document.getElementById('editNationalId').value.trim();
-  if(!firstName||!lastName){ res.style.color='#c62828'; res.textContent='نام و نام خانوادگی الزامی است'; return; }
-  if(nationalId.length!==10||isNaN(nationalId)){ res.style.color='#c62828'; res.textContent='کد ملی باید ۱۰ رقم باشد'; return; }
-  try{
-    await updateDoc(doc(db,'users',id),{
-      firstName, lastName, nationalId,
-      phone: document.getElementById('editPhone').value.trim(),
-      department: document.getElementById('editDepartment').value,
-      empId: document.getElementById('editEmpId').value.trim()
-    });
-    document.getElementById('editModal').classList.remove('open');
-    await loadUsers(); renderDashboard();
-  }catch(e){
-    res.style.color='#c62828'; res.textContent='خطا در ذخیره تغییرات';
-  }
-};
-
-// حذف کاربر
-window.deleteUser = async function(id){
-  const u=allUsers.find(x=>x.id===id);
-  if(!u) return;
-  if(!confirm(`آیا از حذف «${u.firstName||''} ${u.lastName||''}» مطمئنید؟ این عملیات فقط پروفایل عضو را حذف می‌کند؛ حساب ورود او همچنان در Firebase Authentication باقی می‌ماند و باید جداگانه از کنسول Firebase حذف شود.`)) return;
-  try{
-    await deleteDoc(doc(db,'users',id));
-    await loadUsers(); renderDashboard();
-  }catch(e){
-    alert('خطا در حذف عضو');
-  }
-};
-
-// مشاهده کاربر
-window.viewUser = function(id){
-  const u=allUsers.find(x=>x.id===id);
-  if(!u) return;
-  document.getElementById('userModalContent').innerHTML=`
-    <b>نام:</b> ${u.firstName||''} ${u.lastName||''}<br>
-    <b>کد ملی:</b> ${u.nationalId||'-'}<br>
-    <b>تلفن:</b> ${u.phone||'-'}<br>
-    <b>ایمیل:</b> ${u.email||'-'}<br>
-    <b>واحد:</b> ${u.department||'-'}<br>
-    <b>شماره پرسنلی:</b> ${u.empId||'-'}<br>
-    <b>وضعیت:</b> ${statusLabel(u.status)}<br>
-    <b>تاریخ ثبت:</b> ${fmtDate(u.createdAt)}
-  `;
-  document.getElementById('userModal').classList.add('open');
-};
-
-window.quickSend = function(id){
-  document.getElementById('sendTo').value=id;
-  showPage('send');
-};
-
-window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
-
-// ناوبری
-window.showPage = function(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));
-  event.target.classList.add('active');
-};
-
-// ابزارها
-function statusLabel(s){ return {active:'فعال',pending:'در انتظار',rejected:'رد شده'}[s]||'نامشخص'; }
-function typeLabel(t){ return {variz:'اطلاعات واریزی',kasri:'کسری دارک',other:'سایر'}[t]||t; }
-function fmtDate(ts){
-  if(!ts) return '-';
-  const d=ts.toDate?ts.toDate():new Date(ts);
-  return d.toLocaleDateString('fa-IR');
-}
+function renderMessages(){const c=document.getElementById('msgListContainer');if(!allMessages.length){c.innerHTML='<div class="empty">هیچ پیامی ارسال نشده</div>';return;}c.innerHTML=allMessages.map(m=>`<div class="msg-item ${m.type}"><span class="type-badge type-${m.type}">${typeLabel(m.type)}</span><div class="meta">📤 برای: <b>${m.userName}</b> — ${fmtDate(m.createdAt)}</div>${m.amount?`<div class="meta">💰 مبلغ: ${m.amount}</div>`:''}<div class="body">${m.body}</div>${m.fileURL?`<a class="file-link" href="${m.fileURL}" target="_blank">📎 ${m.fileName||'دانلود فایل'}</a>`:''}</div>`).join('');}
+window.approveUser=async function(id){await updateDoc(doc(db,'users',id),{status:'active'});await loadUsers();renderDashboard();};
+window.rejectUser=async function(id){if(!confirm('آیا از رد این عضو مطمئنید؟'))return;await updateDoc(doc(db,'users',id),{status:'rejected'});await loadUsers();renderDashboard();};
+window.viewUser=function(id){const u=allUsers.find(x=>x.id===id);if(!u)return;document.getElementById('userModalContent').innerHTML=`<b>نام:</b> ${u.firstName||''} ${u.lastName||''}<br><b>کد ملی:</b> ${u.nationalId||'-'}<br><b>تلفن:</b> ${u.phone||'-'}<br><b>ایمیل:</b> ${u.email||'-'}<br><b>واحد:</b> ${u.department||'-'}<br><b>شماره پرسنلی:</b> ${u.empId||'-'}<br><b>وضعیت:</b> ${statusLabel(u.status)}<br><b>تاریخ ثبت:</b> ${fmtDate(u.createdAt)}`;document.getElementById('userModal').classList.add('open');};
+window.quickSend=function(id){document.getElementById('sendTo').value=id;showPage('send',document.querySelector('.sidebar a:nth-child(3)'));};
+window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
+window.showPage=function(name,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');};
+function statusLabel(s){return {active:'فعال',pending:'در انتظار',rejected:'رد شده'}[s]||'نامشخص';}
+function typeLabel(t){return {variz:'💰 اطلاعات واریزی',kasri:'⚠️ کسری دارک',madarek:'📄 مدارک',sayer:'📋 سایر'}[t]||t;}
+function fmtDate(ts){if(!ts)return '-';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('fa-IR');}
 </script>
 </body>
 </html>
