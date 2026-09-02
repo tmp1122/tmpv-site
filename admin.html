@@ -1,7 +1,3 @@
-
-
-
-Admin · HTML
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -151,7 +147,7 @@ tr:hover td{background:#f8fdf9}
             <label>نوع اطلاعات *</label>
             <select id="msgType">
               <option value="variz">💰 اطلاعات واریزی</option>
-              <option value="kasri">⚠️ کسری دارک</option>
+              <option value="kasri">⚠️ کسری پرداخت</option>
               <option value="madarek">📄 مدارک</option>
               <option value="sayer">📋 سایر</option>
             </select>
@@ -159,13 +155,17 @@ tr:hover td{background:#f8fdf9}
           <div class="field"><label>مبلغ / عدد (اختیاری)</label><input type="text" id="msgAmount" placeholder="مثال: ۵,۰۰۰,۰۰۰ تومان"></div>
           <div class="field"><label>توضیحات *</label><textarea id="msgBody" placeholder="متن پیام را اینجا بنویسید..."></textarea></div>
           <div class="field">
-            <label>لینک فایل (اختیاری)</label>
-            <input type="url" id="msgFileURL" placeholder="لینک Google Drive یا هر لینک دیگری را وارد کنید">
-            <p style="font-size:.75rem;color:#888;margin-top:6px">💡 فایل را در Google Drive آپلود کنید، لینک اشتراک‌گذاری را اینجا وارد کنید</p>
-          </div>
-          <div class="field">
-            <label>نام فایل (اختیاری)</label>
-            <input type="text" id="msgFileName" placeholder="مثال: فیش واریزی اردیبهشت ۱۴۰۴">
+            <label>فایل پیوست (اختیاری — حداکثر ۵۰۰ کیلوبایت)</label>
+            <div class="file-upload" onclick="document.getElementById('msgFile').click()">
+              <div class="icon">📎</div>
+              <p>کلیک کنید تا فایل انتخاب کنید</p>
+              <p style="font-size:.75rem;color:#aaa;margin-top:4px">PDF، تصویر، Word — حداکثر ۵۰۰ کیلوبایت</p>
+              <input type="file" id="msgFile" accept=".pdf,.jpg,.jpeg,.png,.docx" style="display:none" onchange="previewFile()">
+            </div>
+            <div class="file-preview" id="filePreview">
+              <span>📄</span><span id="fileNameShow"></span>
+              <button onclick="clearFile()" title="حذف">✕</button>
+            </div>
           </div>
           <button class="send-btn" onclick="sendMessage()" id="btnSend">📨 ارسال اطلاعات</button>
           <div class="result-msg" id="sendResult"></div>
@@ -189,7 +189,7 @@ tr:hover td{background:#f8fdf9}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
- 
+
 const firebaseConfig={apiKey:"AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",authDomain:"tmpv-cooperative.firebaseapp.com",projectId:"tmpv-cooperative",storageBucket:"tmpv-cooperative.firebasestorage.app",messagingSenderId:"644066134252",appId:"1:644066134252:web:2e678c4128ac35b203fdc9"};
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);const db=getFirestore(app);
@@ -212,35 +212,80 @@ function renderPending(){const tb=document.getElementById('pendingTable');const 
 function renderUsers(){const search=document.getElementById('searchInput').value.toLowerCase();const status=document.getElementById('statusFilter').value;let list=allUsers;if(search)list=list.filter(u=>(u.firstName+' '+u.lastName).toLowerCase().includes(search)||(u.nationalId||'').includes(search));if(status)list=list.filter(u=>u.status===status);const tb=document.getElementById('usersTable');if(!list.length){tb.innerHTML='<tr><td colspan="6" class="empty">کاربری یافت نشد</td></tr>';return;}tb.innerHTML=list.map(u=>`<tr><td>${u.firstName||''} ${u.lastName||''}</td><td>${u.nationalId||'-'}</td><td>${u.phone||'-'}</td><td>${u.department||'-'}</td><td><span class="badge ${u.status||'pending'}">${statusLabel(u.status)}</span></td><td><div class="actions">${u.status!=='active'?`<button class="btn-approve" onclick="approveUser('${u.id}')">✅</button>`:''} ${u.status!=='rejected'?`<button class="btn-reject" onclick="rejectUser('${u.id}')">❌</button>`:''}<button class="btn-msg" onclick="quickSend('${u.id}')">📨</button><button class="btn-view" onclick="viewUser('${u.id}')">👁</button></div></td></tr>`).join('');}
 window.filterUsers=renderUsers;
 function renderSendTo(){const sel=document.getElementById('sendTo');sel.innerHTML='<option value="">انتخاب کنید...</option>';allUsers.filter(u=>u.status==='active').forEach(u=>{const o=document.createElement('option');o.value=u.id;o.textContent=`${u.firstName} ${u.lastName} — ${u.department||''}`;sel.appendChild(o);});}
+window.previewFile=function(){
+  const file=document.getElementById('msgFile').files[0];
+  if(!file)return;
+  if(file.size>500*1024){alert('حجم فایل بیشتر از ۵۰۰ کیلوبایت است. فایل کوچکتری انتخاب کنید.');clearFile();return;}
+  document.getElementById('fileNameShow').textContent=file.name;
+  document.getElementById('filePreview').classList.add('show');
+};
+window.clearFile=function(){
+  document.getElementById('msgFile').value='';
+  document.getElementById('filePreview').classList.remove('show');
+  document.getElementById('fileNameShow').textContent='';
+};
+function readFileAsBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});}
 window.sendMessage=async function(){
   const to=document.getElementById('sendTo').value;const type=document.getElementById('msgType').value;const amount=document.getElementById('msgAmount').value.trim();const body=document.getElementById('msgBody').value.trim();const res=document.getElementById('sendResult');const btn=document.getElementById('btnSend');
-  const fileURL=document.getElementById('msgFileURL').value.trim();
-  const fileName=document.getElementById('msgFileName').value.trim();
+  const fileInput=document.getElementById('msgFile');
   res.className='result-msg';
   if(!to){res.textContent='لطفاً عضو را انتخاب کنید';res.classList.add('fail');return;}
   if(!body){res.textContent='توضیحات را وارد کنید';res.classList.add('fail');return;}
   btn.disabled=true;btn.textContent='در حال ارسال...';
   const user=allUsers.find(u=>u.id===to);
+  let fileData='',fileName='';
   try{
-    await addDoc(collection(db,'messages'),{userId:to,userName:`${user.firstName} ${user.lastName}`,type,amount,body,fileURL,fileName,createdAt:serverTimestamp(),sentBy:ADMIN_EMAIL});
+    if(fileInput.files[0]){
+      fileName=fileInput.files[0].name;
+      fileData=await readFileAsBase64(fileInput.files[0]);
+    }
+    await addDoc(collection(db,'messages'),{userId:to,userName:`${user.firstName} ${user.lastName}`,type,amount,body,fileData,fileName,createdAt:serverTimestamp(),sentBy:ADMIN_EMAIL});
     res.textContent='✅ اطلاعات با موفقیت ارسال شد';res.classList.add('ok');
-    document.getElementById('msgBody').value='';document.getElementById('msgAmount').value='';
-    document.getElementById('msgFileURL').value='';document.getElementById('msgFileName').value='';
+    document.getElementById('msgBody').value='';document.getElementById('msgAmount').value='';clearFile();
     await loadMessages();renderDashboard();
   }catch(e){res.textContent='خطا: '+e.message;res.classList.add('fail');}
   btn.disabled=false;btn.textContent='📨 ارسال اطلاعات';
 };
-function renderMessages(){const c=document.getElementById('msgListContainer');if(!allMessages.length){c.innerHTML='<div class="empty">هیچ پیامی ارسال نشده</div>';return;}c.innerHTML=allMessages.map(m=>`<div class="msg-item ${m.type}"><span class="type-badge type-${m.type}">${typeLabel(m.type)}</span><div class="meta">📤 برای: <b>${m.userName}</b> — ${fmtDate(m.createdAt)}</div>${m.amount?`<div class="meta">💰 مبلغ: ${m.amount}</div>`:''}<div class="body">${m.body}</div>${m.fileURL?`<a class="file-link" href="${m.fileURL}" target="_blank">📎 ${m.fileName||'دانلود فایل'}</a>`:''}</div>`).join('');}
+function renderMessages(){const c=document.getElementById('msgListContainer');if(!allMessages.length){c.innerHTML='<div class="empty">هیچ پیامی ارسال نشده</div>';return;}c.innerHTML=allMessages.map(m=>`<div class="msg-item ${m.type}"><span class="type-badge type-${m.type}">${typeLabel(m.type)}</span><div class="meta">📤 برای: <b>${m.userName}</b> — ${fmtDate(m.createdAt)}</div>${m.amount?`<div class="meta">💰 مبلغ: ${m.amount}</div>`:''}<div class="body">${m.body}</div>${m.fileData?`<a class="file-link" href="${m.fileData}" download="${m.fileName||'فایل'}">📎 ${m.fileName||'دانلود فایل'}</a>`:''}</div>`).join('');}
 window.approveUser=async function(id){await updateDoc(doc(db,'users',id),{status:'active'});await loadUsers();renderDashboard();};
 window.rejectUser=async function(id){if(!confirm('آیا از رد این عضو مطمئنید؟'))return;await updateDoc(doc(db,'users',id),{status:'rejected'});await loadUsers();renderDashboard();};
-window.viewUser=function(id){const u=allUsers.find(x=>x.id===id);if(!u)return;document.getElementById('userModalContent').innerHTML=`<b>نام:</b> ${u.firstName||''} ${u.lastName||''}<br><b>کد ملی:</b> ${u.nationalId||'-'}<br><b>تلفن:</b> ${u.phone||'-'}<br><b>ایمیل:</b> ${u.email||'-'}<br><b>واحد:</b> ${u.department||'-'}<br><b>شماره پرسنلی:</b> ${u.empId||'-'}<br><b>وضعیت:</b> ${statusLabel(u.status)}<br><b>تاریخ ثبت:</b> ${fmtDate(u.createdAt)}`;document.getElementById('userModal').classList.add('open');};
+window.viewUser=function(id){
+  const u=allUsers.find(x=>x.id===id);if(!u)return;
+  document.getElementById('userModalContent').innerHTML=`
+    <b>نام:</b> ${u.firstName||''} ${u.lastName||''}<br>
+    <b>کد ملی:</b> ${u.nationalId||'-'}<br>
+    <b>تلفن:</b> ${u.phone||'-'}<br>
+    <b>ایمیل:</b> ${u.email||'-'}<br>
+    <b>واحد:</b> ${u.department||'-'}<br>
+    <b>شماره پرسنلی:</b> ${u.empId||'-'}<br>
+    <b>وضعیت:</b> ${statusLabel(u.status)}<br>
+    <b>تاریخ ثبت:</b> ${fmtDate(u.createdAt)}<br><br>
+    <b>⭐ امتیاز:</b>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+      <input type="number" id="scoreInput" value="${u.score||0}" min="0" max="100"
+        style="width:80px;padding:6px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.9rem">
+      <span style="font-size:.82rem;color:#888">از ۱۰۰</span>
+      <button onclick="saveScore('${u.id}')"
+        style="background:#2d7a3a;color:#fff;border:none;border-radius:8px;padding:7px 16px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600">ذخیره</button>
+    </div>
+    <div id="scoreMsg" style="font-size:.82rem;margin-top:6px"></div>`;
+  document.getElementById('userModal').classList.add('open');
+};
+window.saveScore=async function(id){
+  const score=parseInt(document.getElementById('scoreInput').value)||0;
+  const msg=document.getElementById('scoreMsg');
+  try{
+    await updateDoc(doc(db,'users',id),{score:Math.min(100,Math.max(0,score))});
+    const u=allUsers.find(x=>x.id===id);if(u)u.score=score;
+    msg.style.color='#2e7d32';msg.textContent='✅ امتیاز ذخیره شد';
+  }catch(e){msg.style.color='#c62828';msg.textContent='خطا در ذخیره';}
+};
 window.quickSend=function(id){document.getElementById('sendTo').value=id;showPage('send',document.querySelector('.sidebar a:nth-child(3)'));};
 window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
 window.showPage=function(name,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');};
 function statusLabel(s){return {active:'فعال',pending:'در انتظار',rejected:'رد شده'}[s]||'نامشخص';}
-function typeLabel(t){return {variz:'💰 اطلاعات واریزی',kasri:'⚠️ کسری دارک',madarek:'📄 مدارک',sayer:'📋 سایر'}[t]||t;}
+function typeLabel(t){return {variz:'💰 اطلاعات واریزی',kasri:'⚠️ کسری پرداخت',madarek:'📄 مدارک',sayer:'📋 سایر'}[t]||t;}
 function fmtDate(ts){if(!ts)return '-';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('fa-IR');}
 </script>
 </body>
 </html>
- 
