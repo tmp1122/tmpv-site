@@ -52,6 +52,7 @@ h2{font-size:1.1rem;color:#2d7a3a;margin-bottom:20px;font-weight:700}
     <div class="step-dot done" id="dot1"></div>
     <div class="step-dot" id="dot2"></div>
     <div class="step-dot" id="dot3"></div>
+    <div class="step-dot" id="dot4"></div>
   </div>
 
   <div id="msg" class="msg"></div>
@@ -117,12 +118,30 @@ h2{font-size:1.1rem;color:#2d7a3a;margin-bottom:20px;font-weight:700}
     <button class="btn btn-outline" onclick="goBack(1)">← بازگشت</button>
   </div>
 
-  <!-- مرحله ۳: تأیید نهایی -->
+  <!-- مرحله ۳: آپلود عکس -->
   <div class="step" id="step3">
-    <h2>مرحله ۳ از ۳ — تأیید اطلاعات</h2>
+    <h2>مرحله ۳ از ۴ — تصویر پروفایل</h2>
+    <div style="text-align:center;padding:10px 0 20px">
+      <div id="photoPreviewBox" style="width:120px;height:120px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 16px;overflow:hidden;border:3px solid #d0e8d4">
+        👤
+      </div>
+      <label style="display:inline-block;background:#2d7a3a;color:#fff;padding:11px 24px;border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;position:relative">
+        📷 انتخاب عکس *
+        <input type="file" id="photoInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer" onchange="previewPhoto()">
+      </label>
+      <p style="font-size:.78rem;color:#888;margin-top:10px">حداکثر ۳۰۰ کیلوبایت — JPG یا PNG</p>
+      <p style="font-size:.78rem;color:#e53935;margin-top:4px">* آپلود عکس الزامی است</p>
+    </div>
+    <button class="btn" onclick="goStep4()">مرحله بعد →</button>
+    <button class="btn btn-outline" onclick="goBack(2)">← بازگشت</button>
+  </div>
+
+  <!-- مرحله ۴: تأیید نهایی -->
+  <div class="step" id="step4">
+    <h2>مرحله ۴ از ۴ — تأیید اطلاعات</h2>
     <div id="preview" style="background:#f8f9fa;border-radius:10px;padding:16px;margin-bottom:20px;font-size:.9rem;line-height:2.2;color:#333"></div>
     <button class="btn" onclick="submitRegister()" id="btnSubmit">✅ ثبت‌نام نهایی</button>
-    <button class="btn btn-outline" onclick="goBack(2)">← ویرایش</button>
+    <button class="btn btn-outline" onclick="goBack(3)">← ویرایش</button>
   </div>
 
   <!-- موفقیت -->
@@ -169,8 +188,9 @@ function hideMsg(){ document.getElementById('msg').className='msg'; }
 function setStep(n){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step'+n).classList.add('active');
-  [1,2,3].forEach(i=>{
-    document.getElementById('dot'+i).classList.toggle('done', i<=n);
+  [1,2,3,4].forEach(i=>{
+    const dot=document.getElementById('dot'+i);
+    if(dot) dot.classList.toggle('done', i<=n);
   });
   hideMsg();
 }
@@ -195,16 +215,35 @@ window.goStep3 = function(){
   if(!email||!email.includes('@')){return showMsg('ایمیل معتبر وارد کنید');}
   if(pass.length<6){return showMsg('رمز عبور باید حداقل ۶ کاراکتر باشد');}
   if(pass!==pass2){return showMsg('رمز عبور و تکرار آن یکسان نیستند');}
-  
+  setStep(3);
+}
+
+window.previewPhoto = function(){
+  const file=document.getElementById('photoInput').files[0];
+  if(!file)return;
+  if(file.size>300*1024){showMsg('حجم عکس بیشتر از ۳۰۰ کیلوبایت است');document.getElementById('photoInput').value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const box=document.getElementById('photoPreviewBox');
+    box.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+    box.style.border='3px solid #2d7a3a';
+  };
+  reader.readAsDataURL(file);
+}
+
+window.goStep4 = function(){
+  const file=document.getElementById('photoInput').files[0];
+  if(!file){return showMsg('لطفاً عکس پروفایل خود را آپلود کنید');}
   const preview=document.getElementById('preview');
   preview.innerHTML=`
     <b>نام:</b> ${document.getElementById('firstName').value} ${document.getElementById('lastName').value}<br>
     <b>کد ملی:</b> ${document.getElementById('nationalId').value}<br>
     <b>تلفن:</b> ${document.getElementById('phone').value}<br>
     <b>واحد:</b> ${document.getElementById('department').value}<br>
-    <b>ایمیل:</b> ${email}
+    <b>ایمیل:</b> ${document.getElementById('email').value}<br>
+    <b>عکس:</b> ✅ آپلود شده
   `;
-  setStep(3);
+  setStep(4);
 }
 
 window.goBack = function(n){ setStep(n); }
@@ -217,8 +256,17 @@ window.submitRegister = async function(){
 
   const email=document.getElementById('email').value.trim();
   const pass=document.getElementById('password').value;
+  const photoFile=document.getElementById('photoInput').files[0];
 
   try{
+    // خواندن عکس
+    let photoData='';
+    if(photoFile){
+      photoData=await new Promise((res,rej)=>{
+        const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(photoFile);
+      });
+    }
+
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     const uid = cred.user.uid;
 
@@ -230,8 +278,10 @@ window.submitRegister = async function(){
       department: document.getElementById('department').value,
       empId: document.getElementById('empId').value.trim(),
       email: email,
+      photo: photoData,
       role: 'member',
       status: 'pending',
+      score: 0,
       createdAt: serverTimestamp()
     });
 
