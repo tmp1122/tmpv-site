@@ -296,7 +296,10 @@ window.submitRegister = async function(){
     let msg='خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.';
     if(e.code==='auth/email-already-in-use') msg='این ایمیل قبلاً ثبت شده است.';
     if(e.code==='auth/invalid-email') msg='ایمیل معتبر نیست.';
-    showMsg(msg);
+    if(e.code==='auth/unauthorized-domain') msg='این دامنه (tmpv.ir) در تنظیمات Firebase مجاز نشده است.';
+    if(e.code==='permission-denied') msg='دسترسی به پایگاه داده رد شد (Firestore rules).';
+    console.error('Register error:', e);
+    showMsg(msg + '  [کد فنی: ' + (e.code||e.message||'نامشخص') + ']');
   }
 }
 </script>
