@@ -160,22 +160,11 @@ h2{font-size:1.1rem;color:#2d7a3a;margin-bottom:20px;font-weight:700}
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",
-  authDomain: "tmpv-cooperative.firebaseapp.com",
-  projectId: "tmpv-cooperative",
-  storageBucket: "tmpv-cooperative.firebasestorage.app",
-  messagingSenderId: "644066134252",
-  appId: "1:644066134252:web:2e678c4128ac35b203fdc9"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function showMsg(text, type="error"){
   const el = document.getElementById('msg');
@@ -267,23 +256,26 @@ window.submitRegister = async function(){
       });
     }
 
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    const uid = cred.user.uid;
+    const { data, error } = await supabase.auth.signUp({ email, password: pass });
+    if(error) throw error;
+    const uid = data.user && data.user.id;
+    if(!uid) throw new Error('کاربر ایجاد نشد، لطفاً دوباره تلاش کنید.');
 
-    await setDoc(doc(db,'users',uid),{
-      firstName: document.getElementById('firstName').value.trim(),
-      lastName: document.getElementById('lastName').value.trim(),
-      nationalId: document.getElementById('nationalId').value.trim(),
+    const { error: dbError } = await supabase.from('profiles').insert({
+      id: uid,
+      first_name: document.getElementById('firstName').value.trim(),
+      last_name: document.getElementById('lastName').value.trim(),
+      national_id: document.getElementById('nationalId').value.trim(),
       phone: document.getElementById('phone').value.trim(),
       department: document.getElementById('department').value,
-      empId: document.getElementById('empId').value.trim(),
+      emp_id: document.getElementById('empId').value.trim(),
       email: email,
       photo: photoData,
       role: 'member',
       status: 'pending',
-      score: 0,
-      createdAt: serverTimestamp()
+      score: 0
     });
+    if(dbError) throw dbError;
 
     document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
     document.querySelector('.steps-bar').style.display='none';
@@ -294,12 +286,12 @@ window.submitRegister = async function(){
     btn.disabled=false;
     btn.textContent='✅ ثبت‌نام نهایی';
     let msg='خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.';
-    if(e.code==='auth/email-already-in-use') msg='این ایمیل قبلاً ثبت شده است.';
-    if(e.code==='auth/invalid-email') msg='ایمیل معتبر نیست.';
-    if(e.code==='auth/unauthorized-domain') msg='این دامنه (tmpv.ir) در تنظیمات Firebase مجاز نشده است.';
-    if(e.code==='permission-denied') msg='دسترسی به پایگاه داده رد شد (Firestore rules).';
+    const emsg = (e && e.message) || '';
+    if(emsg.includes('already registered') || emsg.includes('already exists')) msg='این ایمیل قبلاً ثبت شده است.';
+    if(emsg.includes('invalid') && emsg.includes('email')) msg='ایمیل معتبر نیست.';
+    if(emsg.includes('row-level security') || emsg.includes('policy')) msg='دسترسی به پایگاه داده رد شد (RLS policy). لطفاً تنظیمات Supabase را بررسی کنید.';
     console.error('Register error:', e);
-    showMsg(msg + '  [کد فنی: ' + (e.code||e.message||'نامشخص') + ']');
+    showMsg(msg + '  [کد فنی: ' + (emsg||'نامشخص') + ']');
   }
 }
 </script>
