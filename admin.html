@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;padding:20px}
+.wrap{max-width:900px;margin:0 auto}
+.header{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.1);padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.header h1{color:#2d7a3a;font-size:1.2rem;font-weight:700}
+.header p{color:#666;font-size:.85rem;margin-top:4px}
+.logout{background:transparent;border:1.5px solid #d0e8d4;color:#666;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem}
+.logout:hover{border-color:#c62828;color:#c62828}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{background:#fff;border:1.5px solid #d0e8d4;color:#444;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600}
+.tab.active{background:#2d7a3a;color:#fff;border-color:#2d7a3a}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:18px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.info{display:flex;gap:14px;align-items:center;flex:1;min-width:240px}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#e8f5e9;flex-shrink:0}
+.info-text b{font-size:.98rem;color:#222}
+.info-text .meta{font-size:.8rem;color:#777;margin-top:3px;line-height:1.6}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;margin-inline-start:8px}
+.badge.pending{background:#fff3cd;color:#856404}
+.badge.approved{background:#d4edda;color:#2e7d32}
+.badge.rejected{background:#fdecea;color:#c62828}
+.actions{display:flex;gap:8px}
+.btn-sm{padding:8px 16px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-approve{background:#2d7a3a;color:#fff}
+.btn-approve:hover{background:#235f2c}
+.btn-reject{background:#fdecea;color:#c62828}
+.btn-reject:hover{background:#fadbd8}
+.empty{text-align:center;color:#888;padding:40px;background:#fff;border-radius:14px}
+.loading{text-align:center;color:#888;padding:40px}
+.err{padding:12px 16px;border-radius:8px;font-size:.9rem;margin-bottom:16px;background:#fdecea;color:#c62828}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>🔐 پنل مدیریت تعاونی مسکن</h1>
+      <p>مدیریت اعضا و درخواست‌های ثبت‌نام</p>
+    </div>
+    <button class="logout" onclick="doLogout()">خروج</button>
+  </div>
+
+  <div id="authCheck" class="loading">در حال بررسی دسترسی...</div>
+
+  <div id="panel" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-status="pending" onclick="setTab('pending')">در انتظار تأیید</button>
+      <button class="tab" data-status="approved" onclick="setTab('approved')">تأییدشده</button>
+      <button class="tab" data-status="rejected" onclick="setTab('rejected')">ردشده</button>
+    </div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const ADMIN_EMAIL = 'tmpv1372@gmail.com';
+
+let currentTab = 'pending';
+
+async function checkAccess(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session || session.user.email !== ADMIN_EMAIL){
+    location.href = 'login.html';
+    return;
+  }
+  document.getElementById('authCheck').style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+  loadList();
+}
+
+window.setTab = function(status){
+  currentTab = status;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.status===status));
+  loadList();
+};
+
+async function loadList(){
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('status', currentTab)
+    .order('created_at', { ascending: false });
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری: ' + (error.message||'نامشخص') + '</div>';
+    return;
+  }
+
+  if(!data || data.length===0){
+    listEl.innerHTML = '<div class="empty">هیچ عضوی در این وضعیت نیست</div>';
+    return;
+  }
+
+  listEl.innerHTML = data.map(u => `
+    <div class="card" data-id="${u.id}">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">
+            کد ملی: ${escapeHtml(u.national_id||'-')} &nbsp;|&nbsp; تلفن: ${escapeHtml(u.phone||'-')}<br>
+            واحد: ${escapeHtml(u.department||'-')} &nbsp;|&nbsp; ایمیل: ${escapeHtml(u.email||'-')}
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        ${currentTab !== 'approved' ? `<button class="btn-sm btn-approve" onclick="updateStatus('${u.id}','approved')">✅ تأیید</button>` : ''}
+        ${currentTab !== 'rejected' ? `<button class="btn-sm btn-reject" onclick="updateStatus('${u.id}','rejected')">❌ رد</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+window.updateStatus = async function(id, status){
+  const { error } = await supabase.from('profiles').update({ status }).eq('id', id);
+  if(error){
+    alert('خطا در به‌روزرسانی: ' + (error.message||'نامشخص'));
+    return;
+  }
+  loadList();
+};
+
+window.doLogout = async function(){
+  await supabase.auth.signOut();
+  location.href = 'login.html';
+};
+
+checkAccess();
+</script>
+</body>
+</html>
