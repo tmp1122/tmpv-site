@@ -56,29 +56,18 @@ input:focus{outline:none;border-color:#2d7a3a}
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",
-  authDomain: "tmpv-cooperative.firebaseapp.com",
-  projectId: "tmpv-cooperative",
-  storageBucket: "tmpv-cooperative.firebasestorage.app",
-  messagingSenderId: "644066134252",
-  appId: "1:644066134252:web:2e678c4128ac35b203fdc9"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 window.doLogin = async function(){
   const email = document.getElementById('email').value.trim();
   const pass = document.getElementById('password').value;
   const err = document.getElementById('errMsg');
   const btn = document.getElementById('btnLogin');
-  
+
   err.classList.remove('show');
   if(!email || !pass){ err.textContent='ایمیل و رمز عبور را وارد کنید'; err.classList.add('show'); return; }
 
@@ -86,8 +75,9 @@ window.doLogin = async function(){
   btn.textContent = 'در حال ورود...';
 
   try{
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
-    const uid = cred.user.uid;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if(error) throw error;
+    const uid = data.user.id;
 
     // اگر ادمین بود
     if(email === 'tmpv1372@gmail.com'){
@@ -96,17 +86,23 @@ window.doLogin = async function(){
     }
 
     // بررسی وضعیت عضو
-    const uDoc = await getDoc(doc(db,'users',uid));
-    if(uDoc.exists()){
-      const data = uDoc.data();
-      if(data.status === 'pending'){
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('status')
+      .eq('id', uid)
+      .single();
+
+    if(profileError) throw profileError;
+
+    if(profile){
+      if(profile.status === 'pending'){
         err.textContent = 'حساب شما در انتظار تأیید مدیریت است';
         err.classList.add('show');
         btn.disabled = false;
         btn.textContent = 'ورود به حساب';
         return;
       }
-      if(data.status === 'rejected'){
+      if(profile.status === 'rejected'){
         err.textContent = 'حساب شما تأیید نشده است. با مدیریت تماس بگیرید';
         err.classList.add('show');
         btn.disabled = false;
@@ -118,9 +114,11 @@ window.doLogin = async function(){
   }catch(e){
     btn.disabled = false;
     btn.textContent = 'ورود به حساب';
+    const emsg = (e && e.message) || '';
     let msg = 'ایمیل یا رمز عبور اشتباه است';
-    if(e.code === 'auth/too-many-requests') msg = 'تعداد تلاش‌های زیاد. لطفاً کمی صبر کنید';
-    err.textContent = msg;
+    if(emsg.includes('rate limit') || emsg.includes('too many')) msg = 'تعداد تلاش‌های زیاد. لطفاً کمی صبر کنید';
+    console.error('Login error:', e);
+    err.textContent = msg + '  [کد فنی: ' + (emsg||'نامشخص') + ']';
     err.classList.add('show');
   }
 };
