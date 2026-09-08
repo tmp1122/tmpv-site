@@ -48,6 +48,14 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .modal-actions .btn-sm{flex:1}
 .btn-cancel{background:#f0f0f0;color:#555}
 .btn-cancel:hover{background:#e0e0e0}
+.score-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.score-current{font-size:.85rem;color:#666;background:#f0f7f1;padding:6px 12px;border-radius:8px;font-weight:700}
+.score-current.neg{color:#c62828;background:#fdecea}
+.score-controls{display:flex;gap:6px;align-items:center}
+.score-controls select{padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.score-controls input{width:70px;padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.btn-score{background:#2d7a3a;color:#fff;padding:8px 14px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-score:hover{background:#235f2c}
 </style>
 </head>
 <body>
@@ -67,6 +75,7 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
       <button class="tab active" data-status="pending" onclick="setTab('pending')">در انتظار تأیید</button>
       <button class="tab" data-status="approved" onclick="setTab('approved')">تأییدشده</button>
       <button class="tab" data-status="rejected" onclick="setTab('rejected')">ردشده</button>
+      <button class="tab" data-status="score" onclick="setTab('score')">🏅 امتیاز</button>
     </div>
     <div id="list"></div>
   </div>
@@ -95,10 +104,6 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
       <div class="field">
         <label>پیوست فایل (اختیاری، حداکثر ۵۰۰ کیلوبایت)</label>
         <input type="file" id="msgFile">
-      </div>
-      <div class="field">
-        <label>تغییر امتیاز عضو (اختیاری — عدد مثبت یا منفی، مثلاً ۵- برای کسری)</label>
-        <input type="number" id="msgScoreChange" placeholder="مثلاً -5 یا 10">
       </div>
       <div id="msgErr" class="err" style="display:none"></div>
       <div class="modal-actions">
@@ -140,11 +145,13 @@ async function loadList(){
   const listEl = document.getElementById('list');
   listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('status', currentTab)
-    .order('created_at', { ascending: false });
+  let query = supabase.from('profiles').select('*');
+  if(currentTab === 'score'){
+    query = query.order('first_name', { ascending: true });
+  } else {
+    query = query.eq('status', currentTab).order('created_at', { ascending: false });
+  }
+  const { data, error } = await query;
 
   if(error){
     listEl.innerHTML = '<div class="err">خطا در بارگذاری: ' + (error.message||'نامشخص') + '</div>';
@@ -153,6 +160,11 @@ async function loadList(){
 
   if(!data || data.length===0){
     listEl.innerHTML = '<div class="empty">هیچ عضوی در این وضعیت نیست</div>';
+    return;
+  }
+
+  if(currentTab === 'score'){
+    listEl.innerHTML = data.map(u => scoreCard(u)).join('');
     return;
   }
 
@@ -176,6 +188,59 @@ async function loadList(){
     </div>
   `).join('');
 }
+
+function scoreCard(u){
+  const score = u.score || 0;
+  return `
+    <div class="card" data-id="${u.id}" style="flex-direction:column;align-items:stretch">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">${escapeHtml(u.department||'-')}</div>
+        </div>
+        <span class="score-current ${score<0?'neg':''}">امتیاز فعلی: ${score}</span>
+      </div>
+      <div class="score-row">
+        <div class="score-controls">
+          <select id="dir-${u.id}">
+            <option value="minus">کاهش (−)</option>
+            <option value="plus">افزایش (+)</option>
+          </select>
+          <input type="number" id="amt-${u.id}" min="0" inputmode="numeric" placeholder="عدد">
+        </div>
+        <button class="btn-score" onclick="adjustScore('${u.id}')">ثبت امتیاز</button>
+        <span id="scoreMsg-${u.id}" style="font-size:.8rem"></span>
+      </div>
+    </div>
+  `;
+}
+
+window.adjustScore = async function(userId){
+  const dir = document.getElementById('dir-'+userId).value;
+  const amtRaw = document.getElementById('amt-'+userId).value.trim();
+  const msgEl = document.getElementById('scoreMsg-'+userId);
+  msgEl.textContent = '';
+  msgEl.style.color = '#c62828';
+
+  const amt = Math.abs(parseInt(amtRaw, 10));
+  if(!amtRaw || isNaN(amt) || amt === 0){
+    msgEl.textContent = 'یک عدد وارد کنید';
+    return;
+  }
+  const delta = dir === 'minus' ? -amt : amt;
+
+  const { data: prof, error: readErr } = await supabase.from('profiles').select('score').eq('id', userId).single();
+  if(readErr){ msgEl.textContent = 'خطا: '+readErr.message; return; }
+
+  const newScore = (prof.score || 0) + delta;
+  const { error: updErr } = await supabase.from('profiles').update({ score: newScore }).eq('id', userId);
+  if(updErr){ msgEl.textContent = 'خطا: '+updErr.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ثبت شد';
+  loadList();
+};
 
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -204,7 +269,6 @@ window.openMsgModal = function(userId, userName){
   document.getElementById('msgAmount').value = '';
   document.getElementById('msgBody').value = '';
   document.getElementById('msgFile').value = '';
-  document.getElementById('msgScoreChange').value = '';
   document.getElementById('msgErr').style.display = 'none';
   document.getElementById('msgModalOverlay').style.display = 'flex';
 };
@@ -219,8 +283,6 @@ window.sendMsg = async function(){
   const amount = document.getElementById('msgAmount').value.trim();
   const body = document.getElementById('msgBody').value.trim();
   const file = document.getElementById('msgFile').files[0];
-  const scoreChangeRaw = document.getElementById('msgScoreChange').value.trim();
-  const scoreChange = scoreChangeRaw ? parseInt(scoreChangeRaw, 10) : 0;
   const errEl = document.getElementById('msgErr');
   const btn = document.getElementById('msgSendBtn');
   errEl.style.display = 'none';
@@ -253,15 +315,6 @@ window.sendMsg = async function(){
     });
     if(error) throw error;
 
-    if(scoreChange && !isNaN(scoreChange)){
-      const { data: prof, error: profErr } = await supabase
-        .from('profiles').select('score').eq('id', msgTargetUserId).single();
-      if(!profErr){
-        const newScore = (prof.score || 0) + scoreChange;
-        await supabase.from('profiles').update({ score: newScore }).eq('id', msgTargetUserId);
-      }
-    }
-
     closeMsgModal();
   }catch(e){
     console.error('Send message error:', e);
@@ -276,4 +329,4 @@ window.sendMsg = async function(){
 checkAccess();
 </script>
 </body>
-</html>
+  </html>
