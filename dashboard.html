@@ -17,24 +17,20 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 
 .container{max-width:700px;margin:0 auto;padding:20px 16px}
 
-/* کارت خوش‌آمد */
 .welcome{background:linear-gradient(135deg,#2d7a3a,#3a9e4a);border-radius:16px;padding:24px;color:#fff;margin-bottom:20px}
 .welcome h3{font-size:1.2rem;margin-bottom:6px}
 .welcome p{font-size:.85rem;opacity:.85}
 .welcome .badge-status{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.2)}
 
-/* تب‌ها */
 .tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
 .tab{flex-shrink:0;padding:10px 16px;border-radius:10px;border:2px solid #d0e8d4;background:#fff;color:#555;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
 .tab.active{background:#2d7a3a;color:#fff;border-color:#2d7a3a}
 .tab-page{display:none}
 .tab-page.active{display:block}
 
-/* کارت */
 .card{background:#fff;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(45,122,58,.08)}
 .card-title{font-size:.95rem;font-weight:700;color:#2d7a3a;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-/* پیام */
 .msg-item{background:#f8fdf9;border-radius:10px;padding:14px;margin-bottom:10px;border-right:4px solid #2d7a3a}
 .msg-item.kasri{border-right-color:#e53935}
 .msg-item.madarek{border-right-color:#1565c0}
@@ -50,13 +46,11 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .type-sayer{background:#f3e5f5;color:#6a1b9a}
 .file-link{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 14px;background:#f0f7f1;border-radius:8px;font-size:.8rem;color:#2d7a3a;text-decoration:none;font-weight:600}
 
-/* اطلاعات فردی */
 .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}
 .info-row:last-child{border-bottom:none}
 .info-row .lbl{color:#888}
 .info-row .val{color:#222;font-weight:600}
 
-/* عکس */
 .photo-area{text-align:center;padding:20px 0}
 .photo-area img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #2d7a3a;margin-bottom:12px}
 .photo-area .no-photo{width:120px;height:120px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 12px}
@@ -65,14 +59,12 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .upload-btn:hover{background:#235f2c}
 .photo-hint{font-size:.78rem;color:#888;margin-top:8px}
 
-/* امتیاز */
 .score-box{text-align:center;padding:16px;background:#f0f7f1;border-radius:12px;margin-bottom:14px}
 .score-num{font-size:3rem;font-weight:700;color:#2d7a3a}
 .score-lbl{font-size:.85rem;color:#666;margin-top:4px}
 .score-bar{height:12px;background:#e0ede2;border-radius:6px;margin:12px 0;overflow:hidden}
 .score-fill{height:100%;background:linear-gradient(90deg,#2d7a3a,#5ab96a);border-radius:6px;transition:width .5s}
 
-/* بدهی */
 .debt-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}
 .debt-item:last-child{border-bottom:none}
 .debt-item .debt-lbl{font-size:.88rem;color:#444}
@@ -102,14 +94,12 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 
 <div class="container">
 
-  <!-- خوش‌آمد -->
   <div class="welcome" id="welcomeBox">
     <h3 id="welcomeName">خوش آمدید</h3>
     <p>به پنل اعضای تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</p>
     <span class="badge-status" id="statusBadge">در حال بارگذاری...</span>
   </div>
 
-  <!-- تب‌ها -->
   <div class="tabs">
     <button class="tab active" onclick="showTab('madarek',this)">📄 مدارک اداری</button>
     <button class="tab" onclick="showTab('photo',this)">📷 عکس</button>
@@ -117,7 +107,6 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
     <button class="tab" onclick="showTab('debt',this)">⚠️ بدهی‌ها</button>
   </div>
 
-  <!-- مدارک اداری -->
   <div class="tab-page active" id="tab-madarek">
     <div class="card">
       <div class="card-title">📄 مدارک و اطلاعات اداری</div>
@@ -129,7 +118,6 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
     </div>
   </div>
 
-  <!-- عکس -->
   <div class="tab-page" id="tab-photo">
     <div class="card">
       <div class="card-title">📷 تصویر پروفایل</div>
@@ -137,7 +125,7 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
         <div id="photoDisplay"><div class="no-photo">👤</div></div>
         <label class="upload-btn">
           📷 آپلود عکس جدید
-          <input type="file" accept="image/*" onchange="uploadPhoto()">
+          <input type="file" accept="image/*" onchange="uploadPhoto(event)">
         </label>
         <p class="photo-hint">حداکثر ۳۰۰ کیلوبایت — JPG یا PNG</p>
         <div id="photoMsg" style="margin-top:10px;font-size:.85rem"></div>
@@ -145,7 +133,6 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
     </div>
   </div>
 
-  <!-- واریزی‌ها -->
   <div class="tab-page" id="tab-variz">
     <div class="card">
       <div class="card-title">💰 اطلاعات واریزی</div>
@@ -153,8 +140,15 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
     </div>
   </div>
 
-  <!-- بدهی‌ها -->
   <div class="tab-page" id="tab-debt">
+    <div class="card">
+      <div class="card-title">🏅 امتیاز عضویت</div>
+      <div class="score-box">
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-lbl">امتیاز شما</div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+      </div>
+    </div>
     <div class="card">
       <div class="card-title">⚠️ بدهی‌ها و کسری پرداخت</div>
       <div id="debtMsgs"><div class="loading">در حال بارگذاری...</div></div>
@@ -168,50 +162,54 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const firebaseConfig={apiKey:"AIzaSyAQsgs130rhQ0K1JPPxXzZq-cyDk40a4ho",authDomain:"tmpv-cooperative.firebaseapp.com",projectId:"tmpv-cooperative",storageBucket:"tmpv-cooperative.firebasestorage.app",messagingSenderId:"644066134252",appId:"1:644066134252:web:2e678c4128ac35b203fdc9"};
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const ADMIN_EMAIL = 'tmpv1372@gmail.com';
 
 let currentUser=null, userData=null, messages=[];
 
-onAuthStateChanged(auth,async user=>{
-  if(!user){ location.href='login.html'; return; }
-  if(user.email==='tmpv1372@gmail.com'){ location.href='admin.html'; return; }
-  currentUser=user;
+async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  if(session.user.email === ADMIN_EMAIL){ location.href='admin.html'; return; }
+  currentUser = session.user;
   await loadUserData();
   await loadMessages();
   renderAll();
-});
+}
 
-window.doLogout=function(){ signOut(auth).then(()=>location.href='index.html'); };
+window.doLogout = async function(){
+  await supabase.auth.signOut();
+  location.href='index.html';
+};
 
 async function loadUserData(){
   try{
-    const d=await getDoc(doc(db,'users',currentUser.uid));
-    if(d.exists()) userData=d.data();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if(!error) userData = data;
   }catch(e){}
 }
 
 async function loadMessages(){
   try{
-    const q=query(collection(db,'messages'),where('userId','==',currentUser.uid),orderBy('createdAt','desc'));
-    const snap=await getDocs(q);
-    messages=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending:false });
+    messages = error ? [] : data;
   }catch(e){ messages=[]; }
 }
 
 function renderAll(){
-  // خوش‌آمد
-  const name=userData?(userData.firstName+' '+userData.lastName):currentUser.email;
-  document.getElementById('userName').textContent=name;
-  document.getElementById('welcomeName').textContent='خوش آمدید، '+name;
-  const status={active:'✅ عضو فعال',pending:'⏳ در انتظار تأیید',rejected:'❌ رد شده'}[userData?.status||'pending'];
-  document.getElementById('statusBadge').textContent=status;
+  const name = userData ? (userData.first_name+' '+userData.last_name) : currentUser.email;
+  document.getElementById('userName').textContent = name;
+  document.getElementById('welcomeName').textContent = 'خوش آمدید، '+name;
+  const statusMap = { approved:'✅ عضو فعال', pending:'⏳ در انتظار تأیید', rejected:'❌ رد شده' };
+  document.getElementById('statusBadge').textContent = statusMap[userData?.status||'pending'];
 
   renderInfo();
   renderPhoto();
@@ -222,95 +220,104 @@ function renderAll(){
 
 function renderInfo(){
   if(!userData){document.getElementById('infoRows').innerHTML='<div class="empty">اطلاعات یافت نشد</div>';return;}
+  const statusMap = { approved:'فعال', pending:'در انتظار تأیید', rejected:'رد شده' };
   const rows=[
-    ['نام و نام خانوادگی',userData.firstName+' '+userData.lastName],
-    ['کد ملی',userData.nationalId||'-'],
-    ['شماره تماس',userData.phone||'-'],
-    ['ایمیل',userData.email||'-'],
-    ['واحد سازمانی',userData.department||'-'],
-    ['شماره پرسنلی',userData.empId||'-'],
-    ['وضعیت عضویت',{active:'فعال',pending:'در انتظار تأیید',rejected:'رد شده'}[userData.status]||'-'],
+    ['نام و نام خانوادگی', userData.first_name+' '+userData.last_name],
+    ['کد ملی', userData.national_id||'-'],
+    ['شماره تماس', userData.phone||'-'],
+    ['ایمیل', userData.email||'-'],
+    ['واحد سازمانی', userData.department||'-'],
+    ['شماره پرسنلی', userData.emp_id||'-'],
+    ['وضعیت عضویت', statusMap[userData.status]||'-'],
   ];
   document.getElementById('infoRows').innerHTML=rows.map(r=>`
     <div class="info-row"><span class="lbl">${r[0]}</span><span class="val">${r[1]}</span></div>`).join('');
 }
 
 function renderPhoto(){
-  const photo=userData?.photo;
-  const box=document.getElementById('photoDisplay');
-  if(photo) box.innerHTML=`<img src="${photo}" alt="عکس پروفایل">`;
-  else box.innerHTML='<div class="no-photo">👤</div>';
+  const photo = userData?.photo;
+  const box = document.getElementById('photoDisplay');
+  box.innerHTML = photo ? `<img src="${photo}" alt="عکس پروفایل">` : '<div class="no-photo">👤</div>';
 }
 
-window.uploadPhoto=async function(){
-  const file=event.target.files[0];
-  if(!file)return;
-  if(file.size>300*1024){document.getElementById('photoMsg').style.color='#c62828';document.getElementById('photoMsg').textContent='حجم عکس بیشتر از ۳۰۰ کیلوبایت است';return;}
-  const reader=new FileReader();
-  reader.onload=async e=>{
+window.uploadPhoto = async function(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const msgEl = document.getElementById('photoMsg');
+  if(file.size > 300*1024){
+    msgEl.style.color='#c62828';
+    msgEl.textContent='حجم عکس بیشتر از ۳۰۰ کیلوبایت است';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async e => {
     try{
-      await updateDoc(doc(db,'users',currentUser.uid),{photo:e.target.result});
-      userData.photo=e.target.result;
+      const { error } = await supabase.from('profiles').update({ photo: e.target.result }).eq('id', currentUser.id);
+      if(error) throw error;
+      userData.photo = e.target.result;
       renderPhoto();
-      document.getElementById('photoMsg').style.color='#2e7d32';
-      document.getElementById('photoMsg').textContent='✅ عکس با موفقیت ذخیره شد';
+      msgEl.style.color='#2e7d32';
+      msgEl.textContent='✅ عکس با موفقیت ذخیره شد';
     }catch(err){
-      document.getElementById('photoMsg').style.color='#c62828';
-      document.getElementById('photoMsg').textContent='خطا در ذخیره عکس';
+      msgEl.style.color='#c62828';
+      msgEl.textContent='خطا در ذخیره عکس  [کد فنی: '+(err.message||'نامشخص')+']';
     }
   };
   reader.readAsDataURL(file);
 };
 
 function renderVariz(){
-  const list=messages.filter(m=>m.type==='variz');
-  const el=document.getElementById('varizMsgs');
-  if(!list.length){el.innerHTML='<div class="empty">هیچ اطلاعات واریزی ثبت نشده</div>';return;}
-  el.innerHTML=list.map(m=>msgCard(m)).join('');
+  const list = messages.filter(m=>m.type==='variz');
+  const el = document.getElementById('varizMsgs');
+  el.innerHTML = list.length ? list.map(m=>msgCard(m)).join('') : '<div class="empty">هیچ اطلاعات واریزی ثبت نشده</div>';
 }
 
 function renderMadarekMsgs(){
-  const list=messages.filter(m=>m.type==='madarek'||m.type==='sayer');
-  const el=document.getElementById('madarekMsgs');
-  if(!list.length){el.innerHTML='<div class="empty">پیامی از مدیریت دریافت نشده</div>';return;}
-  el.innerHTML=list.map(m=>msgCard(m)).join('');
+  const list = messages.filter(m=>m.type==='madarek'||m.type==='sayer');
+  const el = document.getElementById('madarekMsgs');
+  el.innerHTML = list.length ? list.map(m=>msgCard(m)).join('') : '<div class="empty">پیامی از مدیریت دریافت نشده</div>';
 }
 
 function renderDebt(){
-  const list=messages.filter(m=>m.type==='kasri');
-  const el=document.getElementById('debtMsgs');
-  
-  // امتیاز از پروفایل کاربر
-  const score=userData?.score||0;
-  document.getElementById('scoreNum').textContent=score;
-  document.getElementById('scoreFill').style.width=Math.min(score,100)+'%';
+  const list = messages.filter(m=>m.type==='kasri');
+  const el = document.getElementById('debtMsgs');
 
-  if(!list.length){el.innerHTML='<div class="empty">✅ هیچ بدهی یا کسری پرداختی ندارید</div>';return;}
-  el.innerHTML=list.map(m=>msgCard(m)).join('');
+  const score = userData?.score || 0;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreFill').style.width = Math.min(score,100)+'%';
+
+  if(!list.length){
+    el.innerHTML = '<div class="empty">✅ هیچ بدهی یا کسری پرداختی ندارید</div>';
+    document.getElementById('totalDebt').style.display='none';
+    return;
+  }
+  el.innerHTML = list.map(m=>msgCard(m)).join('');
   document.getElementById('totalDebt').style.display='block';
-  const amounts=list.filter(m=>m.amount).map(m=>m.amount);
-  document.getElementById('totalDebtNum').textContent=amounts.length?amounts.join(' + '):list.length+' مورد کسری';
+  const amounts = list.filter(m=>m.amount).map(m=>m.amount);
+  document.getElementById('totalDebtNum').textContent = amounts.length ? amounts.join(' + ') : list.length+' مورد کسری';
 }
 
 function msgCard(m){
-  const typeLabel={variz:'💰 واریزی',kasri:'⚠️ کسری پرداخت',madarek:'📄 مدارک',sayer:'📋 سایر'}[m.type]||m.type;
-  const date=m.createdAt?m.createdAt.toDate().toLocaleDateString('fa-IR'):'-';
+  const typeLabel = { variz:'💰 واریزی', kasri:'⚠️ کسری پرداخت', madarek:'📄 مدارک', sayer:'📋 سایر' }[m.type] || m.type;
+  const date = m.created_at ? new Date(m.created_at).toLocaleDateString('fa-IR') : '-';
   return `<div class="msg-item ${m.type}">
     <span class="type-badge type-${m.type}">${typeLabel}</span>
     <div class="msg-meta">📅 ${date}</div>
     ${m.amount?`<div class="msg-amount">💰 ${m.amount}</div>`:''}
-    <div class="msg-body">${m.body}</div>
-    ${m.fileData?`<a class="file-link" href="${m.fileData}" download="${m.fileName||'فایل'}">📎 ${m.fileName||'دانلود فایل'}</a>`:''}
-    ${m.fileURL?`<a class="file-link" href="${m.fileURL}" target="_blank">📎 ${m.fileName||'دانلود فایل'}</a>`:''}
+    <div class="msg-body">${m.body||''}</div>
+    ${m.file_data?`<a class="file-link" href="${m.file_data}" download="${m.file_name||'فایل'}">📎 ${m.file_name||'دانلود فایل'}</a>`:''}
+    ${m.file_url?`<a class="file-link" href="${m.file_url}" target="_blank">📎 ${m.file_name||'دانلود فایل'}</a>`:''}
   </div>`;
 }
 
-window.showTab=function(name,el){
+window.showTab = function(name, el){
   document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
 };
+
+init();
 </script>
 </body>
 </html>
