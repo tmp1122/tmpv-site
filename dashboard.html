@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل عضو | تعاونی مسکن</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh}
+.topbar{background:#2d7a3a;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar h2{font-size:1rem;font-weight:700}
+.topbar .user{font-size:.85rem;opacity:.9}
+.topbar button{background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.82rem}
+.topbar button:hover{background:rgba(255,255,255,.3)}
+.home-btn{margin-left:8px}
+
+.container{max-width:700px;margin:0 auto;padding:20px 16px}
+
+.welcome{background:linear-gradient(135deg,#2d7a3a,#3a9e4a);border-radius:16px;padding:24px;color:#fff;margin-bottom:20px}
+.welcome h3{font-size:1.2rem;margin-bottom:6px}
+.welcome p{font-size:.85rem;opacity:.85}
+.welcome .badge-status{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.2)}
+
+.tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.tab{flex-shrink:0;padding:10px 16px;border-radius:10px;border:2px solid #d0e8d4;background:#fff;color:#555;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.tab.active{background:#2d7a3a;color:#fff;border-color:#2d7a3a}
+.tab-page{display:none}
+.tab-page.active{display:block}
+
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(45,122,58,.08)}
+.card-title{font-size:.95rem;font-weight:700;color:#2d7a3a;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+.msg-item{background:#f8fdf9;border-radius:10px;padding:14px;margin-bottom:10px;border-right:4px solid #2d7a3a}
+.msg-item.kasri{border-right-color:#e53935}
+.msg-item.madarek{border-right-color:#1565c0}
+.msg-item.sayer{border-right-color:#888}
+.msg-item.variz{border-right-color:#2d7a3a}
+.msg-meta{font-size:.75rem;color:#888;margin-bottom:6px}
+.msg-body{font-size:.87rem;color:#333;line-height:1.8}
+.msg-amount{font-size:.82rem;color:#2d7a3a;font-weight:700;margin-top:4px}
+.type-badge{font-size:.72rem;font-weight:600;padding:2px 10px;border-radius:10px;display:inline-block;margin-bottom:8px}
+.type-variz{background:#e8f5e9;color:#2e7d32}
+.type-kasri{background:#fdecea;color:#c62828}
+.type-madarek{background:#e3f2fd;color:#1565c0}
+.type-sayer{background:#f3e5f5;color:#6a1b9a}
+.file-link{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 14px;background:#f0f7f1;border-radius:8px;font-size:.8rem;color:#2d7a3a;text-decoration:none;font-weight:600}
+
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}
+.info-row:last-child{border-bottom:none}
+.info-row .lbl{color:#888}
+.info-row .val{color:#222;font-weight:600}
+
+.photo-area{text-align:center;padding:20px 0}
+.photo-area img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #2d7a3a;margin-bottom:12px}
+.photo-area .no-photo{width:120px;height:120px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 12px}
+.upload-btn{background:#2d7a3a;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;position:relative;overflow:hidden}
+.upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload-btn:hover{background:#235f2c}
+.photo-hint{font-size:.78rem;color:#888;margin-top:8px}
+
+.score-box{text-align:center;padding:16px;background:#f0f7f1;border-radius:12px;margin-bottom:14px}
+.score-num{font-size:3rem;font-weight:700;color:#2d7a3a}
+.score-lbl{font-size:.85rem;color:#666;margin-top:4px}
+.score-bar{height:12px;background:#e0ede2;border-radius:6px;margin:12px 0;overflow:hidden}
+.score-fill{height:100%;background:linear-gradient(90deg,#2d7a3a,#5ab96a);border-radius:6px;transition:width .5s}
+
+.debt-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}
+.debt-item:last-child{border-bottom:none}
+.debt-item .debt-lbl{font-size:.88rem;color:#444}
+.debt-item .debt-val{font-size:.9rem;font-weight:700;color:#c62828}
+.debt-item .debt-val.paid{color:#2e7d32}
+.total-debt{background:#fdecea;border-radius:10px;padding:14px;text-align:center;margin-top:10px}
+.total-debt .num{font-size:1.6rem;font-weight:700;color:#c62828}
+.total-debt .lbl{font-size:.82rem;color:#888;margin-top:2px}
+
+.empty{text-align:center;color:#aaa;padding:30px;font-size:.9rem}
+.loading{text-align:center;color:#aaa;padding:30px;font-size:.9rem}
+.err-box{background:#fdecea;border-radius:10px;padding:16px;text-align:center;color:#c62828;font-size:.9rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h2>🏠 تعاونی مسکن پالایشگاه</h2>
+    <div class="user" id="userName">در حال بارگذاری...</div>
+  </div>
+  <div>
+    <button class="home-btn" onclick="location.href='index.html'">🏠 سایت</button>
+    <button onclick="doLogout()">خروج</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="welcome" id="welcomeBox">
+    <h3 id="welcomeName">خوش آمدید</h3>
+    <p>به پنل اعضای تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</p>
+    <span class="badge-status" id="statusBadge">در حال بارگذاری...</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('madarek',this)">📄 مدارک اداری</button>
+    <button class="tab" onclick="showTab('photo',this)">📷 عکس</button>
+    <button class="tab" onclick="showTab('variz',this)">💰 واریزی‌ها</button>
+    <button class="tab" onclick="showTab('debt',this)">⚠️ بدهی‌ها</button>
+  </div>
+
+  <div class="tab-page active" id="tab-madarek">
+    <div class="card">
+      <div class="card-title">📄 مدارک و اطلاعات اداری</div>
+      <div id="infoRows"><div class="loading">در حال بارگذاری...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📨 پیام‌های مدیریت</div>
+      <div id="madarekMsgs"><div class="loading">در حال بارگذاری...</div></div>
+    </div>
+  </div>
+
+  <div class="tab-page" id="tab-photo">
+    <div class="card">
+      <div class="card-title">📷 تصویر پروفایل</div>
+      <div class="photo-area">
+        <div id="photoDisplay"><div class="no-photo">👤</div></div>
+        <label class="upload-btn">
+          📷 آپلود عکس جدید
+          <input type="file" accept="image/*" onchange="uploadPhoto(event)">
+        </label>
+        <p class="photo-hint">حداکثر ۳۰۰ کیلوبایت — JPG یا PNG</p>
+        <div id="photoMsg" style="margin-top:10px;font-size:.85rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-page" id="tab-variz">
+    <div class="card">
+      <div class="card-title">💰 اطلاعات واریزی</div>
+      <div id="varizMsgs"><div class="loading">در حال بارگذاری...</div></div>
+    </div>
+  </div>
+
+  <div class="tab-page" id="tab-debt">
+    <div class="card">
+      <div class="card-title">🏅 امتیاز عضویت</div>
+      <div class="score-box">
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-lbl">امتیاز شما</div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ بدهی‌ها و کسری پرداخت</div>
+      <div id="debtMsgs"><div class="loading">در حال بارگذاری...</div></div>
+      <div id="totalDebt" style="display:none" class="total-debt">
+        <div class="num" id="totalDebtNum">-</div>
+        <div class="lbl">جمع کل بدهی</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const ADMIN_EMAIL = 'tmpv1372@gmail.com';
+
+let currentUser=null, userData=null, messages=[];
+
+async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  if(session.user.email === ADMIN_EMAIL){ location.href='admin.html'; return; }
+  currentUser = session.user;
+  await loadUserData();
+  await loadMessages();
+  renderAll();
+}
+
+window.doLogout = async function(){
+  await supabase.auth.signOut();
+  location.href='index.html';
+};
+
+async function loadUserData(){
+  try{
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if(!error) userData = data;
+  }catch(e){}
+}
+
+async function loadMessages(){
+  try{
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending:false });
+    messages = error ? [] : data;
+  }catch(e){ messages=[]; }
+}
+
+function renderAll(){
+  const name = userData ? (userData.first_name+' '+userData.last_name) : currentUser.email;
+  document.getElementById('userName').textContent = name;
+  document.getElementById('welcomeName').textContent = 'خوش آمدید، '+name;
+  const statusMap = { approved:'✅ عضو فعال', pending:'⏳ در انتظار تأیید', rejected:'❌ رد شده' };
+  document.getElementById('statusBadge').textContent = statusMap[userData?.status||'pending'];
+
+  renderInfo();
+  renderPhoto();
+  renderVariz();
+  renderDebt();
+  renderMadarekMsgs();
+}
+
+function renderInfo(){
+  if(!userData){document.getElementById('infoRows').innerHTML='<div class="empty">اطلاعات یافت نشد</div>';return;}
+  const statusMap = { approved:'فعال', pending:'در انتظار تأیید', rejected:'رد شده' };
+  const rows=[
+    ['نام و نام خانوادگی', userData.first_name+' '+userData.last_name],
+    ['کد ملی', userData.national_id||'-'],
+    ['شماره تماس', userData.phone||'-'],
+    ['ایمیل', userData.email||'-'],
+    ['واحد سازمانی', userData.department||'-'],
+    ['شماره پرسنلی', userData.emp_id||'-'],
+    ['وضعیت عضویت', statusMap[userData.status]||'-'],
+  ];
+  document.getElementById('infoRows').innerHTML=rows.map(r=>`
+    <div class="info-row"><span class="lbl">${r[0]}</span><span class="val">${r[1]}</span></div>`).join('');
+}
+
+function renderPhoto(){
+  const photo = userData?.photo;
+  const box = document.getElementById('photoDisplay');
+  box.innerHTML = photo ? `<img src="${photo}" alt="عکس پروفایل">` : '<div class="no-photo">👤</div>';
+}
+
+window.uploadPhoto = async function(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const msgEl = document.getElementById('photoMsg');
+  if(file.size > 300*1024){
+    msgEl.style.color='#c62828';
+    msgEl.textContent='حجم عکس بیشتر از ۳۰۰ کیلوبایت است';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try{
+      const { error } = await supabase.from('profiles').update({ photo: e.target.result }).eq('id', currentUser.id);
+      if(error) throw error;
+      userData.photo = e.target.result;
+      renderPhoto();
+      msgEl.style.color='#2e7d32';
+      msgEl.textContent='✅ عکس با موفقیت ذخیره شد';
+    }catch(err){
+      msgEl.style.color='#c62828';
+      msgEl.textContent='خطا در ذخیره عکس  [کد فنی: '+(err.message||'نامشخص')+']';
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+function renderVariz(){
+  const list = messages.filter(m=>m.type==='variz');
+  const el = document.getElementById('varizMsgs');
+  el.innerHTML = list.length ? list.map(m=>msgCard(m)).join('') : '<div class="empty">هیچ اطلاعات واریزی ثبت نشده</div>';
+}
+
+function renderMadarekMsgs(){
+  const list = messages.filter(m=>m.type==='madarek'||m.type==='sayer');
+  const el = document.getElementById('madarekMsgs');
+  el.innerHTML = list.length ? list.map(m=>msgCard(m)).join('') : '<div class="empty">پیامی از مدیریت دریافت نشده</div>';
+}
+
+function renderDebt(){
+  const list = messages.filter(m=>m.type==='kasri');
+  const el = document.getElementById('debtMsgs');
+
+  const score = userData?.score || 0;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreFill').style.width = Math.min(score,100)+'%';
+
+  if(!list.length){
+    el.innerHTML = '<div class="empty">✅ هیچ بدهی یا کسری پرداختی ندارید</div>';
+    document.getElementById('totalDebt').style.display='none';
+    return;
+  }
+  el.innerHTML = list.map(m=>msgCard(m)).join('');
+  document.getElementById('totalDebt').style.display='block';
+  const amounts = list.filter(m=>m.amount).map(m=>m.amount);
+  document.getElementById('totalDebtNum').textContent = amounts.length ? amounts.join(' + ') : list.length+' مورد کسری';
+}
+
+function msgCard(m){
+  const typeLabel = { variz:'💰 واریزی', kasri:'⚠️ کسری پرداخت', madarek:'📄 مدارک', sayer:'📋 سایر' }[m.type] || m.type;
+  const date = m.created_at ? new Date(m.created_at).toLocaleDateString('fa-IR') : '-';
+  return `<div class="msg-item ${m.type}">
+    <span class="type-badge type-${m.type}">${typeLabel}</span>
+    <div class="msg-meta">📅 ${date}</div>
+    ${m.amount?`<div class="msg-amount">💰 ${m.amount}</div>`:''}
+    <div class="msg-body">${m.body||''}</div>
+    ${m.file_data?`<a class="file-link" href="${m.file_data}" download="${m.file_name||'فایل'}">📎 ${m.file_name||'دانلود فایل'}</a>`:''}
+    ${m.file_url?`<a class="file-link" href="${m.file_url}" target="_blank">📎 ${m.file_name||'دانلود فایل'}</a>`:''}
+  </div>`;
+}
+
+window.showTab = function(name, el){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+};
+
+init();
+</script>
+</body>
+</html>
