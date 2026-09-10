@@ -1,0 +1,58 @@
+<!--
+این بخش را جایگزین اسلایدر فعلی هدر توی صفحه‌ی اصلی (index.html) کن.
+اگر Supabase قبلاً توی همون صفحه لود شده (login/index.html که کدش رو دیدیم)،
+خط <script src="...supabase-js@2"> را دوباره اضافه نکن، همون یکی کافیه.
+-->
+
+<div id="header-slider" style="position:relative; width:100%; height:400px; overflow:hidden; border-radius:0;">
+  <!-- عکس‌ها اینجا به‌صورت خودکار اضافه می‌شوند -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  const SUPABASE_URL = 'https://gsqwuibzplwalrahevdc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const SLIDE_INTERVAL_MS = 10000; // <-- تایمر ۱۰ ثانیه، همینجا قابل تغییره
+
+  let images = [];
+  let currentIndex = 0;
+  const container = document.getElementById('header-slider');
+
+  async function loadHeaderImages() {
+    const { data: files, error } = await sb.storage.from('header').list('', {
+      sortBy: { column: 'created_at', order: 'asc' }
+    });
+    if (error || !files || files.length === 0) return;
+
+    images = files.map(f => sb.storage.from('header').getPublicUrl(f.name).data.publicUrl);
+
+    images.forEach((url, i) => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.cssText = `
+        position:absolute; top:0; left:0; width:100%; height:100%;
+        object-fit:cover; opacity:${i === 0 ? 1 : 0};
+        transition: opacity 1s ease-in-out;
+      `;
+      img.dataset.slide = i;
+      container.appendChild(img);
+    });
+
+    if (images.length > 1) {
+      setInterval(nextSlide, SLIDE_INTERVAL_MS);
+    }
+  }
+
+  function nextSlide() {
+    const slides = container.querySelectorAll('img');
+    slides[currentIndex].style.opacity = 0;
+    currentIndex = (currentIndex + 1) % slides.length;
+    slides[currentIndex].style.opacity = 1;
+  }
+
+  loadHeaderImages();
+})();
+</script>
