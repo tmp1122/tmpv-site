@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جزئیات پروژه | تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;color:#0d2010;padding:24px;min-height:100vh}
+  .wrap{max-width:900px;margin:0 auto}
+  .back-link{display:block;margin-bottom:16px}
+  .back-link a{color:#2d7a3a;text-decoration:none;font-size:14px;font-weight:600}
+  .back-link a:hover{text-decoration:underline}
+  .head{background:#fff;border:1px solid #c8e0cb;border-radius:16px;padding:26px 28px;margin-bottom:20px}
+  .head h1{font-size:24px;font-weight:900;color:#0d2010;margin-bottom:8px}
+  .head .meta{display:flex;gap:14px;flex-wrap:wrap;color:#5a7a5e;font-size:13px;margin-bottom:14px}
+  .badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700}
+  .badge-g{background:#d4f0da;color:#0d3b18;border:1px solid #1a5c26}
+  .badge-y{background:#fff3cd;color:#7a4f00;border:1px solid #d4a017}
+  .desc{color:#1e4d26;line-height:2;font-size:15px;white-space:pre-wrap}
+  .loading,.empty{text-align:center;color:#888;padding:40px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .card{background:#fff;border-radius:10px;box-shadow:0 1px 5px rgba(0,0,0,0.12);overflow:hidden}
+  .card img{width:100%;height:200px;object-fit:cover;display:block;cursor:pointer;transition:transform .2s}
+  .card img:hover{transform:scale(1.03)}
+  .card .date{padding:8px 10px;font-size:12px;color:#666;text-align:center;border-top:1px solid #eee}
+  #lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);align-items:center;justify-content:center;z-index:1000}
+  #lightbox img{max-width:90%;max-height:90%;border-radius:8px}
+  h2.section-title{font-size:18px;font-weight:800;color:#2d7a3a;margin:24px 0 14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="back-link"><a href="index.html">← بازگشت به صفحه‌ی اصلی</a></div>
+
+  <div id="content" class="loading">در حال بارگذاری...</div>
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+  <img id="lightbox-img" src="">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://gsqwuibzplwalrahevdc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const params = new URLSearchParams(location.search);
+const projectId = params.get('id');
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function loadProject(){
+  const content = document.getElementById('content');
+
+  if(!projectId){
+    content.innerHTML = '<div class="empty">پروژه‌ای مشخص نشده است.</div>';
+    return;
+  }
+
+  const { data: project, error } = await sb.from('projects').select('*').eq('id', projectId).single();
+  if(error || !project){
+    content.innerHTML = '<div class="empty">پروژه پیدا نشد.</div>';
+    return;
+  }
+
+  document.title = project.name + ' | تعاونی مسکن پالایشگاه گاز ولیعصر (عج)';
+
+  content.innerHTML = `
+    <div class="head">
+      <h1>${escapeHtml(project.name)}</h1>
+      <div class="meta">
+        <span>${escapeHtml(project.type||'')}</span>
+        <span>سال ${escapeHtml(project.year||'')}</span>
+        <span class="badge ${project.done?'badge-g':'badge-y'}">${project.done?'تکمیل‌شده':'در حال اجرا'}</span>
+      </div>
+      <p class="desc">${escapeHtml(project.description || 'هنوز توضیحی برای این پروژه ثبت نشده است.')}</p>
+    </div>
+    <h2 class="section-title">تصاویر پروژه</h2>
+    <div class="grid" id="photo-grid"></div>
+    <div id="photo-empty" class="empty" style="display:none">هنوز عکسی برای این پروژه اضافه نشده است.</div>
+  `;
+
+  loadPhotos(project.id);
+}
+
+async function loadPhotos(id){
+  const grid = document.getElementById('photo-grid');
+  const { data: files, error } = await sb.storage.from('project-photos').list(String(id), {
+    sortBy: { column: 'created_at', order: 'desc' }
+  });
+
+  if(error || !files || files.length === 0){
+    document.getElementById('photo-empty').style.display = 'block';
+    return;
+  }
+
+  for(const file of files){
+    const path = id + '/' + file.name;
+    const { data: urlData } = sb.storage.from('project-photos').getPublicUrl(path);
+    const dateStr = file.created_at
+      ? new Date(file.created_at).toLocaleDateString('fa-IR', { year:'numeric', month:'long', day:'numeric' })
+      : '';
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    const img = document.createElement('img');
+    img.src = urlData.publicUrl;
+    img.onclick = () => {
+      document.getElementById('lightbox-img').src = urlData.publicUrl;
+      document.getElementById('lightbox').style.display = 'flex';
+    };
+    card.appendChild(img);
+    if(dateStr){
+      const d = document.createElement('div');
+      d.className = 'date';
+      d.textContent = 'تاریخ ثبت: ' + dateStr;
+      card.appendChild(d);
+    }
+    grid.appendChild(card);
+  }
+}
+
+loadProject();
+</script>
+</body>
+</html>
