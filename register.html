@@ -261,7 +261,7 @@ window.submitRegister = async function(){
     const uid = data.user && data.user.id;
     if(!uid) throw new Error('کاربر ایجاد نشد، لطفاً دوباره تلاش کنید.');
 
-    const { error: dbError } = await supabase.from('profiles').insert({
+    const { error: dbError } = await supabase.from('profiles').upsert({
       id: uid,
       first_name: document.getElementById('firstName').value.trim(),
       last_name: document.getElementById('lastName').value.trim(),
@@ -291,7 +291,8 @@ window.submitRegister = async function(){
     if(emsg.includes('invalid') && emsg.includes('email')) msg='ایمیل معتبر نیست.';
     if(emsg.includes('row-level security') || emsg.includes('policy')) msg='دسترسی به پایگاه داده رد شد (RLS policy). لطفاً تنظیمات Supabase را بررسی کنید.';
     console.error('Register error:', e);
-    showMsg(msg + '  [کد فنی: ' + (emsg||'نامشخص') + ']');
+    var emsgFull = emsg || (e && e.code) || (e && e.details) || (e && JSON.stringify(e)) || 'نامشخص';
+    showMsg(msg + '  [کد فنی: ' + emsgFull + ']');
   }
 }
 </script>
