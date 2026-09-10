@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | تعاونی مسکن</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  body {
+    font-family: Tahoma, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    direction: rtl;
+  }
+  .box {
+    max-width: 700px;
+    margin: 0 auto 24px auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  h1 { font-size: 20px; }
+  h2 { font-size: 17px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+  input, button {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button {
+    background: #2e7d32;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button:hover { background: #256428; }
+  button.danger { background: #c62828; }
+  button.danger:hover { background: #a02020; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .item { position: relative; }
+  .item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+  }
+  .item button {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: auto;
+    padding: 4px 8px;
+    font-size: 12px;
+    margin: 0;
+  }
+  #status { color: #555; margin-top: 8px; font-size: 14px; }
+  #login-box, #denied-box { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="box" id="login-box">
+  <h1>ورود مدیر</h1>
+  <input type="email" id="email" placeholder="ایمیل">
+  <input type="password" id="password" placeholder="رمز عبور">
+  <button onclick="doLogin()">ورود</button>
+  <div id="status"></div>
+</div>
+
+<div class="box" id="denied-box" style="display:none;">
+  <h1>دسترسی ندارید</h1>
+  <p>این حساب کاربری دسترسی مدیریت ندارد.</p>
+</div>
+
+<div id="admin-panel" style="display:none;">
+
+  <div class="box">
+    <h1>پنل مدیریت سایت</h1>
+    <p style="color:#666; font-size:14px;">خوش آمدید. از این‌جا می‌توانید عکس‌های پروژه‌ی مسکونی و عکس‌های اسلایدر هدر را مدیریت کنید.</p>
+    <button class="danger" onclick="doLogout()" style="max-width:150px;">خروج</button>
+  </div>
+
+  <div class="box">
+    <h2>عکس‌های پروژه‌ی مسکونی</h2>
+    <input type="file" id="gallery-file" accept="image/*">
+    <button onclick="uploadImage('gallery')">آپلود عکس</button>
+    <div class="grid" id="gallery-grid"></div>
+  </div>
+
+  <div class="box">
+    <h2>عکس‌های هدر (اسلایدر)</h2>
+    <input type="file" id="header-file" accept="image/*">
+    <button onclick="uploadImage('header')">آپلود عکس</button>
+    <div class="grid" id="header-grid"></div>
+  </div>
+
+</div>
+
+<script>
+// ====== تنظیمات: این دو مقدار را از داشبورد Supabase بگیر ======
+// Settings -> API -> Project URL و anon public key
+const SUPABASE_URL = 'https://gsqwuibzplwalrahevdc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC';
+// ================================================================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function doLogin() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const statusEl = document.getElementById('status');
+  statusEl.textContent = 'در حال ورود...';
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    statusEl.textContent = 'خطا: ' + error.message;
+    return;
+  }
+  checkAdminAndShow();
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+async function checkAdminAndShow() {
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return; // هنوز لاگین نکرده
+
+  const { data: profile, error } = await sb
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  document.getElementById('login-box').style.display = 'none';
+
+  if (error || !profile || !profile.is_admin) {
+    document.getElementById('denied-box').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('admin-panel').style.display = 'block';
+  loadImages('gallery');
+  loadImages('header');
+}
+
+async function uploadImage(bucket) {
+  const input = document.getElementById(bucket + '-file');
+  const file = input.files[0];
+  if (!file) { alert('اول یک عکس انتخاب کن'); return; }
+
+  const fileName = Date.now() + '_' + file.name.replace(/\s+/g, '_');
+  const { error } = await sb.storage.from(bucket).upload(fileName, file);
+
+  if (error) {
+    alert('خطا در آپلود: ' + error.message);
+    return;
+  }
+  input.value = '';
+  loadImages(bucket);
+}
+
+async function loadImages(bucket) {
+  const grid = document.getElementById(bucket + '-grid');
+  grid.innerHTML = 'در حال بارگذاری...';
+
+  const { data: files, error } = await sb.storage.from(bucket).list('', {
+    sortBy: { column: 'created_at', order: 'desc' }
+  });
+
+  if (error) {
+    grid.innerHTML = 'خطا در دریافت لیست عکس‌ها';
+    return;
+  }
+
+  grid.innerHTML = '';
+  for (const file of files) {
+    const { data: urlData } = sb.storage.from(bucket).getPublicUrl(file.name);
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${urlData.publicUrl}">
+      <button class="danger" onclick="deleteImage('${bucket}', '${file.name}')">حذف</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+async function deleteImage(bucket, fileName) {
+  if (!confirm('این عکس حذف شود؟')) return;
+  const { error } = await sb.storage.from(bucket).remove([fileName]);
+  if (error) {
+    alert('خطا در حذف: ' + error.message);
+    return;
+  }
+  loadImages(bucket);
+}
+
+// اگر از قبل لاگین بوده (نشست فعال)، مستقیم چک کن
+checkAdminAndShow();
+</script>
+</body>
+</html>
