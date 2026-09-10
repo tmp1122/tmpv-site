@@ -67,6 +67,14 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .img-item{position:relative}
 .img-item img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block}
 .img-item button{position:absolute;top:4px;left:4px;background:#c62828;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
+
+/* بخش پروژه‌ها */
+.proj-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:16px}
+.proj-card h2{font-size:1rem;color:#2d7a3a;margin-bottom:4px}
+.proj-card .proj-meta{font-size:.8rem;color:#777;margin-bottom:12px}
+.proj-card textarea{width:100%;padding:10px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.88rem;min-height:80px;resize:vertical;margin-bottom:8px}
+.btn-save-desc{background:#1565c0;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:14px}
+.btn-save-desc:hover{background:#0d47a1}
 </style>
 </head>
 <body>
@@ -88,6 +96,7 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
       <button class="tab" data-status="rejected" onclick="setTab('rejected')">ردشده</button>
       <button class="tab" data-status="score" onclick="setTab('score')">🏅 امتیاز</button>
       <button class="tab" data-status="gallery" onclick="setTab('gallery')">🖼️ تصاویر سایت</button>
+      <button class="tab" data-status="projects" onclick="setTab('projects')">🏗️ پروژه‌ها</button>
     </div>
     <div id="list"></div>
   </div>
@@ -160,6 +169,12 @@ async function loadList(){
     listEl.innerHTML = galleryTabHtml();
     loadImages('gallery');
     loadImages('header');
+    return;
+  }
+
+  if(currentTab === 'projects'){
+    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+    loadProjectsAdmin();
     return;
   }
 
@@ -411,6 +426,102 @@ window.deleteImage = async function(bucket, fileName){
   const { error } = await supabase.storage.from(bucket).remove([fileName]);
   if (error) { alert('خطا در حذف: ' + error.message); return; }
   loadImages(bucket);
+};
+
+/* ================== بخش پروژه‌ها (توضیحات و عکس هر پروژه) ================== */
+
+async function loadProjectsAdmin(){
+  const listEl = document.getElementById('list');
+  const { data, error } = await supabase.from('projects').select('*').order('sort_order', { ascending: true });
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری پروژه‌ها: ' + error.message + '</div>';
+    return;
+  }
+  if(!data || data.length === 0){
+    listEl.innerHTML = '<div class="empty">هنوز پروژه‌ای ثبت نشده است.</div>';
+    return;
+  }
+
+  listEl.innerHTML = data.map(p => `
+    <div class="proj-card">
+      <h2>🏗️ ${escapeHtml(p.name)}</h2>
+      <div class="proj-meta">${escapeHtml(p.type||'')} — سال ${escapeHtml(p.year||'')}</div>
+      <textarea id="desc-${p.id}" placeholder="توضیحات این پروژه...">${escapeHtml(p.description||'')}</textarea>
+      <button class="btn-save-desc" onclick="saveProjectDescription(${p.id})">ذخیره توضیحات</button>
+      <span id="descMsg-${p.id}" style="font-size:.8rem;margin-inline-start:10px"></span>
+
+      <h2 style="margin-top:6px">تصاویر این پروژه</h2>
+      <input type="file" id="pfile-${p.id}" accept="image/*">
+      <button class="btn-upload" onclick="uploadProjectPhoto(${p.id})">آپلود عکس</button>
+      <div class="img-grid" id="pgrid-${p.id}"></div>
+    </div>
+  `).join('');
+
+  data.forEach(p => loadProjectPhotos(p.id));
+}
+
+window.saveProjectDescription = async function(projectId){
+  const val = document.getElementById('desc-'+projectId).value;
+  const msgEl = document.getElementById('descMsg-'+projectId);
+  msgEl.style.color = '#c62828';
+  msgEl.textContent = '';
+
+  const { error } = await supabase.from('projects').update({ description: val }).eq('id', projectId);
+  if(error){ msgEl.textContent = 'خطا: ' + error.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ذخیره شد';
+};
+
+window.uploadProjectPhoto = async function(projectId){
+  const input = document.getElementById('pfile-'+projectId);
+  const file = input.files[0];
+  if (!file) { alert('اول یک عکس انتخاب کن'); return; }
+
+  const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
+  const ext = extMatch ? extMatch[0] : '.jpg';
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  const fileName = projectId + '/' + Date.now() + '_' + randomPart + ext;
+
+  const { error } = await supabase.storage.from('project-photos').upload(fileName, file);
+  if (error) { alert('خطا در آپلود: ' + error.message); return; }
+
+  input.value = '';
+  loadProjectPhotos(projectId);
+};
+
+async function loadProjectPhotos(projectId){
+  const grid = document.getElementById('pgrid-'+projectId);
+  if(!grid) return;
+  grid.innerHTML = 'در حال بارگذاری...';
+
+  const { data: files, error } = await supabase.storage.from('project-photos').list(String(projectId), {
+    sortBy: { column: 'created_at', order: 'desc' }
+  });
+
+  if (error) { grid.innerHTML = 'خطا در دریافت لیست عکس‌ها'; return; }
+  if (!files || files.length === 0) { grid.innerHTML = '<span style="font-size:.8rem;color:#888">هنوز عکسی اضافه نشده</span>'; return; }
+
+  grid.innerHTML = '';
+  for (const file of files) {
+    const path = projectId + '/' + file.name;
+    const { data: urlData } = supabase.storage.from('project-photos').getPublicUrl(path);
+    const div = document.createElement('div');
+    div.className = 'img-item';
+    div.innerHTML = `
+      <img src="${urlData.publicUrl}">
+      <button onclick="deleteProjectPhoto(${projectId}, '${file.name}')">حذف</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+window.deleteProjectPhoto = async function(projectId, fileName){
+  if (!confirm('این عکس حذف شود؟')) return;
+  const { error } = await supabase.storage.from('project-photos').remove([projectId + '/' + fileName]);
+  if (error) { alert('خطا در حذف: ' + error.message); return; }
+  loadProjectPhotos(projectId);
 };
 
 checkAccess();
