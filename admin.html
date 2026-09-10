@@ -3,216 +3,330 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مدیریت | تعاونی مسکن</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>پنل مدیریت | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: Tahoma, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    direction: rtl;
-  }
-  .box {
-    max-width: 700px;
-    margin: 0 auto 24px auto;
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-  h1 { font-size: 20px; }
-  h2 { font-size: 17px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-  input, button {
-    font-family: inherit;
-    font-size: 15px;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-top: 6px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  button {
-    background: #2e7d32;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  button:hover { background: #256428; }
-  button.danger { background: #c62828; }
-  button.danger:hover { background: #a02020; }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
-  }
-  .item { position: relative; }
-  .item img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 6px;
-    display: block;
-  }
-  .item button {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: auto;
-    padding: 4px 8px;
-    font-size: 12px;
-    margin: 0;
-  }
-  #status { color: #555; margin-top: 8px; font-size: 14px; }
-  #login-box, #denied-box { text-align: center; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;padding:20px}
+.wrap{max-width:900px;margin:0 auto}
+.header{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.1);padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.header h1{color:#2d7a3a;font-size:1.2rem;font-weight:700}
+.header p{color:#666;font-size:.85rem;margin-top:4px}
+.logout{background:transparent;border:1.5px solid #d0e8d4;color:#666;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem}
+.logout:hover{border-color:#c62828;color:#c62828}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{background:#fff;border:1.5px solid #d0e8d4;color:#444;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600}
+.tab.active{background:#2d7a3a;color:#fff;border-color:#2d7a3a}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:18px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.info{display:flex;gap:14px;align-items:center;flex:1;min-width:240px}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#e8f5e9;flex-shrink:0}
+.info-text b{font-size:.98rem;color:#222}
+.info-text .meta{font-size:.8rem;color:#777;margin-top:3px;line-height:1.6}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;margin-inline-start:8px}
+.badge.pending{background:#fff3cd;color:#856404}
+.badge.approved{background:#d4edda;color:#2e7d32}
+.badge.rejected{background:#fdecea;color:#c62828}
+.actions{display:flex;gap:8px}
+.btn-sm{padding:8px 16px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-approve{background:#2d7a3a;color:#fff}
+.btn-approve:hover{background:#235f2c}
+.btn-reject{background:#fdecea;color:#c62828}
+.btn-reject:hover{background:#fadbd8}
+.empty{text-align:center;color:#888;padding:40px;background:#fff;border-radius:14px}
+.loading{text-align:center;color:#888;padding:40px}
+.err{padding:12px 16px;border-radius:8px;font-size:.9rem;margin-bottom:16px;background:#fdecea;color:#c62828}
+.btn-msg{background:#1565c0;color:#fff}
+.btn-msg:hover{background:#0d47a1}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal-box{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:1rem;font-weight:700;color:#2d7a3a;margin-bottom:16px}
+.modal-box .field{margin-bottom:14px}
+.modal-box label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:10px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.9rem;color:#222}
+.modal-box textarea{resize:vertical}
+.modal-actions{display:flex;gap:10px;margin-top:6px}
+.modal-actions .btn-sm{flex:1}
+.btn-cancel{background:#f0f0f0;color:#555}
+.btn-cancel:hover{background:#e0e0e0}
+.score-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.score-current{font-size:.85rem;color:#666;background:#f0f7f1;padding:6px 12px;border-radius:8px;font-weight:700}
+.score-current.neg{color:#c62828;background:#fdecea}
+.score-controls{display:flex;gap:6px;align-items:center}
+.score-controls select{padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.score-controls input{width:70px;padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.btn-score{background:#2d7a3a;color:#fff;padding:8px 14px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-score:hover{background:#235f2c}
 </style>
 </head>
 <body>
-
-<div class="box" id="login-box">
-  <h1>ورود مدیر</h1>
-  <input type="email" id="email" placeholder="ایمیل">
-  <input type="password" id="password" placeholder="رمز عبور">
-  <button onclick="doLogin()">ورود</button>
-  <div id="status"></div>
-</div>
-
-<div class="box" id="denied-box" style="display:none;">
-  <h1>دسترسی ندارید</h1>
-  <p>این حساب کاربری دسترسی مدیریت ندارد.</p>
-</div>
-
-<div id="admin-panel" style="display:none;">
-
-  <div class="box">
-    <h1>پنل مدیریت سایت</h1>
-    <p style="color:#666; font-size:14px;">خوش آمدید. از این‌جا می‌توانید عکس‌های پروژه‌ی مسکونی و عکس‌های اسلایدر هدر را مدیریت کنید.</p>
-    <button class="danger" onclick="doLogout()" style="max-width:150px;">خروج</button>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>🔐 پنل مدیریت تعاونی مسکن</h1>
+      <p>مدیریت اعضا و درخواست‌های ثبت‌نام</p>
+    </div>
+    <button class="logout" onclick="doLogout()">خروج</button>
   </div>
 
-  <div class="box">
-    <h2>عکس‌های پروژه‌ی مسکونی</h2>
-    <input type="file" id="gallery-file" accept="image/*">
-    <button onclick="uploadImage('gallery')">آپلود عکس</button>
-    <div class="grid" id="gallery-grid"></div>
+  <div id="authCheck" class="loading">در حال بررسی دسترسی...</div>
+
+  <div id="panel" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-status="pending" onclick="setTab('pending')">در انتظار تأیید</button>
+      <button class="tab" data-status="approved" onclick="setTab('approved')">تأییدشده</button>
+      <button class="tab" data-status="rejected" onclick="setTab('rejected')">ردشده</button>
+      <button class="tab" data-status="score" onclick="setTab('score')">🏅 امتیاز</button>
+    </div>
+    <div id="list"></div>
   </div>
 
-  <div class="box">
-    <h2>عکس‌های هدر (اسلایدر)</h2>
-    <input type="file" id="header-file" accept="image/*">
-    <button onclick="uploadImage('header')">آپلود عکس</button>
-    <div class="grid" id="header-grid"></div>
+  <!-- مودال ارسال پیام -->
+  <div id="msgModalOverlay" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-title">✉️ ارسال پیام به <span id="modalUserName"></span></div>
+      <div class="field">
+        <label>نوع پیام</label>
+        <select id="msgType">
+          <option value="variz">💰 واریزی</option>
+          <option value="kasri">⚠️ کسری پرداخت</option>
+          <option value="madarek">📄 مدارک</option>
+          <option value="sayer">📋 سایر / اطلاعیه</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>مبلغ (اختیاری)</label>
+        <input type="text" id="msgAmount" placeholder="مثلاً ۵٬۰۰۰٬۰۰۰ تومان">
+      </div>
+      <div class="field">
+        <label>متن پیام</label>
+        <textarea id="msgBody" rows="4" placeholder="متن پیام برای عضو..."></textarea>
+      </div>
+      <div class="field">
+        <label>پیوست فایل (اختیاری، حداکثر ۵۰۰ کیلوبایت)</label>
+        <input type="file" id="msgFile">
+      </div>
+      <div id="msgErr" class="err" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn-sm btn-cancel" onclick="closeMsgModal()">انصراف</button>
+        <button class="btn-sm btn-approve" id="msgSendBtn" onclick="sendMsg()">ارسال پیام</button>
+      </div>
+    </div>
   </div>
-
 </div>
 
-<script>
-// ====== تنظیمات: این دو مقدار را از داشبورد Supabase بگیر ======
-// Settings -> API -> Project URL و anon public key
-const SUPABASE_URL = 'https://gsqwuibzplwalrahevdc.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC';
-// ================================================================
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const ADMIN_EMAIL = 'tmpv1372@gmail.com';
 
-async function doLogin() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const statusEl = document.getElementById('status');
-  statusEl.textContent = 'در حال ورود...';
+let currentTab = 'pending';
 
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) {
-    statusEl.textContent = 'خطا: ' + error.message;
+async function checkAccess(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session || session.user.email !== ADMIN_EMAIL){
+    location.href = 'login.html';
     return;
   }
-  checkAdminAndShow();
+  document.getElementById('authCheck').style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+  loadList();
 }
 
-async function doLogout() {
-  await sb.auth.signOut();
-  location.reload();
-}
+window.setTab = function(status){
+  currentTab = status;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.status===status));
+  loadList();
+};
 
-async function checkAdminAndShow() {
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) return; // هنوز لاگین نکرده
+async function loadList(){
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
 
-  const { data: profile, error } = await sb
-    .from('profiles')
-    .select('is_admin')
-    .eq('id', user.id)
-    .single();
-
-  document.getElementById('login-box').style.display = 'none';
-
-  if (error || !profile || !profile.is_admin) {
-    document.getElementById('denied-box').style.display = 'block';
-    return;
+  let query = supabase.from('profiles').select('*');
+  if(currentTab === 'score'){
+    query = query.order('first_name', { ascending: true });
+  } else {
+    query = query.eq('status', currentTab).order('created_at', { ascending: false });
   }
+  const { data, error } = await query;
 
-  document.getElementById('admin-panel').style.display = 'block';
-  loadImages('gallery');
-  loadImages('header');
-}
-
-async function uploadImage(bucket) {
-  const input = document.getElementById(bucket + '-file');
-  const file = input.files[0];
-  if (!file) { alert('اول یک عکس انتخاب کن'); return; }
-
-  const fileName = Date.now() + '_' + file.name.replace(/\s+/g, '_');
-  const { error } = await sb.storage.from(bucket).upload(fileName, file);
-
-  if (error) {
-    alert('خطا در آپلود: ' + error.message);
-    return;
-  }
-  input.value = '';
-  loadImages(bucket);
-}
-
-async function loadImages(bucket) {
-  const grid = document.getElementById(bucket + '-grid');
-  grid.innerHTML = 'در حال بارگذاری...';
-
-  const { data: files, error } = await sb.storage.from(bucket).list('', {
-    sortBy: { column: 'created_at', order: 'desc' }
-  });
-
-  if (error) {
-    grid.innerHTML = 'خطا در دریافت لیست عکس‌ها';
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری: ' + (error.message||'نامشخص') + '</div>';
     return;
   }
 
-  grid.innerHTML = '';
-  for (const file of files) {
-    const { data: urlData } = sb.storage.from(bucket).getPublicUrl(file.name);
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `
-      <img src="${urlData.publicUrl}">
-      <button class="danger" onclick="deleteImage('${bucket}', '${file.name}')">حذف</button>
-    `;
-    grid.appendChild(div);
-  }
-}
-
-async function deleteImage(bucket, fileName) {
-  if (!confirm('این عکس حذف شود؟')) return;
-  const { error } = await sb.storage.from(bucket).remove([fileName]);
-  if (error) {
-    alert('خطا در حذف: ' + error.message);
+  if(!data || data.length===0){
+    listEl.innerHTML = '<div class="empty">هیچ عضوی در این وضعیت نیست</div>';
     return;
   }
-  loadImages(bucket);
+
+  if(currentTab === 'score'){
+    listEl.innerHTML = data.map(u => scoreCard(u)).join('');
+    return;
+  }
+
+  listEl.innerHTML = data.map(u => `
+    <div class="card" data-id="${u.id}">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">
+            کد ملی: ${escapeHtml(u.national_id||'-')} &nbsp;|&nbsp; تلفن: ${escapeHtml(u.phone||'-')}<br>
+            واحد: ${escapeHtml(u.department||'-')} &nbsp;|&nbsp; ایمیل: ${escapeHtml(u.email||'-')}
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-sm btn-msg" onclick="openMsgModal('${u.id}','${escapeHtml((u.first_name||'')+' '+(u.last_name||''))}')">✉️ ارسال پیام</button>
+        ${currentTab !== 'approved' ? `<button class="btn-sm btn-approve" onclick="updateStatus('${u.id}','approved')">✅ تأیید</button>` : ''}
+        ${currentTab !== 'rejected' ? `<button class="btn-sm btn-reject" onclick="updateStatus('${u.id}','rejected')">❌ رد</button>` : ''}
+      </div>
+    </div>
+  `).join('');
 }
 
-// اگر از قبل لاگین بوده (نشست فعال)، مستقیم چک کن
-checkAdminAndShow();
+function scoreCard(u){
+  const score = u.score || 0;
+  return `
+    <div class="card" data-id="${u.id}" style="flex-direction:column;align-items:stretch">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">${escapeHtml(u.department||'-')}</div>
+        </div>
+        <span class="score-current ${score<0?'neg':''}">امتیاز فعلی: ${score}</span>
+      </div>
+      <div class="score-row">
+        <div class="score-controls">
+          <select id="dir-${u.id}">
+            <option value="minus">کاهش (−)</option>
+            <option value="plus">افزایش (+)</option>
+          </select>
+          <input type="number" id="amt-${u.id}" min="0" inputmode="numeric" placeholder="عدد">
+        </div>
+        <button class="btn-score" onclick="adjustScore('${u.id}')">ثبت امتیاز</button>
+        <span id="scoreMsg-${u.id}" style="font-size:.8rem"></span>
+      </div>
+    </div>
+  `;
+}
+
+window.adjustScore = async function(userId){
+  const dir = document.getElementById('dir-'+userId).value;
+  const amtRaw = document.getElementById('amt-'+userId).value.trim();
+  const msgEl = document.getElementById('scoreMsg-'+userId);
+  msgEl.textContent = '';
+  msgEl.style.color = '#c62828';
+
+  const amt = Math.abs(parseInt(amtRaw, 10));
+  if(!amtRaw || isNaN(amt) || amt === 0){
+    msgEl.textContent = 'یک عدد وارد کنید';
+    return;
+  }
+  const delta = dir === 'minus' ? -amt : amt;
+
+  const { data: prof, error: readErr } = await supabase.from('profiles').select('score').eq('id', userId).single();
+  if(readErr){ msgEl.textContent = 'خطا: '+readErr.message; return; }
+
+  const newScore = (prof.score || 0) + delta;
+  const { error: updErr } = await supabase.from('profiles').update({ score: newScore }).eq('id', userId);
+  if(updErr){ msgEl.textContent = 'خطا: '+updErr.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ثبت شد';
+  loadList();
+};
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+window.updateStatus = async function(id, status){
+  const { error } = await supabase.from('profiles').update({ status }).eq('id', id);
+  if(error){
+    alert('خطا در به‌روزرسانی: ' + (error.message||'نامشخص'));
+    return;
+  }
+  loadList();
+};
+
+window.doLogout = async function(){
+  await supabase.auth.signOut();
+  location.href = 'login.html';
+};
+
+let msgTargetUserId = null;
+
+window.openMsgModal = function(userId, userName){
+  msgTargetUserId = userId;
+  document.getElementById('modalUserName').textContent = userName;
+  document.getElementById('msgType').value = 'variz';
+  document.getElementById('msgAmount').value = '';
+  document.getElementById('msgBody').value = '';
+  document.getElementById('msgFile').value = '';
+  document.getElementById('msgErr').style.display = 'none';
+  document.getElementById('msgModalOverlay').style.display = 'flex';
+};
+
+window.closeMsgModal = function(){
+  document.getElementById('msgModalOverlay').style.display = 'none';
+  msgTargetUserId = null;
+};
+
+window.sendMsg = async function(){
+  const type = document.getElementById('msgType').value;
+  const amount = document.getElementById('msgAmount').value.trim();
+  const body = document.getElementById('msgBody').value.trim();
+  const file = document.getElementById('msgFile').files[0];
+  const errEl = document.getElementById('msgErr');
+  const btn = document.getElementById('msgSendBtn');
+  errEl.style.display = 'none';
+
+  if(!body){ errEl.textContent = 'متن پیام را وارد کنید'; errEl.style.display='block'; return; }
+  if(file && file.size > 500*1024){ errEl.textContent = 'حجم فایل بیشتر از ۵۰۰ کیلوبایت است'; errEl.style.display='block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'در حال ارسال...';
+
+  try{
+    let fileData = null, fileName = null;
+    if(file){
+      fileData = await new Promise((res,rej)=>{
+        const r = new FileReader();
+        r.onload = e => res(e.target.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      fileName = file.name;
+    }
+
+    const { error } = await supabase.from('messages').insert({
+      user_id: msgTargetUserId,
+      type: type,
+      amount: amount || null,
+      body: body,
+      file_data: fileData,
+      file_name: fileName
+    });
+    if(error) throw error;
+
+    closeMsgModal();
+  }catch(e){
+    console.error('Send message error:', e);
+    errEl.textContent = 'خطا در ارسال پیام  [کد فنی: ' + ((e && e.message)||'نامشخص') + ']';
+    errEl.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'ارسال پیام';
+  }
+};
+
+checkAccess();
 </script>
 </body>
 </html>
