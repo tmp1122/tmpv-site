@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تماس با ما | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn','Tahoma',sans-serif;direction:rtl;background:#f0f7f1;color:#0d2010;min-height:100vh}
+nav{position:sticky;top:0;z-index:50;background:rgba(232,244,234,.97);backdrop-filter:blur(14px);border-bottom:1px solid #c8e0cb;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:#2d7a3a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.logo-text{font-size:12.5px;font-weight:700;color:#0d2010;line-height:1.4}
+.back-link{color:#2d7a3a;font-size:13px;cursor:pointer;text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:40px 20px 70px}
+.hero-title{text-align:center;margin-bottom:34px}
+.hero-title span{display:inline-block;background:#2d7a3a15;color:#2d7a3a;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:10px}
+.hero-title h1{font-size:24px;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1.3fr;gap:24px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.info-card{background:#fff;border:1px solid #d0e8d4;border-radius:16px;padding:24px;height:fit-content}
+.info-card h3{font-size:15px;margin-bottom:16px;color:#2d7a3a}
+.info-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:13.5px;line-height:1.9}
+.info-row .ic{font-size:18px}
+.form-card{background:#fff;border:1px solid #d0e8d4;border-radius:16px;padding:26px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;color:#444;margin-bottom:6px;font-weight:600}
+.field input,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #d0e8d4;border-radius:10px;font-family:inherit;font-size:13.5px;color:#0d2010}
+.field textarea{resize:vertical;min-height:110px}
+.btn-send{background:#2d7a3a;color:#fff;border:none;padding:13px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.btn-send:hover{background:#235f2c}
+.btn-send:disabled{opacity:.6;cursor:not-allowed}
+.msg{padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:14px}
+.msg.ok{background:#d4edda;color:#2e7d32}
+.msg.err{background:#fdecea;color:#c62828}
+footer{text-align:center;padding:24px;color:#5a7a5e;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="location.href='index.html'">
+    <div class="logo-icon">T</div>
+    <div class="logo-text">تعاونی مسکن<br>پالایشگاه گاز ولیعصر (عج)</div>
+  </div>
+  <a class="back-link" href="index.html">← بازگشت به صفحه اصلی</a>
+</nav>
+
+<div class="wrap">
+  <div class="hero-title">
+    <span>تماس با ما</span>
+    <h1>در ارتباط باشید</h1>
+  </div>
+
+  <div class="grid">
+    <div class="info-card">
+      <h3>راه‌های ارتباطی</h3>
+      <div class="info-row"><span class="ic">📞</span><span>شماره تماس دفتر تعاونی<br><b>در حال تکمیل</b></span></div>
+      <div class="info-row"><span class="ic">✉️</span><span>ایمیل<br><b>tmpv1372@gmail.com</b></span></div>
+      <div class="info-row"><span class="ic">📍</span><span>آدرس دفتر<br><b>در حال تکمیل</b></span></div>
+      <div class="info-row"><span class="ic">🕐</span><span>ساعات پاسخگویی<br><b>شنبه تا چهارشنبه، ۸ تا ۱۵</b></span></div>
+    </div>
+
+    <div class="form-card">
+      <div id="msgBox"></div>
+      <div class="field">
+        <label>نام و نام خانوادگی</label>
+        <input type="text" id="cName" placeholder="نام شما">
+      </div>
+      <div class="field">
+        <label>شماره تماس</label>
+        <input type="text" id="cPhone" placeholder="۰۹xxxxxxxxx">
+      </div>
+      <div class="field">
+        <label>ایمیل (اختیاری)</label>
+        <input type="email" id="cEmail" placeholder="example@mail.com">
+      </div>
+      <div class="field">
+        <label>پیام شما</label>
+        <textarea id="cMessage" placeholder="متن پیام یا سؤال خود را بنویسید..."></textarea>
+      </div>
+      <button class="btn-send" id="sendBtn" onclick="sendMessage()">ارسال پیام</button>
+    </div>
+  </div>
+</div>
+
+<footer>© ۱۴۰۳ تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</footer>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.sendMessage = async function(){
+  const name = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const message = document.getElementById('cMessage').value.trim();
+  const box = document.getElementById('msgBox');
+  const btn = document.getElementById('sendBtn');
+  box.innerHTML = '';
+
+  if(!name || !phone || !message){
+    box.innerHTML = '<div class="msg err">نام، شماره تماس و متن پیام الزامی است</div>';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'در حال ارسال...';
+  const { error } = await supabase.from('contact_messages').insert({ name, phone, email: email||null, message });
+  btn.disabled = false; btn.textContent = 'ارسال پیام';
+
+  if(error){
+    box.innerHTML = '<div class="msg err">خطا در ارسال پیام: ' + error.message + '</div>';
+    return;
+  }
+  box.innerHTML = '<div class="msg ok">✅ پیام شما با موفقیت ارسال شد. به‌زودی با شما تماس می‌گیریم.</div>';
+  document.getElementById('cName').value='';
+  document.getElementById('cPhone').value='';
+  document.getElementById('cEmail').value='';
+  document.getElementById('cMessage').value='';
+};
+</script>
+</body>
+</html>
