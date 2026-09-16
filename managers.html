@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدیران شرکت | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn','Tahoma',sans-serif;direction:rtl;background:#f0f7f1;color:#0d2010;min-height:100vh}
+nav{position:sticky;top:0;z-index:50;background:rgba(232,244,234,.97);backdrop-filter:blur(14px);border-bottom:1px solid #c8e0cb;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:#2d7a3a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.logo-text{font-size:12.5px;font-weight:700;color:#0d2010;line-height:1.4}
+.back-link{color:#2d7a3a;font-size:13px;cursor:pointer;text-decoration:none}
+.wrap{max-width:1000px;margin:0 auto;padding:40px 20px 70px}
+.hero-title{text-align:center;margin-bottom:34px}
+.hero-title span{display:inline-block;background:#2d7a3a15;color:#2d7a3a;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:10px}
+.hero-title h1{font-size:24px;margin-top:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:760px){.grid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid3{grid-template-columns:1fr}}
+.mgr-card{background:#fff;border:1px solid #d0e8d4;border-radius:16px;padding:24px;text-align:center}
+.mgr-card img{width:92px;height:92px;border-radius:50%;object-fit:cover;margin-bottom:14px;background:#e8f5e9}
+.mgr-name{font-weight:700;font-size:15.5px;color:#0d2010}
+.mgr-position{color:#2d7a3a;font-size:12.5px;margin-top:4px}
+.mgr-line{color:#5a7a5e;font-size:12.5px;margin-top:8px}
+.empty{text-align:center;color:#5a7a5e;font-size:13.5px;padding:40px;background:#fff;border-radius:14px;border:1px solid #d0e8d4}
+.loading{text-align:center;color:#5a7a5e;padding:40px}
+footer{text-align:center;padding:24px;color:#5a7a5e;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="location.href='index.html'">
+    <div class="logo-icon">T</div>
+    <div class="logo-text">تعاونی مسکن<br>پالایشگاه گاز ولیعصر (عج)</div>
+  </div>
+  <a class="back-link" href="index.html">← بازگشت به صفحه اصلی</a>
+</nav>
+
+<div class="wrap">
+  <div class="hero-title">
+    <span>مدیران شرکت</span>
+    <h1>هیئت مدیره و مدیران تعاونی</h1>
+  </div>
+  <div id="mgrList" class="loading">در حال بارگذاری...</div>
+</div>
+
+<footer>© ۱۴۰۳ تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</footer>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function escapeHtml(str){
+  return String(str||'').replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+async function loadManagers(){
+  const el = document.getElementById('mgrList');
+  const { data, error } = await supabase.from('managers').select('*').order('sort_order', { ascending: true });
+
+  if(error){
+    el.innerHTML = '<div class="empty">خطا در بارگذاری اطلاعات مدیران</div>';
+    return;
+  }
+  if(!data || data.length === 0){
+    el.innerHTML = '<div class="empty">اطلاعات مدیران به‌زودی نمایش داده می‌شود.</div>';
+    return;
+  }
+
+  el.className = 'grid3';
+  el.innerHTML = data.map(m => `
+    <div class="mgr-card">
+      <img src="${m.photo_url || ''}" alt="${escapeHtml(m.name)}" onerror="this.style.background='#e8f5e9'">
+      <div class="mgr-name">${escapeHtml(m.name)}</div>
+      ${m.position ? `<div class="mgr-position">${escapeHtml(m.position)}</div>` : ''}
+      ${m.phone ? `<div class="mgr-line">📞 ${escapeHtml(m.phone)}</div>` : ''}
+      ${m.email ? `<div class="mgr-line">✉️ ${escapeHtml(m.email)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+loadManagers();
+</script>
+</body>
+</html>
