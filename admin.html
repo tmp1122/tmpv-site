@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;padding:20px}
+.wrap{max-width:900px;margin:0 auto}
+.header{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.1);padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.header h1{color:#2d7a3a;font-size:1.2rem;font-weight:700}
+.header p{color:#666;font-size:.85rem;margin-top:4px}
+.logout{background:transparent;border:1.5px solid #d0e8d4;color:#666;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem}
+.logout:hover{border-color:#c62828;color:#c62828}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{background:#fff;border:1.5px solid #d0e8d4;color:#444;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600}
+.tab.active{background:#2d7a3a;color:#fff;border-color:#2d7a3a}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:18px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.info{display:flex;gap:14px;align-items:center;flex:1;min-width:240px}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#e8f5e9;flex-shrink:0}
+.info-text b{font-size:.98rem;color:#222}
+.info-text .meta{font-size:.8rem;color:#777;margin-top:3px;line-height:1.6}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;margin-inline-start:8px}
+.badge.pending{background:#fff3cd;color:#856404}
+.badge.approved{background:#d4edda;color:#2e7d32}
+.badge.rejected{background:#fdecea;color:#c62828}
+.actions{display:flex;gap:8px}
+.btn-sm{padding:8px 16px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-approve{background:#2d7a3a;color:#fff}
+.btn-approve:hover{background:#235f2c}
+.btn-reject{background:#fdecea;color:#c62828}
+.btn-reject:hover{background:#fadbd8}
+.empty{text-align:center;color:#888;padding:40px;background:#fff;border-radius:14px}
+.loading{text-align:center;color:#888;padding:40px}
+.err{padding:12px 16px;border-radius:8px;font-size:.9rem;margin-bottom:16px;background:#fdecea;color:#c62828}
+.btn-msg{background:#1565c0;color:#fff}
+.btn-msg:hover{background:#0d47a1}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal-box{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:1rem;font-weight:700;color:#2d7a3a;margin-bottom:16px}
+.modal-box .field{margin-bottom:14px}
+.modal-box label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:10px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.9rem;color:#222}
+.modal-box textarea{resize:vertical}
+.modal-actions{display:flex;gap:10px;margin-top:6px}
+.modal-actions .btn-sm{flex:1}
+.btn-cancel{background:#f0f0f0;color:#555}
+.btn-cancel:hover{background:#e0e0e0}
+.score-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.score-current{font-size:.85rem;color:#666;background:#f0f7f1;padding:6px 12px;border-radius:8px;font-weight:700}
+.score-current.neg{color:#c62828;background:#fdecea}
+.score-controls{display:flex;gap:6px;align-items:center}
+.score-controls select{padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.score-controls input{width:70px;padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem}
+.btn-score{background:#2d7a3a;color:#fff;padding:8px 14px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-score:hover{background:#235f2c}
+
+/* بخش گالری/عکس‌ها */
+.gallery-section{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:18px}
+.gallery-section h2{font-size:1rem;color:#2d7a3a;margin-bottom:14px}
+.gallery-section input[type=file]{width:100%;padding:10px;border:1.5px dashed #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem;margin-bottom:10px}
+.btn-upload{background:#2d7a3a;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;width:100%}
+.btn-upload:hover{background:#235f2c}
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:16px}
+.img-item{position:relative}
+.img-item img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block}
+.img-item button{position:absolute;top:4px;left:4px;background:#c62828;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
+
+/* بخش پروژه‌ها */
+.proj-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:16px}
+.proj-card h2{font-size:1rem;color:#2d7a3a;margin-bottom:4px}
+.proj-card .proj-meta{font-size:.8rem;color:#777;margin-bottom:12px}
+.proj-card textarea{width:100%;padding:10px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.88rem;min-height:80px;resize:vertical;margin-bottom:8px}
+.btn-save-desc{background:#1565c0;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:14px}
+.btn-save-desc:hover{background:#0d47a1}
+
+/* بخش مدیران شرکت */
+.mgr-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap}
+.mgr-photo-col{display:flex;flex-direction:column;align-items:center;gap:8px;width:100px;flex-shrink:0}
+.mgr-photo-col img{width:84px;height:84px;border-radius:50%;object-fit:cover;background:#e8f5e9}
+.mgr-photo-col input[type=file]{font-size:.7rem;width:100%}
+.mgr-fields{flex:1;min-width:220px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mgr-fields .field{margin-bottom:0}
+.mgr-fields .full{grid-column:1/-1}
+.mgr-actions{display:flex;gap:8px;flex-direction:column;justify-content:flex-end}
+.btn-del-mgr{background:#fdecea;color:#c62828}
+.btn-del-mgr:hover{background:#fadbd8}
+
+/* بخش پیام‌های تماس */
+.msg-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:18px 22px;margin-bottom:14px}
+.msg-card .msg-meta{font-size:.8rem;color:#777;margin-bottom:8px}
+.msg-card .msg-body{font-size:.9rem;color:#222;line-height:1.8;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>🔐 پنل مدیریت تعاونی مسکن</h1>
+      <p>مدیریت اعضا، درخواست‌های ثبت‌نام و تصاویر سایت</p>
+    </div>
+    <button class="logout" onclick="doLogout()">خروج</button>
+  </div>
+
+  <div id="authCheck" class="loading">در حال بررسی دسترسی...</div>
+
+  <div id="panel" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-status="pending" onclick="setTab('pending')">در انتظار تأیید</button>
+      <button class="tab" data-status="approved" onclick="setTab('approved')">تأییدشده</button>
+      <button class="tab" data-status="rejected" onclick="setTab('rejected')">ردشده</button>
+      <button class="tab" data-status="score" onclick="setTab('score')">🏅 امتیاز</button>
+      <button class="tab" data-status="gallery" onclick="setTab('gallery')">🖼️ تصاویر سایت</button>
+      <button class="tab" data-status="projects" onclick="setTab('projects')">🏗️ پروژه‌ها</button>
+      <button class="tab" data-status="managers" onclick="setTab('managers')">👤 مدیران شرکت</button>
+      <button class="tab" data-status="content" onclick="setTab('content')">📝 متن صفحه اصلی</button>
+      <button class="tab" data-status="contact" onclick="setTab('contact')">✉️ پیام‌های تماس</button>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <!-- مودال ارسال پیام -->
+  <div id="msgModalOverlay" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-title">✉️ ارسال پیام به <span id="modalUserName"></span></div>
+      <div class="field">
+        <label>نوع پیام</label>
+        <select id="msgType">
+          <option value="variz">💰 واریزی</option>
+          <option value="kasri">⚠️ کسری پرداخت</option>
+          <option value="madarek">📄 مدارک</option>
+          <option value="sayer">📋 سایر / اطلاعیه</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>مبلغ (اختیاری)</label>
+        <input type="text" id="msgAmount" placeholder="مثلاً ۵٬۰۰۰٬۰۰۰ تومان">
+      </div>
+      <div class="field">
+        <label>متن پیام</label>
+        <textarea id="msgBody" rows="4" placeholder="متن پیام برای عضو..."></textarea>
+      </div>
+      <div class="field">
+        <label>پیوست فایل (اختیاری، حداکثر ۵۰۰ کیلوبایت)</label>
+        <input type="file" id="msgFile">
+      </div>
+      <div id="msgErr" class="err" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn-sm btn-cancel" onclick="closeMsgModal()">انصراف</button>
+        <button class="btn-sm btn-approve" id="msgSendBtn" onclick="sendMsg()">ارسال پیام</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const ADMIN_EMAIL = 'tmpv1372@gmail.com';
+
+let currentTab = 'pending';
+
+async function checkAccess(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session || session.user.email !== ADMIN_EMAIL){
+    location.href = 'login.html';
+    return;
+  }
+  document.getElementById('authCheck').style.display = 'none';
+  document.getElementById('panel').style.display = 'block';
+  loadList();
+}
+
+window.setTab = function(status){
+  currentTab = status;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.status===status));
+  loadList();
+};
+
+async function loadList(){
+  const listEl = document.getElementById('list');
+
+  if(currentTab === 'gallery'){
+    listEl.innerHTML = galleryTabHtml();
+    loadImages('gallery');
+    loadImages('header');
+    return;
+  }
+
+  if(currentTab === 'projects'){
+    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+    loadProjectsAdmin();
+    return;
+  }
+
+  if(currentTab === 'managers'){
+    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+    loadManagersAdmin();
+    return;
+  }
+
+  if(currentTab === 'content'){
+    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+    loadContentAdmin();
+    return;
+  }
+
+  if(currentTab === 'contact'){
+    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+    loadContactMessages();
+    return;
+  }
+
+  listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+
+  let query = supabase.from('profiles').select('*');
+  if(currentTab === 'score'){
+    query = query.order('first_name', { ascending: true });
+  } else {
+    query = query.eq('status', currentTab).order('created_at', { ascending: false });
+  }
+  const { data, error } = await query;
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری: ' + (error.message||'نامشخص') + '</div>';
+    return;
+  }
+
+  if(!data || data.length===0){
+    listEl.innerHTML = '<div class="empty">هیچ عضوی در این وضعیت نیست</div>';
+    return;
+  }
+
+  if(currentTab === 'score'){
+    listEl.innerHTML = data.map(u => scoreCard(u)).join('');
+    return;
+  }
+
+  listEl.innerHTML = data.map(u => `
+    <div class="card" data-id="${u.id}">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">
+            کد ملی: ${escapeHtml(u.national_id||'-')} &nbsp;|&nbsp; تلفن: ${escapeHtml(u.phone||'-')}<br>
+            واحد: ${escapeHtml(u.department||'-')} &nbsp;|&nbsp; ایمیل: ${escapeHtml(u.email||'-')}
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-sm btn-msg" onclick="openMsgModal('${u.id}','${escapeHtml((u.first_name||'')+' '+(u.last_name||''))}')">✉️ ارسال پیام</button>
+        ${currentTab !== 'approved' ? `<button class="btn-sm btn-approve" onclick="updateStatus('${u.id}','approved')">✅ تأیید</button>` : ''}
+        ${currentTab !== 'rejected' ? `<button class="btn-sm btn-reject" onclick="updateStatus('${u.id}','rejected')">❌ رد</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function scoreCard(u){
+  const score = u.score || 0;
+  return `
+    <div class="card" data-id="${u.id}" style="flex-direction:column;align-items:stretch">
+      <div class="info">
+        <img class="avatar" src="${u.photo || ''}" onerror="this.style.background='#e8f5e9'">
+        <div class="info-text">
+          <b>${escapeHtml(u.first_name||'')} ${escapeHtml(u.last_name||'')}</b>
+          <div class="meta">${escapeHtml(u.department||'-')}</div>
+        </div>
+        <span class="score-current ${score<0?'neg':''}">امتیاز فعلی: ${score}</span>
+      </div>
+      <div class="score-row">
+        <div class="score-controls">
+          <select id="dir-${u.id}">
+            <option value="minus">کاهش (−)</option>
+            <option value="plus">افزایش (+)</option>
+          </select>
+          <input type="number" id="amt-${u.id}" min="0" inputmode="numeric" placeholder="عدد">
+        </div>
+        <button class="btn-score" onclick="adjustScore('${u.id}')">ثبت امتیاز</button>
+        <span id="scoreMsg-${u.id}" style="font-size:.8rem"></span>
+      </div>
+    </div>
+  `;
+}
+
+window.adjustScore = async function(userId){
+  const dir = document.getElementById('dir-'+userId).value;
+  const amtRaw = document.getElementById('amt-'+userId).value.trim();
+  const msgEl = document.getElementById('scoreMsg-'+userId);
+  msgEl.textContent = '';
+  msgEl.style.color = '#c62828';
+
+  const amt = Math.abs(parseInt(amtRaw, 10));
+  if(!amtRaw || isNaN(amt) || amt === 0){
+    msgEl.textContent = 'یک عدد وارد کنید';
+    return;
+  }
+  const delta = dir === 'minus' ? -amt : amt;
+
+  const { data: prof, error: readErr } = await supabase.from('profiles').select('score').eq('id', userId).single();
+  if(readErr){ msgEl.textContent = 'خطا: '+readErr.message; return; }
+
+  const newScore = (prof.score || 0) + delta;
+  const { error: updErr } = await supabase.from('profiles').update({ score: newScore }).eq('id', userId);
+  if(updErr){ msgEl.textContent = 'خطا: '+updErr.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ثبت شد';
+  loadList();
+};
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+window.updateStatus = async function(id, status){
+  const { error } = await supabase.from('profiles').update({ status }).eq('id', id);
+  if(error){
+    alert('خطا در به‌روزرسانی: ' + (error.message||'نامشخص'));
+    return;
+  }
+  loadList();
+};
+
+window.doLogout = async function(){
+  await supabase.auth.signOut();
+  location.href = 'login.html';
+};
+
+let msgTargetUserId = null;
+
+window.openMsgModal = function(userId, userName){
+  msgTargetUserId = userId;
+  document.getElementById('modalUserName').textContent = userName;
+  document.getElementById('msgType').value = 'variz';
+  document.getElementById('msgAmount').value = '';
+  document.getElementById('msgBody').value = '';
+  document.getElementById('msgFile').value = '';
+  document.getElementById('msgErr').style.display = 'none';
+  document.getElementById('msgModalOverlay').style.display = 'flex';
+};
+
+window.closeMsgModal = function(){
+  document.getElementById('msgModalOverlay').style.display = 'none';
+  msgTargetUserId = null;
+};
+
+window.sendMsg = async function(){
+  const type = document.getElementById('msgType').value;
+  const amount = document.getElementById('msgAmount').value.trim();
+  const body = document.getElementById('msgBody').value.trim();
+  const file = document.getElementById('msgFile').files[0];
+  const errEl = document.getElementById('msgErr');
+  const btn = document.getElementById('msgSendBtn');
+  errEl.style.display = 'none';
+
+  if(!body){ errEl.textContent = 'متن پیام را وارد کنید'; errEl.style.display='block'; return; }
+  if(file && file.size > 500*1024){ errEl.textContent = 'حجم فایل بیشتر از ۵۰۰ کیلوبایت است'; errEl.style.display='block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'در حال ارسال...';
+
+  try{
+    let fileData = null, fileName = null;
+    if(file){
+      fileData = await new Promise((res,rej)=>{
+        const r = new FileReader();
+        r.onload = e => res(e.target.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      fileName = file.name;
+    }
+
+    const { error } = await supabase.from('messages').insert({
+      user_id: msgTargetUserId,
+      type: type,
+      amount: amount || null,
+      body: body,
+      file_data: fileData,
+      file_name: fileName
+    });
+    if(error) throw error;
+
+    closeMsgModal();
+  }catch(e){
+    console.error('Send message error:', e);
+    errEl.textContent = 'خطا در ارسال پیام  [کد فنی: ' + ((e && e.message)||'نامشخص') + ']';
+    errEl.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'ارسال پیام';
+  }
+};
+
+/* ================== بخش گالری/عکس‌ها (جدید) ================== */
+
+function galleryTabHtml(){
+  return `
+    <div class="gallery-section">
+      <h2>عکس‌های پروژه‌ی مسکونی</h2>
+      <input type="file" id="gallery-file" accept="image/*">
+      <button class="btn-upload" onclick="uploadImage('gallery')">آپلود عکس</button>
+      <div class="img-grid" id="gallery-grid"></div>
+    </div>
+    <div class="gallery-section">
+      <h2>عکس‌های هدر (اسلایدر)</h2>
+      <input type="file" id="header-file" accept="image/*">
+      <button class="btn-upload" onclick="uploadImage('header')">آپلود عکس</button>
+      <div class="img-grid" id="header-grid"></div>
+    </div>
+  `;
+}
+
+window.uploadImage = async function(bucket){
+  const input = document.getElementById(bucket + '-file');
+  const file = input.files[0];
+  if (!file) { alert('اول یک عکس انتخاب کن'); return; }
+
+  const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
+  const ext = extMatch ? extMatch[0] : '.jpg';
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  const fileName = Date.now() + '_' + randomPart + ext;
+
+  const { error } = await supabase.storage.from(bucket).upload(fileName, file);
+  if (error) { alert('خطا در آپلود: ' + error.message); return; }
+
+  input.value = '';
+  loadImages(bucket);
+};
+
+async function loadImages(bucket){
+  const grid = document.getElementById(bucket + '-grid');
+  if(!grid) return;
+  grid.innerHTML = 'در حال بارگذاری...';
+
+  const { data: files, error } = await supabase.storage.from(bucket).list('', {
+    sortBy: { column: 'created_at', order: 'desc' }
+  });
+
+  if (error) { grid.innerHTML = 'خطا در دریافت لیست عکس‌ها'; return; }
+
+  grid.innerHTML = '';
+  for (const file of files) {
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(file.name);
+    const div = document.createElement('div');
+    div.className = 'img-item';
+    div.innerHTML = `
+      <img src="${urlData.publicUrl}">
+      <button onclick="deleteImage('${bucket}', '${file.name}')">حذف</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+window.deleteImage = async function(bucket, fileName){
+  if (!confirm('این عکس حذف شود؟')) return;
+  const { error } = await supabase.storage.from(bucket).remove([fileName]);
+  if (error) { alert('خطا در حذف: ' + error.message); return; }
+  loadImages(bucket);
+};
+
+/* ================== بخش پروژه‌ها (توضیحات و عکس هر پروژه) ================== */
+
+async function loadProjectsAdmin(){
+  const listEl = document.getElementById('list');
+  const { data, error } = await supabase.from('projects').select('*').order('sort_order', { ascending: true });
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری پروژه‌ها: ' + error.message + '</div>';
+    return;
+  }
+  if(!data || data.length === 0){
+    listEl.innerHTML = '<div class="empty">هنوز پروژه‌ای ثبت نشده است.</div>';
+    return;
+  }
+
+  listEl.innerHTML = data.map(p => `
+    <div class="proj-card">
+      <h2>🏗️ ${escapeHtml(p.name)}</h2>
+      <div class="proj-meta">${escapeHtml(p.type||'')} — سال ${escapeHtml(p.year||'')}</div>
+      <textarea id="desc-${p.id}" placeholder="توضیحات این پروژه...">${escapeHtml(p.description||'')}</textarea>
+      <button class="btn-save-desc" onclick="saveProjectDescription(${p.id})">ذخیره توضیحات</button>
+      <span id="descMsg-${p.id}" style="font-size:.8rem;margin-inline-start:10px"></span>
+
+      <h2 style="margin-top:6px">تصاویر این پروژه</h2>
+      <input type="file" id="pfile-${p.id}" accept="image/*">
+      <button class="btn-upload" onclick="uploadProjectPhoto(${p.id})">آپلود عکس</button>
+      <div class="img-grid" id="pgrid-${p.id}"></div>
+    </div>
+  `).join('');
+
+  data.forEach(p => loadProjectPhotos(p.id));
+}
+
+window.saveProjectDescription = async function(projectId){
+  const val = document.getElementById('desc-'+projectId).value;
+  const msgEl = document.getElementById('descMsg-'+projectId);
+  msgEl.style.color = '#c62828';
+  msgEl.textContent = '';
+
+  const { error } = await supabase.from('projects').update({ description: val }).eq('id', projectId);
+  if(error){ msgEl.textContent = 'خطا: ' + error.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ذخیره شد';
+};
+
+window.uploadProjectPhoto = async function(projectId){
+  const input = document.getElementById('pfile-'+projectId);
+  const file = input.files[0];
+  if (!file) { alert('اول یک عکس انتخاب کن'); return; }
+
+  const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
+  const ext = extMatch ? extMatch[0] : '.jpg';
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  const fileName = projectId + '/' + Date.now() + '_' + randomPart + ext;
+
+  const { error } = await supabase.storage.from('project-photos').upload(fileName, file);
+  if (error) { alert('خطا در آپلود: ' + error.message); return; }
+
+  input.value = '';
+  loadProjectPhotos(projectId);
+};
+
+async function loadProjectPhotos(projectId){
+  const grid = document.getElementById('pgrid-'+projectId);
+  if(!grid) return;
+  grid.innerHTML = 'در حال بارگذاری...';
+
+  const { data: files, error } = await supabase.storage.from('project-photos').list(String(projectId), {
+    sortBy: { column: 'created_at', order: 'desc' }
+  });
+
+  if (error) { grid.innerHTML = 'خطا در دریافت لیست عکس‌ها'; return; }
+  if (!files || files.length === 0) { grid.innerHTML = '<span style="font-size:.8rem;color:#888">هنوز عکسی اضافه نشده</span>'; return; }
+
+  grid.innerHTML = '';
+  for (const file of files) {
+    const path = projectId + '/' + file.name;
+    const { data: urlData } = supabase.storage.from('project-photos').getPublicUrl(path);
+    const div = document.createElement('div');
+    div.className = 'img-item';
+    div.innerHTML = `
+      <img src="${urlData.publicUrl}">
+      <button onclick="deleteProjectPhoto(${projectId}, '${file.name}')">حذف</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+window.deleteProjectPhoto = async function(projectId, fileName){
+  if (!confirm('این عکس حذف شود؟')) return;
+  const { error } = await supabase.storage.from('project-photos').remove([projectId + '/' + fileName]);
+  if (error) { alert('خطا در حذف: ' + error.message); return; }
+  loadProjectPhotos(projectId);
+};
+
+/* ================== بخش مدیران شرکت ================== */
+
+async function loadManagersAdmin(){
+  const listEl = document.getElementById('list');
+  const { data, error } = await supabase.from('managers').select('*').order('sort_order', { ascending: true });
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری مدیران: ' + error.message + '</div>';
+    return;
+  }
+
+  let html = `
+    <div class="proj-card">
+      <h2>➕ افزودن مدیر جدید</h2>
+      <div class="mgr-fields" style="margin-bottom:10px">
+        <div class="field"><label>نام و نام خانوادگی</label><input id="newMgrName" placeholder="نام"></div>
+        <div class="field"><label>سمت (اختیاری)</label><input id="newMgrPosition" placeholder="مثلاً مدیرعامل"></div>
+        <div class="field"><label>تلفن</label><input id="newMgrPhone" placeholder="۰۹xxxxxxxxx"></div>
+        <div class="field"><label>ایمیل</label><input id="newMgrEmail" placeholder="example@mail.com"></div>
+        <div class="field full"><label>عکس (اختیاری)</label><input type="file" id="newMgrFile" accept="image/*"></div>
+      </div>
+      <button class="btn-upload" onclick="addManager()">افزودن مدیر</button>
+      <span id="newMgrMsg" style="font-size:.8rem;margin-inline-start:10px"></span>
+    </div>
+  `;
+
+  if(!data || data.length === 0){
+    html += '<div class="empty">هنوز مدیری ثبت نشده است.</div>';
+    listEl.innerHTML = html;
+    return;
+  }
+
+  html += data.map(m => `
+    <div class="mgr-card" data-id="${m.id}">
+      <div class="mgr-photo-col">
+        <img id="mgrPhoto-${m.id}" src="${m.photo_url || ''}" onerror="this.style.background='#e8f5e9'">
+        <input type="file" id="mgrFile-${m.id}" accept="image/*" onchange="uploadManagerPhoto(${m.id})">
+      </div>
+      <div class="mgr-fields">
+        <div class="field"><label>نام</label><input id="mgrName-${m.id}" value="${escapeHtml(m.name||'')}"></div>
+        <div class="field"><label>سمت</label><input id="mgrPosition-${m.id}" value="${escapeHtml(m.position||'')}"></div>
+        <div class="field"><label>تلفن</label><input id="mgrPhone-${m.id}" value="${escapeHtml(m.phone||'')}"></div>
+        <div class="field"><label>ایمیل</label><input id="mgrEmail-${m.id}" value="${escapeHtml(m.email||'')}"></div>
+        <div class="field full"><span id="mgrMsg-${m.id}" style="font-size:.8rem"></span></div>
+      </div>
+      <div class="mgr-actions">
+        <button class="btn-sm btn-save-desc" style="margin-bottom:0" onclick="saveManager(${m.id})">ذخیره</button>
+        <button class="btn-sm btn-del-mgr" onclick="deleteManager(${m.id})">حذف</button>
+      </div>
+    </div>
+  `).join('');
+
+  listEl.innerHTML = html;
+}
+
+window.addManager = async function(){
+  const name = document.getElementById('newMgrName').value.trim();
+  const position = document.getElementById('newMgrPosition').value.trim();
+  const phone = document.getElementById('newMgrPhone').value.trim();
+  const email = document.getElementById('newMgrEmail').value.trim();
+  const fileInput = document.getElementById('newMgrFile');
+  const file = fileInput.files[0];
+  const msgEl = document.getElementById('newMgrMsg');
+  msgEl.style.color = '#c62828'; msgEl.textContent = '';
+
+  if(!name){ msgEl.textContent = 'نام الزامی است'; return; }
+
+  const { data, error } = await supabase.from('managers').insert({
+    name, position: position || null, phone: phone || null, email: email || null
+  }).select();
+  if(error){ msgEl.textContent = 'خطا: ' + error.message; return; }
+
+  const newId = data && data[0] && data[0].id;
+  if(file && newId){
+    const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
+    const ext = extMatch ? extMatch[0] : '.jpg';
+    const path = newId + ext;
+    const { error: upErr } = await supabase.storage.from('manager-photos').upload(path, file, { upsert: true });
+    if(upErr){ msgEl.style.color = '#c62828'; msgEl.textContent = 'مدیر ثبت شد، اما آپلود عکس خطا داد: ' + upErr.message; loadManagersAdmin(); return; }
+    const { data: urlData } = supabase.storage.from('manager-photos').getPublicUrl(path);
+    await supabase.from('managers').update({ photo_url: urlData.publicUrl + '?t=' + Date.now() }).eq('id', newId);
+  }
+
+  loadManagersAdmin();
+};
+
+window.saveManager = async function(id){
+  const msgEl = document.getElementById('mgrMsg-'+id);
+  msgEl.style.color = '#c62828'; msgEl.textContent = '';
+
+  const name = document.getElementById('mgrName-'+id).value.trim();
+  const position = document.getElementById('mgrPosition-'+id).value.trim();
+  const phone = document.getElementById('mgrPhone-'+id).value.trim();
+  const email = document.getElementById('mgrEmail-'+id).value.trim();
+
+  if(!name){ msgEl.textContent = 'نام الزامی است'; return; }
+
+  const { error } = await supabase.from('managers').update({
+    name, position: position || null, phone: phone || null, email: email || null
+  }).eq('id', id);
+
+  if(error){ msgEl.textContent = 'خطا: ' + error.message; return; }
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ذخیره شد';
+};
+
+window.uploadManagerPhoto = async function(id){
+  const input = document.getElementById('mgrFile-'+id);
+  const file = input.files[0];
+  if(!file) return;
+
+  const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
+  const ext = extMatch ? extMatch[0] : '.jpg';
+  const path = id + ext;
+
+  const { error } = await supabase.storage.from('manager-photos').upload(path, file, { upsert: true });
+  if(error){ alert('خطا در آپلود عکس: ' + error.message); return; }
+
+  const { data: urlData } = supabase.storage.from('manager-photos').getPublicUrl(path);
+  const publicUrl = urlData.publicUrl + '?t=' + Date.now(); // جلوگیری از کش شدن عکس قدیمی
+
+  const { error: updErr } = await supabase.from('managers').update({ photo_url: publicUrl }).eq('id', id);
+  if(updErr){ alert('خطا در ذخیره لینک عکس: ' + updErr.message); return; }
+
+  document.getElementById('mgrPhoto-'+id).src = publicUrl;
+  input.value = '';
+};
+
+window.deleteManager = async function(id){
+  if(!confirm('این مدیر حذف شود؟')) return;
+  const { error } = await supabase.from('managers').delete().eq('id', id);
+  if(error){ alert('خطا در حذف: ' + error.message); return; }
+  loadManagersAdmin();
+};
+
+/* ================== بخش پیام‌های تماس ================== */
+
+async function loadContactMessages(){
+  const listEl = document.getElementById('list');
+  const { data, error } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+
+  if(error){
+    listEl.innerHTML = '<div class="err">خطا در بارگذاری پیام‌ها: ' + error.message + '</div>';
+    return;
+  }
+  if(!data || data.length === 0){
+    listEl.innerHTML = '<div class="empty">هنوز پیامی از فرم تماس ثبت نشده است.</div>';
+    return;
+  }
+
+  listEl.innerHTML = data.map(c => `
+    <div class="msg-card">
+      <div class="msg-meta">
+        <b>${escapeHtml(c.name||'')}</b> &nbsp;|&nbsp; تلفن: ${escapeHtml(c.phone||'-')}
+        ${c.email ? ' &nbsp;|&nbsp; ایمیل: ' + escapeHtml(c.email) : ''}
+        &nbsp;|&nbsp; ${new Date(c.created_at).toLocaleString('fa-IR')}
+      </div>
+      <div class="msg-body">${escapeHtml(c.message||'')}</div>
+    </div>
+  `).join('');
+}
+
+/* ================== بخش متن صفحه اصلی (تیتر، آمار، خدمات) ================== */
+
+const CONTENT_DEFAULTS = {
+  hero_tag: 'تعاونی مسکن کارکنان پالایشگاه گاز',
+  hero_title1: 'خانه می‌سازیم،',
+  hero_title2: 'آینده می‌سازیم',
+  hero_desc: 'از سال ۱۳۷۰ با ساخت ۱۹۴ واحد تکمیل‌شده و ۲۰۸ واحد در حال ساخت، تعاونی مسکن پالایشگاه گاز ولیعصر (عج) خانه‌ای امن و مناسب برای کارکنان فراهم می‌سازد.',
+  stat1_n:'۱۹۴', stat1_l:'واحد تکمیل‌شده',
+  stat2_n:'۲۰۸', stat2_l:'واحد در حال ساخت',
+  stat3_n:'۹۰', stat3_l:'عضو و سهامدار',
+  stat4_n:'۱۳۷۰', stat4_l:'تأسیس',
+  service1_icon:'🏠', service1_title:'واگذاری واحد مسکونی', service1_desc:'تأمین مسکن مناسب برای کارکنان پالایشگاه با شرایط ویژه',
+  service2_icon:'💰', service2_title:'وام و تسهیلات', service2_desc:'ارائه وام مسکن با سود کم و اقساط بلندمدت به اعضا',
+  service3_icon:'📊', service3_title:'گزارش مالی و پیشرفت ساخت', service3_desc:'ارائه اطلاعات مالی و پیشرفت مراحل ساخت به اعضاء',
+  service4_icon:'🤝', service4_title:'قرارداد با پیمانکاران', service4_desc:'بستن قرارداد با پیمانکاران و شرکت‌های مجرب و با تجربه بالا'
+};
+
+function toFaNum(n){
+  const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  return String(n).replace(/\d/g, d => fa[d]);
+}
+
+async function loadContentAdmin(){
+  const listEl = document.getElementById('list');
+  const { data, error } = await supabase.from('site_content').select('*').eq('id', 1).single();
+  const C = (!error && data) ? data : {};
+  const v = k => escapeHtml(C[k] != null && C[k] !== '' ? C[k] : CONTENT_DEFAULTS[k]);
+
+  listEl.innerHTML = `
+    <div class="proj-card">
+      <h2>🏷️ برچسب و تیتر اصلی</h2>
+      <div class="field"><label>برچسب کوچک بالای تیتر</label><input id="c-hero_tag" value="${v('hero_tag')}"></div>
+      <div class="field"><label>خط اول تیتر (رنگ سفید)</label><input id="c-hero_title1" value="${v('hero_title1')}"></div>
+      <div class="field"><label>خط دوم تیتر (رنگ سبز)</label><input id="c-hero_title2" value="${v('hero_title2')}"></div>
+      <div class="field"><label>توضیح زیر تیتر</label><textarea id="c-hero_desc" rows="3">${v('hero_desc')}</textarea></div>
+    </div>
+
+    <div class="proj-card">
+      <h2>📊 آمار چهارگانه (زیر تصویر هدر)</h2>
+      <div class="mgr-fields">
+        <div class="field"><label>عدد ۱</label><input id="c-stat1_n" value="${v('stat1_n')}"></div>
+        <div class="field"><label>برچسب ۱</label><input id="c-stat1_l" value="${v('stat1_l')}"></div>
+        <div class="field"><label>عدد ۲</label><input id="c-stat2_n" value="${v('stat2_n')}"></div>
+        <div class="field"><label>برچسب ۲</label><input id="c-stat2_l" value="${v('stat2_l')}"></div>
+        <div class="field"><label>عدد ۳</label><input id="c-stat3_n" value="${v('stat3_n')}"></div>
+        <div class="field"><label>برچسب ۳</label><input id="c-stat3_l" value="${v('stat3_l')}"></div>
+        <div class="field"><label>عدد ۴</label><input id="c-stat4_n" value="${v('stat4_n')}"></div>
+        <div class="field"><label>برچسب ۴</label><input id="c-stat4_l" value="${v('stat4_l')}"></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <h2>🧩 خدمات (۴ کارت)</h2>
+      ${[1,2,3,4].map(n => `
+        <div style="border:1px solid #e0efe2;border-radius:10px;padding:12px;margin-bottom:10px">
+          <div class="mgr-fields">
+            <div class="field"><label>ایموجی خدمت ${toFaNum(n)}</label><input id="c-service${n}_icon" value="${v('service'+n+'_icon')}"></div>
+            <div class="field"><label>عنوان خدمت ${toFaNum(n)}</label><input id="c-service${n}_title" value="${v('service'+n+'_title')}"></div>
+            <div class="field full"><label>توضیح خدمت ${toFaNum(n)}</label><input id="c-service${n}_desc" value="${v('service'+n+'_desc')}"></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="proj-card">
+      <button class="btn-upload" onclick="saveContent()">ذخیره همه تغییرات</button>
+      <span id="contentMsg" style="font-size:.85rem;margin-inline-start:10px"></span>
+    </div>
+  `;
+}
+
+window.saveContent = async function(){
+  const msgEl = document.getElementById('contentMsg');
+  msgEl.style.color = '#666'; msgEl.textContent = 'در حال ذخیره...';
+
+  const keys = ['hero_tag','hero_title1','hero_title2','hero_desc',
+    'stat1_n','stat1_l','stat2_n','stat2_l','stat3_n','stat3_l','stat4_n','stat4_l',
+    'service1_icon','service1_title','service1_desc',
+    'service2_icon','service2_title','service2_desc',
+    'service3_icon','service3_title','service3_desc',
+    'service4_icon','service4_title','service4_desc'];
+
+  const payload = { id: 1 };
+  keys.forEach(k => { payload[k] = document.getElementById('c-'+k).value; });
+
+  const { error } = await supabase.from('site_content').upsert(payload);
+  if(error){ msgEl.style.color = '#c62828'; msgEl.textContent = 'خطا: ' + error.message; return; }
+
+  msgEl.style.color = '#2e7d32';
+  msgEl.textContent = '✅ ذخیره شد — چند لحظه دیگه توی سایت اصلی هم می‌بینیش';
+};
+
+checkAccess();
+</script>
+</body>
+</html>
