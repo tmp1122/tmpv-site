@@ -635,11 +635,6 @@ function buildAuthModal(){
 
   var logo=h("div",{className:"modal-logo"},["T"]);
   modal.appendChild(logo);
-  var backLink=h("div",{style:{textAlign:"center",marginBottom:"6px"}});
-  var backBtn=h("button",{style:{background:"none",border:"none",cursor:"pointer",color:"#2d7a3a",fontSize:"12.5px",fontWeight:"700",fontFamily:"inherit",display:"inline-flex",alignItems:"center",gap:"4px"}},["→ بازگشت به سایت"]);
-  backBtn.onclick=function(){state.showAuth=false;update();};
-  backLink.appendChild(backBtn);
-  modal.appendChild(backLink);
   var mt=h("div",{className:"modal-title"});
   mt.appendChild(h("h2",{},[" تعاونی مسکن TMPV"]));
   mt.appendChild(h("p",{},[" پرتال اختصاصی اعضای تعاونی"]));
