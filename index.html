@@ -22,16 +22,29 @@
   --hero-desc-size:15px;
   --section-title-size:30px;
   --body-text-size:13px;
+  --font-hero-weight:900;
+  --font-hero-desc-weight:600;
+  --font-heading-weight:900;
+  --font-body-weight:400;
+  --font-hero-style:normal;
+  --font-heading-style:normal;
+  --font-body-style:normal;
 }
 
 /* فونت‌های محلی — فایل‌ها باید توی پوشه‌ی fonts/ کنار index.html باشن */
 @font-face{font-family:'BNazanin';src:url('BNazanin.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'BNazanin';src:url('BNazanin-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
 @font-face{font-family:'BZar';src:url('BZar-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'BZar';src:url('BZar-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
 @font-face{font-family:'BTitr';src:url('BTitr-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'BShiraz';src:url('BShiraz.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'BTraffic';src:url('BTraffic-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'BTraffic';src:url('BTraffic-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'HussainiNastaleeq';src:url('HussainiNastaleeq.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'IranNastaliq';src:url('IranNastaliq2.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);direction:rtl;background:var(--page-bg);color:var(--text-color);min-height:100vh}
+body{font-family:var(--font-body);direction:rtl;background:var(--page-bg);color:var(--text-color);min-height:100vh;font-weight:var(--font-body-weight);font-style:var(--font-body-style)}
 nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(232,244,234,.97);backdrop-filter:blur(14px);border-bottom:1px solid #c8e0cb;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
 .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;flex-shrink:0}
@@ -66,9 +79,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(232,244,234,
 
 
 .tag{font-size:11px;letter-spacing:4px;color:#a0d4a8;font-weight:700;margin-bottom:10px;display:block;text-shadow:0 2px 6px rgba(0,0,0,0.8)}
-.hero h1{font-family:var(--font-hero);font-size:clamp(32px,5vw,var(--hero-title-size));font-weight:900;line-height:1.25;margin-bottom:18px;color:#ffffff;text-shadow:0 3px 12px rgba(0,0,0,0.8)}
+.hero h1{font-family:var(--font-hero);font-size:clamp(32px,5vw,var(--hero-title-size));font-weight:var(--font-hero-weight);font-style:var(--font-hero-style);line-height:1.25;margin-bottom:18px;color:#ffffff;text-shadow:0 3px 12px rgba(0,0,0,0.8)}
 .hero h1 span.green{color:var(--hero-highlight);-webkit-text-fill-color:var(--hero-highlight);background:none;text-shadow:0 3px 12px rgba(0,0,0,0.8)}
-.hero p{font-family:var(--font-hero);color:#ffffff;line-height:1.9;font-size:var(--hero-desc-size);margin-bottom:32px;max-width:480px;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
+.hero p{font-family:var(--font-hero);color:#ffffff;line-height:1.9;font-size:var(--hero-desc-size);margin-bottom:32px;max-width:480px;font-weight:var(--font-hero-desc-weight);font-style:var(--font-hero-style);text-shadow:0 2px 8px rgba(0,0,0,0.9)}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:absolute;bottom:40px;left:40px}
 .stat{background:#fff;border:1px solid #c8e0cb;border-radius:12px;padding:16px 20px;text-align:center}
@@ -100,7 +113,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(232,244,234,
 section.sec{padding:70px 40px}
 section.sec.alt{background:var(--alt-bg)}
 .sec-inner{max-width:1000px;margin:0 auto}
-.sec h2{font-family:var(--font-heading);font-size:var(--section-title-size);font-weight:900;margin-bottom:28px;color:var(--text-color)}
+.sec h2{font-family:var(--font-heading);font-size:var(--section-title-size);font-weight:var(--font-heading-weight);font-style:var(--font-heading-style);margin-bottom:28px;color:var(--text-color)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .card{background:#fff;border:1px solid #c8e0cb;border-radius:14px;padding:22px;transition:all .3s}
@@ -235,9 +248,18 @@ var FONT_PRESETS = {
   vazirmatn:  { family:"'Vazirmatn','Tahoma',sans-serif",      href:"https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap" },
   notosans:   { family:"'Noto Sans Arabic','Tahoma',sans-serif", href:"https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;600;700;900&display=swap" },
   notonaskh:  { family:"'Noto Naskh Arabic','Tahoma',serif",     href:"https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" },
+  notokufi:   { family:"'Noto Kufi Arabic','Tahoma',sans-serif", href:"https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700;900&display=swap" },
+  amiri:      { family:"'Amiri','Tahoma',serif",                href:"https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" },
+  lalezar:    { family:"'Lalezar','Tahoma',sans-serif",          href:"https://fonts.googleapis.com/css2?family=Lalezar&display=swap" },
+  markazi:    { family:"'Markazi Text','Tahoma',serif",          href:"https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" },
+  scheherazade:{ family:"'Scheherazade New','Tahoma',serif",     href:"https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" },
   nazanin:    { family:"'BNazanin','Tahoma',sans-serif" },
   zar:        { family:"'BZar','Tahoma',sans-serif" },
-  titr:       { family:"'BTitr','Tahoma',sans-serif" }
+  titr:       { family:"'BTitr','Tahoma',sans-serif" },
+  shiraz:     { family:"'BShiraz','Tahoma',sans-serif" },
+  traffic:    { family:"'BTraffic','Tahoma',sans-serif" },
+  hussaini:   { family:"'HussainiNastaleeq','Tahoma',serif" },
+  irannastaliq:{ family:"'IranNastaliq','Tahoma',serif" }
 };
 function loadGoogleFont(href){
   if(document.querySelector('link[href="'+href+'"]')) return; // این فونت از قبل لود شده
@@ -257,6 +279,15 @@ var THEME_SIZE_VARS = { theme_hero_title_size:"--hero-title-size", theme_hero_de
 var FONT_SLOT_VARS = {
   theme_font_hero:"--font-hero", theme_font_heading:"--font-heading", theme_font_body:"--font-body"
 };
+// نگاشت اسم فیلد توی جدول site_content به متغیر CSS وزن فونت (بولد بودن) متناظرش
+var FONT_WEIGHT_VARS = {
+  theme_font_hero_weight:"--font-hero-weight", theme_font_hero_desc_weight:"--font-hero-desc-weight",
+  theme_font_heading_weight:"--font-heading-weight", theme_font_body_weight:"--font-body-weight"
+};
+// نگاشت اسم فیلد به متغیر CSS ایتالیک‌بودن متناظرش
+var FONT_STYLE_VARS = {
+  theme_font_hero_italic:"--font-hero-style", theme_font_heading_italic:"--font-heading-style", theme_font_body_italic:"--font-body-style"
+};
 function applyTheme(c){
   if(!c) return;
   Object.keys(THEME_VARS).forEach(function(key){
@@ -264,6 +295,12 @@ function applyTheme(c){
   });
   Object.keys(THEME_SIZE_VARS).forEach(function(key){
     if(c[key]) document.documentElement.style.setProperty(THEME_SIZE_VARS[key], c[key]+"px");
+  });
+  Object.keys(FONT_WEIGHT_VARS).forEach(function(key){
+    if(c[key]) document.documentElement.style.setProperty(FONT_WEIGHT_VARS[key], c[key]);
+  });
+  Object.keys(FONT_STYLE_VARS).forEach(function(key){
+    document.documentElement.style.setProperty(FONT_STYLE_VARS[key], c[key] ? "italic" : "normal");
   });
   // فونت متن عادی (theme_font_body) پیش‌فرضِ بقیه بخش‌هاست؛ هدر و تیترها اگه جدا انتخاب نشده باشن ازش پیروی می‌کنن (توی CSS با var(--font-body) تعریف شده)
   var legacy = c.theme_font; // سازگاری با ذخیره‌های قدیمی‌تر که یک فونت واحد داشتن

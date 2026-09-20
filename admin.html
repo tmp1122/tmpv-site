@@ -847,15 +847,39 @@ const THEME_DEFAULTS = {
   theme_hero_title_size: '60',
   theme_hero_desc_size: '15',
   theme_section_title_size: '30',
-  theme_body_text_size: '13'
+  theme_body_text_size: '13',
+  theme_font_hero_weight: '900',
+  theme_font_hero_desc_weight: '600',
+  theme_font_heading_weight: '900',
+  theme_font_body_weight: '400',
+  theme_font_hero_italic: '',
+  theme_font_heading_italic: '',
+  theme_font_body_italic: ''
 };
 const FONT_OPTIONS = [
   { value:'vazirmatn', label:'وزیرمتن (پیش‌فرض سایت)' },
   { value:'notosans', label:'Noto Sans Arabic (مدرن و ساده)' },
   { value:'notonaskh', label:'Noto Naskh Arabic (سنتی‌تر، شبیه کتاب)' },
+  { value:'notokufi', label:'Noto Kufi Arabic (هندسی و ضخیم)' },
+  { value:'amiri', label:'Amiri (سنتی، شبیه چاپ قدیمی)' },
+  { value:'lalezar', label:'لاله‌زار (تزئینی و درشت، مناسب تیتر)' },
+  { value:'markazi', label:'Markazi Text (کلاسیک و خوانا)' },
+  { value:'scheherazade', label:'Scheherazade (نسخ سنتی)' },
   { value:'nazanin', label:'نازنین' },
   { value:'zar', label:'زر' },
-  { value:'titr', label:'تیتر (فقط بولد موجوده)' }
+  { value:'titr', label:'تیتر (فقط بولد موجوده)' },
+  { value:'shiraz', label:'شیراز' },
+  { value:'traffic', label:'ترافیک' },
+  { value:'hussaini', label:'حسینی نستعلیق (خوشنویسی، مناسب تیتر تزئینی)' },
+  { value:'irannastaliq', label:'ایران نستعلیق (خوشنویسی، مناسب تیتر تزئینی)' }
+];
+const WEIGHT_OPTIONS = [
+  { value:'400', label:'نرمال' },
+  { value:'500', label:'متوسط' },
+  { value:'600', label:'نیمه‌بولد' },
+  { value:'700', label:'بولد' },
+  { value:'800', label:'خیلی بولد' },
+  { value:'900', label:'سیاه (پُربولدترین)' }
 ];
 
 async function loadThemeAdmin(){
@@ -877,6 +901,13 @@ async function loadThemeAdmin(){
   const fontSelect = (key, cur) => FONT_OPTIONS.map(f =>
     `<option value="${f.value}" ${cur===f.value?'selected':''}>${f.label}</option>`
   ).join('');
+  const weightSelect = (key, cur) => `<select id="t-${key}">` + WEIGHT_OPTIONS.map(o =>
+    `<option value="${o.value}" ${String(cur)===o.value?'selected':''}>${o.label}</option>`
+  ).join('') + `</select>`;
+  const italicRow = (key, label) =>
+    `<div class="theme-row"><label>${label}</label><div class="theme-controls">
+      <input type="checkbox" id="t-${key}" ${cv(key) ? 'checked' : ''} style="width:20px;height:20px;cursor:pointer">
+    </div></div>`;
 
   listEl.innerHTML = `
     <div class="proj-card">
@@ -919,6 +950,18 @@ async function loadThemeAdmin(){
     </div>
 
     <div class="proj-card">
+      <h2>💪 بولد و ایتالیک</h2>
+      <div class="theme-hint">وزن (ضخامت) فونت هر بخش رو جدا تنظیم کن، و اگه خواستی اون بخش به‌صورت ایتالیک (کج) نشون داده بشه، تیکش بزن.</div>
+      <div class="theme-row"><label>وزن فونت تیتر اصلی هدر</label><div class="theme-controls">${weightSelect('theme_font_hero_weight', cv('theme_font_hero_weight'))}</div></div>
+      <div class="theme-row"><label>وزن فونت توضیح زیر تیتر هدر</label><div class="theme-controls">${weightSelect('theme_font_hero_desc_weight', cv('theme_font_hero_desc_weight'))}</div></div>
+      <div class="theme-row"><label>وزن فونت تیتر بخش‌ها</label><div class="theme-controls">${weightSelect('theme_font_heading_weight', cv('theme_font_heading_weight'))}</div></div>
+      <div class="theme-row"><label>وزن فونت متن عادی سایت</label><div class="theme-controls">${weightSelect('theme_font_body_weight', cv('theme_font_body_weight'))}</div></div>
+      ${italicRow('theme_font_hero_italic', 'ایتالیک کردن هدر (تیتر و توضیح)')}
+      ${italicRow('theme_font_heading_italic', 'ایتالیک کردن تیتر بخش‌ها')}
+      ${italicRow('theme_font_body_italic', 'ایتالیک کردن متن عادی سایت')}
+    </div>
+
+    <div class="proj-card">
       <button class="btn-upload" onclick="saveTheme()">ذخیره ظاهر و رنگ‌بندی</button>
       <button class="btn-sm btn-cancel" style="margin-inline-start:10px" onclick="resetTheme()">بازگشت به حالت پیش‌فرض</button>
       <span id="themeMsg" style="font-size:.85rem;margin-inline-start:10px"></span>
@@ -933,7 +976,8 @@ window.saveTheme = async function(){
   const payload = { id: 1 };
   Object.keys(THEME_DEFAULTS).forEach(k => {
     const el = document.getElementById('t-'+k);
-    payload[k] = el ? el.value : null;
+    if(!el){ payload[k] = null; return; }
+    payload[k] = (el.type === 'checkbox') ? (el.checked ? 'true' : '') : el.value;
   });
 
   const { error } = await supabase.from('site_content').upsert(payload);
