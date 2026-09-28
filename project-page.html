@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>صفحه‌ی پروژه</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap">
+<style>
+:root{--green:#2d7a3a;--green-dark:#1a5c2a;--bg:#f0f7f1;--bg-alt:#e3f0e6;--ink:#0d2010;--muted:#4f6b54;--line:#cfe2d3;--card:#fff;--font:'Vazirmatn',Tahoma,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.9;font-size:15px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+.top{background:var(--green-dark);color:#fff;padding:14px 0}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top a.back{font-weight:700;font-size:14px;padding:8px 14px;border:1.5px solid rgba(255,255,255,.5);border-radius:10px}
+.top .brand{font-weight:900;font-size:16px}
+section{padding:38px 0}
+section.alt{background:var(--bg-alt)}
+h2.sec{font-size:22px;font-weight:900;color:var(--green-dark);margin-bottom:18px}
+.tour{position:relative;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 8px 26px rgba(13,32,16,.18)}
+.tour img{display:block;width:100%;height:auto}
+.spot{position:absolute;transform:translate(-50%,-50%);background:var(--green);color:#fff;border:3px solid #fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.spot:hover,.spot:focus-visible{background:var(--green-dark)}
+.hint{margin-top:10px;font-size:13px;color:var(--muted)}
+.intro h1{font-size:30px;font-weight:900;color:var(--green-dark);line-height:1.5}
+.intro .tag{font-size:16px;color:var(--muted);margin:6px 0 14px}
+.intro p{max-width:70ch;font-size:16px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.card h3{font-size:17px;font-weight:700;color:var(--green);margin-bottom:10px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:0 18px}
+dt,dd{padding:9px 0;border-bottom:1px solid var(--line)}
+dt{color:var(--muted);font-size:14px}
+dd{font-weight:600}
+dl>:nth-last-child(-n+2){border-bottom:0}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tabs button{background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:8px 18px;font-size:14px;font-weight:600;color:var(--ink)}
+.tabs button[aria-selected=true]{background:var(--green);border-color:var(--green);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.thumb{position:relative;border:0;padding:0;border-radius:12px;overflow:hidden;background:#ddd;aspect-ratio:4/3}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.thumb:hover img{transform:scale(1.05)}
+.thumb span{position:absolute;right:0;left:0;bottom:0;padding:22px 12px 8px;color:#fff;font-size:13px;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,.65));text-align:right}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.vid{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.vid .frame{aspect-ratio:16/9;background:#000}
+.vid iframe,.vid video{width:100%;height:100%;border:0;display:block}
+.vid h4{padding:12px 16px;font-size:15px}
+.pn{display:flex;justify-content:space-between;gap:14px}
+.pn a{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 18px;font-weight:700}
+.pn a small{display:block;color:var(--muted);font-weight:400;font-size:12.5px}
+.pn a.next{text-align:left}
+.share{display:flex;flex-wrap:wrap;gap:10px}
+.share a{background:var(--green);color:#fff;border-radius:10px;padding:8px 18px;font-size:14px;font-weight:600}
+.map{border:0;width:100%;height:340px;border-radius:14px}
+footer{background:var(--green-dark);color:#dcefe0;padding:30px 0;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between}
+footer a{color:#fff;font-weight:600}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:78vh;border-radius:8px}
+.lb p{color:#fff;margin-top:12px;font-weight:600;text-align:center}
+.lb .ctl{position:absolute;background:rgba(255,255,255,.16);border:0;color:#fff;width:46px;height:46px;border-radius:50%;font-size:24px}
+.lb .ctl:hover{background:rgba(255,255,255,.3)}
+.lb .x{top:16px;left:16px}.lb .pv{right:16px;top:50%}.lb .nx{left:16px;top:50%}
+@media(max-width:760px){.specs{grid-template-columns:1fr}.intro h1{font-size:24px}.spot{font-size:12px;padding:5px 10px}.vids{grid-template-columns:1fr}.pn{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="back" href="/">→ بازگشت به سایت</a><span class="brand" id="brand"></span></div></header>
+<main id="app"></main>
+<footer><div class="wrap" id="foot"></div></footer>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="نمایش تصویر">
+  <button class="ctl x" id="lbx" aria-label="بستن">×</button>
+  <button class="ctl pv" id="lbp" aria-label="بعدی">›</button>
+  <button class="ctl nx" id="lbn" aria-label="قبلی">‹</button>
+  <img id="lbi" alt=""><p id="lbc"></p>
+</div>
+<script>
+/* ============ فقط این بخش رو با اطلاعات پروژه‌ی خودت عوض کن ============
+   عکس: آدرس فایل (مثلاً "images/render1.jpg")  |  ویدیو: type "file" برای mp4 یا "embed" برای آپارات/یوتیوب */
+const ph=(t,c)=>'data:image/svg+xml;utf8,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='960' height='620'><rect width='100%' height='100%' fill='"+c+"'/><text x='50%' y='50%' fill='#fff' font-size='38' text-anchor='middle' font-family='sans-serif'>"+t+"</text></svg>");
+const IMGS=(t,c,n)=>Array.from({length:n},(_,i)=>({src:ph(t+' '+(i+1),c),caption:t+' '+(i+1)}));
+const PROJECT={
+  name:'نام پروژه',
+  brand:'تعاونی مسکن پالایشگاه گاز ولیعصر (عج)',
+  tagline:'یک جمله‌ی کوتاه درباره‌ی پروژه',
+  intro:'متن معرفی پروژه اینجا نوشته می‌شه: موقعیت، ایده‌ی اصلی و ویژگی‌هایی که برای اعضا مهمه.',
+  general:[['نام پروژه','نام پروژه'],['موقعیت','شهر، خیابان'],['کارفرما','تعاونی مسکن'],['مشاور و مجری','نام شرکت']],
+  technical:[['متراژ زمین','—'],['تعداد بلوک','—'],['متراژ زیربنا','—'],['تعداد طبقات و واحدها','—'],['اسکلت','بتنی'],['سقف','—'],['امکانات','پارکینگ، انباری، لابی']],
+  tour:{image:ph('تصویر اصلی پروژه','#2d7a3a'),
+    spots:[
+      {label:'لابی و مشاعات',x:32,y:62,images:IMGS('لابی','#1a5c2a',3)},
+      {label:'واحدهای بلوک ۱',x:55,y:38,images:IMGS('پلان بلوک ۱','#3b8a48',4)},
+      {label:'واحدهای بلوک ۲',x:76,y:58,images:IMGS('پلان بلوک ۲','#4f9a5b',4)}]},
+  tabs:[
+    {title:'تصاویر رندر',images:IMGS('رندر','#2d7a3a',6)},
+    {title:'مراحل ساخت',images:IMGS('مرحله ساخت','#5b7a3d',6)},
+    {title:'پلان‌ها',images:IMGS('پلان','#2f6f6a',4)},
+    {title:'ویدیو',videos:[
+      {title:'ویدیوی معرفی پروژه',type:'embed',src:'https://www.aparat.com/video/video/embed/videohash/XXXXX/vt/frame'},
+      {title:'گزارش پیشرفت کار',type:'file',src:'video/progress.mp4'}]}],
+  prev:{title:'پروژه‌ی قبلی',url:'#'},
+  next:{title:'پروژه‌ی بعدی',url:'#'},
+  address:'آدرس دفتر یا پروژه',
+  phones:['07100000000'],
+  mapQuery:'شیراز'
+};
+/* ======================= از این پایین دست نزن ======================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const P=PROJECT;
+document.title=P.name+' | '+P.brand;
+$('#brand').textContent=P.brand;
+
+let list=[],idx=0;
+function openLb(images,i){list=images;idx=i;showLb();$('#lb').classList.add('open');$('#lbx').focus()}
+function showLb(){const it=list[idx];$('#lbi').src=it.src;$('#lbi').alt=it.caption||'';$('#lbc').textContent=(it.caption||'')+(list.length>1?'  ('+(idx+1)+'/'+list.length+')':'')}
+function step(d){idx=(idx+d+list.length)%list.length;showLb()}
+function closeLb(){$('#lb').classList.remove('open')}
+$('#lbx').onclick=closeLb;$('#lbp').onclick=()=>step(-1);$('#lbn').onclick=()=>step(1);
+$('#lb').onclick=e=>{if(e.target.id==='lb')closeLb()};
+addEventListener('keydown',e=>{if(!$('#lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')step(1);if(e.key==='ArrowRight')step(-1)});
+
+const dl=rows=>'<dl>'+rows.map(r=>'<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>').join('')+'</dl>';
+const url=encodeURIComponent(location.href),txt=encodeURIComponent(P.name);
+
+$('#app').innerHTML=
+'<section><div class="wrap"><h2 class="sec">تور تصویری پروژه '+esc(P.name)+'</h2>'+
+  '<div class="tour"><img src="'+P.tour.image+'" alt="تصویر اصلی '+esc(P.name)+'">'+
+  P.tour.spots.map((s,i)=>'<button class="spot" data-i="'+i+'" style="left:'+s.x+'%;top:'+s.y+'%">'+esc(s.label)+'</button>').join('')+'</div>'+
+  '<p class="hint">روی هر برچسب بزن تا تصاویر همون بخش باز بشه.</p></div></section>'+
+'<section class="alt"><div class="wrap intro"><h1>'+esc(P.name)+'</h1><p class="tag">'+esc(P.tagline)+'</p><p>'+esc(P.intro)+'</p></div></section>'+
+'<section><div class="wrap specs"><div class="card"><h3>مشخصات کلی</h3>'+dl(P.general)+'</div><div class="card"><h3>مشخصات فنی</h3>'+dl(P.technical)+'</div></div></section>'+
+'<section class="alt"><div class="wrap"><div class="tabs" role="tablist" id="tabs">'+
+  P.tabs.map((t,i)=>'<button role="tab" aria-selected="'+(i===0)+'" data-t="'+i+'">'+esc(t.title)+'</button>').join('')+'</div><div id="panel" role="tabpanel"></div></div></section>'+
+'<section><div class="wrap pn"><a href="'+esc(P.prev.url)+'"><small>قبلی</small>'+esc(P.prev.title)+'</a><a class="next" href="'+esc(P.next.url)+'"><small>بعدی</small>'+esc(P.next.title)+'</a></div></section>'+
+'<section class="alt"><div class="wrap"><h2 class="sec">این صفحه را به اشتراک بگذارید</h2><div class="share">'+
+  '<a target="_blank" rel="noopener" href="https://wa.me/?text='+txt+'%20'+url+'">واتساپ</a>'+
+  '<a target="_blank" rel="noopener" href="https://t.me/share/url?url='+url+'&text='+txt+'">تلگرام</a>'+
+  '<a href="mailto:?subject='+txt+'&body='+url+'">ایمیل</a>'+
+  '<a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url='+url+'">لینکدین</a></div></div></section>'+
+'<section><div class="wrap"><h2 class="sec">موقعیت روی نقشه</h2><iframe class="map" loading="lazy" title="نقشه" src="https://maps.google.com/maps?q='+encodeURIComponent(P.mapQuery)+'&t=m&z=15&output=embed"></iframe></div></section>';
+
+$('#foot').innerHTML='<div>'+esc(P.address)+'</div><div>'+P.phones.map(p=>'<a href="tel:'+esc(p)+'">'+esc(p)+'</a>').join(' &nbsp; ')+'</div>';
+
+document.querySelectorAll('.spot').forEach(b=>b.onclick=()=>{const s=P.tour.spots[+b.dataset.i];openLb(s.images,0)});
+
+function panel(i){
+  const t=P.tabs[i],el=$('#panel');
+  if(t.images){
+    el.innerHTML='<div class="grid">'+t.images.map((im,k)=>'<button class="thumb" data-k="'+k+'"><img loading="lazy" src="'+im.src+'" alt="'+esc(im.caption)+'"><span>'+esc(im.caption)+'</span></button>').join('')+'</div>';
+    el.querySelectorAll('.thumb').forEach(b=>b.onclick=()=>openLb(t.images,+b.dataset.k));
+  }else{
+    el.innerHTML='<div class="vids">'+t.videos.map(v=>'<div class="vid"><div class="frame">'+
+      (v.type==='embed'?'<iframe src="'+esc(v.src)+'" allowfullscreen loading="lazy" title="'+esc(v.title)+'"></iframe>':'<video controls preload="metadata" src="'+esc(v.src)+'"></video>')+
+      '</div><h4>'+esc(v.title)+'</h4></div>').join('')+'</div>';
+  }
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  panel(+b.dataset.t);
+});
+panel(0);
+</script>
+</body>
+</html>
