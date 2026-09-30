@@ -57,14 +57,6 @@ body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;
 .btn-score{background:#2d7a3a;color:#fff;padding:8px 14px;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
 .btn-score:hover{background:#235f2c}
 
-/* بخش ظاهر و رنگ‌بندی */
-input[type=color]{width:56px;height:38px;padding:2px;border:1.5px solid #d0e8d4;border-radius:8px;cursor:pointer;background:#fff}
-.theme-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.theme-row label{font-size:.88rem;color:#444;font-weight:600}
-.theme-controls{display:flex;align-items:center;gap:8px}
-.theme-hint{font-size:.78rem;color:#888;margin-bottom:14px;line-height:1.6}
-.theme-controls select{padding:8px 10px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.85rem;background:#fff}
-
 /* بخش گالری/عکس‌ها */
 .gallery-section{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:18px}
 .gallery-section h2{font-size:1rem;color:#2d7a3a;margin-bottom:14px}
@@ -75,10 +67,6 @@ input[type=color]{width:56px;height:38px;padding:2px;border:1.5px solid #d0e8d4;
 .img-item{position:relative}
 .img-item img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block}
 .img-item button{position:absolute;top:4px;left:4px;background:#c62828;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
-#gallery-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
-.cap-input{width:100%;margin-top:6px;font-size:.75rem;padding:5px 6px;border:1px solid #c8e0cb;border-radius:6px;font-family:inherit;box-sizing:border-box}
-.img-item button.cap-save{position:static;display:block;width:100%;margin-top:4px;background:#2d7a3a;padding:5px 8px}
-.img-item button.cap-save:disabled{opacity:.6}
 
 /* بخش پروژه‌ها */
 .proj-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:16px}
@@ -128,7 +116,6 @@ input[type=color]{width:56px;height:38px;padding:2px;border:1.5px solid #d0e8d4;
       <button class="tab" data-status="projects" onclick="setTab('projects')">🏗️ پروژه‌ها</button>
       <button class="tab" data-status="managers" onclick="setTab('managers')">👤 مدیران شرکت</button>
       <button class="tab" data-status="content" onclick="setTab('content')">📝 متن صفحه اصلی</button>
-      <button class="tab" data-status="theme" onclick="setTab('theme')">🎨 ظاهر و رنگ‌بندی</button>
       <button class="tab" data-status="contact" onclick="setTab('contact')">✉️ پیام‌های تماس</button>
     </div>
     <div id="list"></div>
@@ -202,7 +189,6 @@ async function loadList(){
     listEl.innerHTML = galleryTabHtml();
     loadImages('gallery');
     loadImages('header');
-    loadImages('announcements');
     return;
   }
 
@@ -221,12 +207,6 @@ async function loadList(){
   if(currentTab === 'content'){
     listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
     loadContentAdmin();
-    return;
-  }
-
-  if(currentTab === 'theme'){
-    listEl.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
-    loadThemeAdmin();
     return;
   }
 
@@ -435,12 +415,6 @@ function galleryTabHtml(){
       <button class="btn-upload" onclick="uploadImage('header')">آپلود عکس</button>
       <div class="img-grid" id="header-grid"></div>
     </div>
-    <div class="gallery-section">
-      <h2>📢 عکس‌های اطلاعیه</h2>
-      <input type="file" id="announcements-file" accept="image/*">
-      <button class="btn-upload" onclick="uploadImage('announcements')">آپلود عکس</button>
-      <div class="img-grid" id="announcements-grid"></div>
-    </div>
   `;
 }
 
@@ -472,14 +446,6 @@ async function loadImages(bucket){
 
   if (error) { grid.innerHTML = 'خطا در دریافت لیست عکس‌ها'; return; }
 
-  // توضیحات عکس‌ها فقط برای گالری پروژه (جدول image_captions)
-  const withCaption = (bucket === 'gallery');
-  const captions = {};
-  if (withCaption) {
-    const { data: rows } = await supabase.from('image_captions').select('file_name, caption').eq('bucket', bucket);
-    (rows || []).forEach(r => { captions[r.file_name] = r.caption || ''; });
-  }
-
   grid.innerHTML = '';
   for (const file of files) {
     const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(file.name);
@@ -489,43 +455,14 @@ async function loadImages(bucket){
       <img src="${urlData.publicUrl}">
       <button onclick="deleteImage('${bucket}', '${file.name}')">حذف</button>
     `;
-    if (withCaption) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'cap-input';
-      input.placeholder = 'توضیح عکس (مثلاً گزارش مورخه ۱۴۰۵/۰۷/۰۶)';
-      input.value = captions[file.name] || '';
-      const btn = document.createElement('button');
-      btn.className = 'cap-save';
-      btn.textContent = 'ذخیره توضیح';
-      btn.onclick = () => saveCaption(bucket, file.name, input, btn);
-      div.appendChild(input);
-      div.appendChild(btn);
-    }
     grid.appendChild(div);
   }
 }
-
-window.saveCaption = async function(bucket, fileName, input, btn){
-  const caption = input.value.trim();
-  btn.disabled = true;
-  let error;
-  if (caption === '') {
-    ({ error } = await supabase.from('image_captions').delete().eq('bucket', bucket).eq('file_name', fileName));
-  } else {
-    ({ error } = await supabase.from('image_captions').upsert({ bucket, file_name: fileName, caption }, { onConflict: 'bucket,file_name' }));
-  }
-  btn.disabled = false;
-  if (error) { alert('خطا در ذخیره توضیح: ' + error.message); return; }
-  btn.textContent = '✅ ذخیره شد';
-  setTimeout(() => { btn.textContent = 'ذخیره توضیح'; }, 1500);
-};
 
 window.deleteImage = async function(bucket, fileName){
   if (!confirm('این عکس حذف شود؟')) return;
   const { error } = await supabase.storage.from(bucket).remove([fileName]);
   if (error) { alert('خطا در حذف: ' + error.message); return; }
-  if (bucket === 'gallery') { await supabase.from('image_captions').delete().eq('bucket', bucket).eq('file_name', fileName); }
   loadImages(bucket);
 };
 
@@ -554,6 +491,12 @@ async function loadProjectsAdmin(){
 
       <h2 style="margin-top:6px">تصاویر این پروژه</h2>
       <input type="file" id="pfile-${p.id}" accept="image/*">
+      <select id="pcat-${p.id}" style="margin:0 6px;padding:6px 8px;border-radius:6px;border:1px solid #ccc">
+        <option value="render">رندر</option>
+        <option value="progress">مرحله‌ی ساخت</option>
+        <option value="plan">پلان</option>
+        <option value="other">سایر</option>
+      </select>
       <button class="btn-upload" onclick="uploadProjectPhoto(${p.id})">آپلود عکس</button>
       <div class="img-grid" id="pgrid-${p.id}"></div>
     </div>
@@ -577,13 +520,15 @@ window.saveProjectDescription = async function(projectId){
 
 window.uploadProjectPhoto = async function(projectId){
   const input = document.getElementById('pfile-'+projectId);
+  const catSel = document.getElementById('pcat-'+projectId);
   const file = input.files[0];
   if (!file) { alert('اول یک عکس انتخاب کن'); return; }
 
+  const category = catSel ? catSel.value : 'other';
   const extMatch = file.name.match(/\.[0-9a-zA-Z]+$/);
   const ext = extMatch ? extMatch[0] : '.jpg';
   const randomPart = Math.random().toString(36).slice(2, 8);
-  const fileName = projectId + '/' + Date.now() + '_' + randomPart + ext;
+  const fileName = projectId + '/' + category + '_' + Date.now() + '_' + randomPart + ext;
 
   const { error } = await supabase.storage.from('project-photos').upload(fileName, file);
   if (error) { alert('خطا در آپلود: ' + error.message); return; }
@@ -789,7 +734,19 @@ async function loadContactMessages(){
 
 /* ================== بخش متن صفحه اصلی (تیتر، آمار، خدمات) ================== */
 
+const FONT_OPTIONS = [
+  {key:'vazirmatn', label:'وزیرمتن (پیش‌فرض)'},
+  {key:'naskh', label:'نسخ (Noto Naskh)'},
+  {key:'lalezar', label:'لاله‌زار (تزئینی)'},
+  {key:'tahoma', label:'Tahoma (سیستمی)'},
+  {key:'nazanin', label:'B Nazanin (سیستمی)'}
+];
+const FONT_SIZE_OPTIONS = [
+  {key:'13', label:'کوچک'}, {key:'15', label:'متوسط (پیش‌فرض)'},
+  {key:'17', label:'بزرگ'}, {key:'19', label:'خیلی بزرگ'}
+];
 const CONTENT_DEFAULTS = {
+  font_family: 'vazirmatn', font_size: '15', text_color: '#0d2010', bg_color: '#f0f7f1',
   hero_tag: 'تعاونی مسکن کارکنان پالایشگاه گاز',
   hero_title1: 'خانه می‌سازیم،',
   hero_title2: 'آینده می‌سازیم',
@@ -816,6 +773,32 @@ async function loadContentAdmin(){
   const v = k => escapeHtml(C[k] != null && C[k] !== '' ? C[k] : CONTENT_DEFAULTS[k]);
 
   listEl.innerHTML = `
+    <div class="proj-card">
+      <h2>🎨 ظاهر سایت (فونت و رنگ)</h2>
+      <div class="mgr-fields">
+        <div class="field">
+          <label>نوع فونت</label>
+          <select id="c-font_family">
+            ${FONT_OPTIONS.map(o => `<option value="${o.key}" ${C.font_family===o.key || (!C.font_family && o.key==='vazirmatn') ? 'selected':''}>${o.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>اندازه‌ی فونت</label>
+          <select id="c-font_size">
+            ${FONT_SIZE_OPTIONS.map(o => `<option value="${o.key}" ${C.font_size===o.key || (!C.font_size && o.key==='15') ? 'selected':''}>${o.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>رنگ متن سایت</label>
+          <input type="color" id="c-text_color" value="${C.text_color || '#0d2010'}" style="height:42px;padding:4px">
+        </div>
+        <div class="field">
+          <label>رنگ پس‌زمینه‌ی سایت</label>
+          <input type="color" id="c-bg_color" value="${C.bg_color || '#f0f7f1'}" style="height:42px;padding:4px">
+        </div>
+      </div>
+    </div>
+
     <div class="proj-card">
       <h2>🏷️ برچسب و تیتر اصلی</h2>
       <div class="field"><label>برچسب کوچک بالای تیتر</label><input id="c-hero_tag" value="${v('hero_tag')}"></div>
@@ -862,7 +845,8 @@ window.saveContent = async function(){
   const msgEl = document.getElementById('contentMsg');
   msgEl.style.color = '#666'; msgEl.textContent = 'در حال ذخیره...';
 
-  const keys = ['hero_tag','hero_title1','hero_title2','hero_desc',
+  const keys = ['font_family','font_size','text_color','bg_color',
+    'hero_tag','hero_title1','hero_title2','hero_desc',
     'stat1_n','stat1_l','stat2_n','stat2_l','stat3_n','stat3_l','stat4_n','stat4_l',
     'service1_icon','service1_title','service1_desc',
     'service2_icon','service2_title','service2_desc',
@@ -877,171 +861,6 @@ window.saveContent = async function(){
 
   msgEl.style.color = '#2e7d32';
   msgEl.textContent = '✅ ذخیره شد — چند لحظه دیگه توی سایت اصلی هم می‌بینیش';
-};
-
-/* ================== بخش ظاهر و رنگ‌بندی سایت ================== */
-
-const THEME_DEFAULTS = {
-  theme_font_body: 'vazirmatn',
-  theme_font_hero: 'vazirmatn',
-  theme_font_heading: 'vazirmatn',
-  theme_primary: '#2d7a3a',
-  theme_primary_dark: '#1a5c26',
-  theme_primary_light: '#4caf64',
-  theme_hero_highlight: '#7dd99a',
-  theme_page_bg: '#f0f7f1',
-  theme_alt_bg: '#e8f4ea',
-  theme_text_color: '#0d2010',
-  theme_hero_title_size: '60',
-  theme_hero_desc_size: '15',
-  theme_section_title_size: '30',
-  theme_body_text_size: '13',
-  theme_font_hero_weight: '900',
-  theme_font_hero_desc_weight: '600',
-  theme_font_heading_weight: '900',
-  theme_font_body_weight: '400',
-  theme_font_hero_italic: '',
-  theme_font_heading_italic: '',
-  theme_font_body_italic: ''
-};
-const FONT_OPTIONS = [
-  { value:'vazirmatn', label:'وزیرمتن (پیش‌فرض سایت)' },
-  { value:'notosans', label:'Noto Sans Arabic (مدرن و ساده)' },
-  { value:'notonaskh', label:'Noto Naskh Arabic (سنتی‌تر، شبیه کتاب)' },
-  { value:'notokufi', label:'Noto Kufi Arabic (هندسی و ضخیم)' },
-  { value:'amiri', label:'Amiri (سنتی، شبیه چاپ قدیمی)' },
-  { value:'lalezar', label:'لاله‌زار (تزئینی و درشت، مناسب تیتر)' },
-  { value:'markazi', label:'Markazi Text (کلاسیک و خوانا)' },
-  { value:'scheherazade', label:'Scheherazade (نسخ سنتی)' },
-  { value:'nazanin', label:'نازنین' },
-  { value:'zar', label:'زر' },
-  { value:'titr', label:'تیتر (فقط بولد موجوده)' },
-  { value:'shiraz', label:'شیراز' },
-  { value:'traffic', label:'ترافیک' },
-  { value:'hussaini', label:'حسینی نستعلیق (خوشنویسی، مناسب تیتر تزئینی)' },
-  { value:'irannastaliq', label:'ایران نستعلیق (خوشنویسی، مناسب تیتر تزئینی)' }
-];
-const WEIGHT_OPTIONS = [
-  { value:'400', label:'نرمال' },
-  { value:'500', label:'متوسط' },
-  { value:'600', label:'نیمه‌بولد' },
-  { value:'700', label:'بولد' },
-  { value:'800', label:'خیلی بولد' },
-  { value:'900', label:'سیاه (پُربولدترین)' }
-];
-
-async function loadThemeAdmin(){
-  const listEl = document.getElementById('list');
-  const { data, error } = await supabase.from('site_content').select('*').eq('id', 1).single();
-  const C = (!error && data) ? data : {};
-  const cv = k => (C[k] != null && C[k] !== '') ? C[k] : THEME_DEFAULTS[k];
-
-  const colorRow = (key, label) =>
-    `<div class="theme-row"><label>${label}</label><div class="theme-controls">
-      <input type="color" id="t-${key}" value="${cv(key)}">
-    </div></div>`;
-  const sizeRow = (key, label, min, max) =>
-    `<div class="theme-row"><label>${label}</label><div class="theme-controls">
-      <input type="number" id="t-${key}" value="${cv(key)}" min="${min}" max="${max}" style="width:80px">
-      <span style="font-size:.8rem;color:#888">پیکسل</span>
-    </div></div>`;
-
-  const fontSelect = (key, cur) => FONT_OPTIONS.map(f =>
-    `<option value="${f.value}" ${cur===f.value?'selected':''}>${f.label}</option>`
-  ).join('');
-  const weightSelect = (key, cur) => `<select id="t-${key}">` + WEIGHT_OPTIONS.map(o =>
-    `<option value="${o.value}" ${String(cur)===o.value?'selected':''}>${o.label}</option>`
-  ).join('') + `</select>`;
-  const italicRow = (key, label) =>
-    `<div class="theme-row"><label>${label}</label><div class="theme-controls">
-      <input type="checkbox" id="t-${key}" ${cv(key) ? 'checked' : ''} style="width:20px;height:20px;cursor:pointer">
-    </div></div>`;
-
-  listEl.innerHTML = `
-    <div class="proj-card">
-      <h2>🔤 فونت‌های سایت</h2>
-      <div class="theme-hint">هر بخش می‌تونه فونت جدا داشته باشه. اگه فونت هدر یا تیترها رو عوض نکنی، از «فونت متن عادی» پیروی می‌کنن.</div>
-      <div class="theme-row"><label>فونت متن عادی (بقیه‌ی سایت)</label><div class="theme-controls">
-        <select id="t-theme_font_body">${fontSelect('theme_font_body', cv('theme_font_body'))}</select>
-      </div></div>
-      <div class="theme-row"><label>فونت هدر (تیتر بالای صفحه)</label><div class="theme-controls">
-        <select id="t-theme_font_hero">${fontSelect('theme_font_hero', cv('theme_font_hero'))}</select>
-      </div></div>
-      <div class="theme-row"><label>فونت تیتر بخش‌ها (درباره ما، خدمات و...)</label><div class="theme-controls">
-        <select id="t-theme_font_heading">${fontSelect('theme_font_heading', cv('theme_font_heading'))}</select>
-      </div></div>
-    </div>
-
-    <div class="proj-card">
-      <h2>🎨 رنگ‌های اصلی سایت</h2>
-      <div class="theme-hint">این رنگ اصلی روی دکمه‌ها، لینک‌ها، حاشیه‌ها و بیشتر جاهایی که رنگ سبز داره اثر می‌ذاره.</div>
-      ${colorRow('theme_primary','رنگ اصلی (سبز اصلی)')}
-      ${colorRow('theme_primary_dark','رنگ سبز تیره (گرادینت لوگو و دکمه‌ها)')}
-      ${colorRow('theme_primary_light','رنگ سبز روشن (گرادینت دکمه‌ها)')}
-      ${colorRow('theme_hero_highlight','رنگ خط دوم تیتر هدر')}
-    </div>
-
-    <div class="proj-card">
-      <h2>🖼️ رنگ پس‌زمینه و متن</h2>
-      ${colorRow('theme_page_bg','رنگ پس‌زمینه اصلی سایت')}
-      ${colorRow('theme_alt_bg','رنگ پس‌زمینه بخش‌های متناوب')}
-      ${colorRow('theme_text_color','رنگ متن اصلی سایت')}
-    </div>
-
-    <div class="proj-card">
-      <h2>📏 اندازه فونت‌ها</h2>
-      <div class="theme-hint">چون سایت از اندازه‌های ثابت برای هر بخش استفاده می‌کنه، فقط بخش‌های اصلی این‌جا قابل تنظیمه — نه «یه دکمه‌ی واحد برای کل سایت».</div>
-      ${sizeRow('theme_hero_title_size','اندازه تیتر اصلی هدر', 32, 80)}
-      ${sizeRow('theme_hero_desc_size','اندازه توضیح زیر تیتر', 12, 22)}
-      ${sizeRow('theme_section_title_size','اندازه تیتر بخش‌ها (درباره ما، خدمات و...)', 20, 40)}
-      ${sizeRow('theme_body_text_size','اندازه توضیح زیر کارت‌های خدمات', 11, 18)}
-    </div>
-
-    <div class="proj-card">
-      <h2>💪 بولد و ایتالیک</h2>
-      <div class="theme-hint">وزن (ضخامت) فونت هر بخش رو جدا تنظیم کن، و اگه خواستی اون بخش به‌صورت ایتالیک (کج) نشون داده بشه، تیکش بزن.</div>
-      <div class="theme-row"><label>وزن فونت تیتر اصلی هدر</label><div class="theme-controls">${weightSelect('theme_font_hero_weight', cv('theme_font_hero_weight'))}</div></div>
-      <div class="theme-row"><label>وزن فونت توضیح زیر تیتر هدر</label><div class="theme-controls">${weightSelect('theme_font_hero_desc_weight', cv('theme_font_hero_desc_weight'))}</div></div>
-      <div class="theme-row"><label>وزن فونت تیتر بخش‌ها</label><div class="theme-controls">${weightSelect('theme_font_heading_weight', cv('theme_font_heading_weight'))}</div></div>
-      <div class="theme-row"><label>وزن فونت متن عادی سایت</label><div class="theme-controls">${weightSelect('theme_font_body_weight', cv('theme_font_body_weight'))}</div></div>
-      ${italicRow('theme_font_hero_italic', 'ایتالیک کردن هدر (تیتر و توضیح)')}
-      ${italicRow('theme_font_heading_italic', 'ایتالیک کردن تیتر بخش‌ها')}
-      ${italicRow('theme_font_body_italic', 'ایتالیک کردن متن عادی سایت')}
-    </div>
-
-    <div class="proj-card">
-      <button class="btn-upload" onclick="saveTheme()">ذخیره ظاهر و رنگ‌بندی</button>
-      <button class="btn-sm btn-cancel" style="margin-inline-start:10px" onclick="resetTheme()">بازگشت به حالت پیش‌فرض</button>
-      <span id="themeMsg" style="font-size:.85rem;margin-inline-start:10px"></span>
-    </div>
-  `;
-}
-
-window.saveTheme = async function(){
-  const msgEl = document.getElementById('themeMsg');
-  msgEl.style.color = '#666'; msgEl.textContent = 'در حال ذخیره...';
-
-  const payload = { id: 1 };
-  Object.keys(THEME_DEFAULTS).forEach(k => {
-    const el = document.getElementById('t-'+k);
-    if(!el){ payload[k] = null; return; }
-    payload[k] = (el.type === 'checkbox') ? (el.checked ? 'true' : '') : el.value;
-  });
-
-  const { error } = await supabase.from('site_content').upsert(payload);
-  if(error){ msgEl.style.color = '#c62828'; msgEl.textContent = 'خطا: ' + error.message; return; }
-
-  msgEl.style.color = '#2e7d32';
-  msgEl.textContent = '✅ ذخیره شد — چند لحظه دیگه توی سایت اصلی هم می‌بینیش';
-};
-
-window.resetTheme = async function(){
-  if(!confirm('رنگ‌ها، فونت و اندازه‌ها به حالت پیش‌فرض برگرده؟')) return;
-  const msgEl = document.getElementById('themeMsg');
-  const payload = Object.assign({ id: 1 }, THEME_DEFAULTS);
-  const { error } = await supabase.from('site_content').upsert(payload);
-  if(error && msgEl){ msgEl.style.color = '#c62828'; msgEl.textContent = 'خطا: ' + error.message; return; }
-  loadThemeAdmin();
 };
 
 checkAccess();
