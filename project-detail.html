@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جزئیات پروژه | تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap">
+<style>
+:root{
+  --font-family:'Vazirmatn','Tahoma',sans-serif;
+  --primary:#2d7a3a; --primary-dark:#1a5c26; --primary-light:#4caf64;
+  --page-bg:#f0f7f1; --alt-bg:#e8f4ea; --text-color:#0d2010;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-family);direction:rtl;background:var(--page-bg);color:var(--text-color);min-height:100vh;line-height:1.9;font-size:14px}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+nav{position:sticky;top:0;z-index:100;background:rgba(232,244,234,.97);backdrop-filter:blur(14px);border-bottom:1px solid #c8e0cb;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;flex-shrink:0}
+.logo-text{font-size:13px;font-weight:800;color:var(--text-color);line-height:1.3}
+.back{color:var(--primary);font-size:13px;font-weight:700;padding:8px 14px;border:1.5px solid var(--primary);border-radius:8px}
+.back:hover{background:var(--primary);color:#fff}
+
+/* تور/کاور */
+.tour-wrap{max-width:1180px;margin:22px auto 0;padding:0 20px}
+.tour{position:relative;border-radius:18px;overflow:hidden;background:#173a1e;aspect-ratio:16/8;box-shadow:0 10px 30px rgba(13,32,16,.2)}
+.tour img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tour::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(6,20,9,.55),transparent 45%)}
+.hot{position:absolute;transform:translate(50%,-50%);z-index:2;background:rgba(26,92,38,.88);color:#fff;border:2px solid #fff;border-radius:999px;padding:8px 16px;font-size:12.5px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.35);white-space:nowrap}
+.hot:hover,.hot:focus-visible{background:var(--primary)}
+.nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;max-width:150px}
+.nav-arrow:hover{background:rgba(255,255,255,.3)}
+.nav-arrow.prev{right:14px}
+.nav-arrow.next{left:14px}
+.nav-arrow b{display:block;font-size:11.5px;color:#cfe7d3;font-weight:500}
+.cover-title{position:absolute;bottom:16px;right:18px;z-index:2;color:#fff}
+.cover-title h1{font-size:clamp(18px,2.6vw,26px);font-weight:900}
+.cover-title span{font-size:11px;letter-spacing:3px;color:#bfe3c5;font-weight:700}
+.hint{max-width:1180px;margin:10px auto 0;padding:0 24px;font-size:12px;color:#5a7a5e}
+
+/* دو ستونه */
+.cols{max-width:1180px;margin:0 auto;padding:36px 20px 56px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.acc{background:#fff;border:1px solid #c8e0cb;border-radius:14px;overflow:hidden}
+.acc-item{border-bottom:1px solid #e3f0e6}
+.acc-item:last-child{border-bottom:0}
+.acc-head{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:none;border:none;font-size:14.5px;font-weight:700;color:var(--text-color);text-align:right}
+.acc-head.on{color:var(--primary);background:var(--alt-bg)}
+.acc-head .plus{font-size:18px;color:var(--primary);font-weight:400;transition:transform .2s}
+.acc-head.on .plus{transform:rotate(45deg)}
+.acc-body{padding:0 18px 18px;font-size:13.5px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:0 16px}
+dt,dd{padding:8px 0;border-bottom:1px dashed #e3f0e6;font-size:13.5px}
+dt{color:#5a7a5e}
+dd{font-weight:700}
+dl>:nth-last-child(-n+2){border-bottom:0}
+.acc-body p{color:#3d6b45;max-width:60ch}
+
+/* گالری/اسلایدر */
+.slider{margin-top:4px}
+.slide-main{position:relative;border-radius:12px;overflow:hidden;background:#111;aspect-ratio:4/3}
+.slide-main img{width:100%;height:100%;object-fit:cover;display:block}
+.slide-ctl{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px}
+.slide-ctl:hover{background:rgba(0,0,0,.65)}
+.slide-ctl.p{right:10px}
+.slide-ctl.n{left:10px}
+.slide-count{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px}
+.thumbs{display:flex;gap:7px;margin-top:9px;overflow-x:auto;padding-bottom:3px}
+.thumbs button{flex:0 0 auto;width:62px;height:46px;border-radius:8px;overflow:hidden;border:2px solid transparent;padding:0}
+.thumbs button.on{border-color:var(--primary)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.empty-note{color:#6a8a6e;font-size:13px;padding:6px 2px}
+.vid-box{aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.vid-box iframe,.vid-box video{width:100%;height:100%;border:0;display:block}
+.vid-title{font-size:13px;font-weight:700;margin-top:8px}
+
+section.sec{max-width:1180px;margin:0 auto;padding:34px 20px}
+.sec h2{font-size:19px;font-weight:900;margin-bottom:14px}
+.section-tag{font-size:11px;letter-spacing:4px;color:var(--primary);font-weight:700;margin-bottom:6px;display:block}
+.share{display:flex;flex-wrap:wrap;gap:10px}
+.share a{background:var(--primary);color:#fff;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;text-decoration:none}
+.share a:hover{background:var(--primary-dark)}
+.map{border:0;width:100%;height:300px;border-radius:14px}
+footer{padding:20px 24px;border-top:1px solid #c8e0cb;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;font-size:12px;color:#6a8a6e}
+.state-msg{max-width:1000px;margin:80px auto;text-align:center;padding:0 20px}
+.state-msg h2{font-size:20px;margin-bottom:10px}
+.state-msg a{color:var(--primary);font-weight:700}
+
+.img-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.img-modal-close{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;width:42px;height:42px;border-radius:50%}
+.img-modal-close:hover{background:rgba(255,255,255,.3)}
+.img-modal-img{max-width:90vw;max-height:85vh;border-radius:10px;object-fit:contain}
+
+@media(max-width:860px){.cols{grid-template-columns:1fr}.nav-arrow{max-width:110px;font-size:11px;padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-icon">T</div>
+    <div class="logo-text">تعاونی مسکن<br>پالایشگاه گاز ولیعصر (عج)</div>
+  </a>
+  <a class="back" href="index.html">→ بازگشت به سایت</a>
+</nav>
+<div id="app"></div>
+<footer>
+  <span>© ۱۴۰۳ تعاونی مسکن پالایشگاه گاز ولیعصر (عج)</span>
+  <span>داده‌ها در مرورگر شما ذخیره می‌شوند 🔒</span>
+</footer>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function h(tag, attrs, children){
+  var el = document.createElement(tag);
+  if(attrs) Object.keys(attrs).forEach(function(k){
+    if(k==="style"){Object.assign(el.style, attrs[k]);}
+    else if(k==="className"){el.className=attrs[k];}
+    else if(k.indexOf("on")===0){el[k.toLowerCase()]=attrs[k];}
+    else{el.setAttribute(k,attrs[k]);}
+  });
+  if(children){
+    (Array.isArray(children)?children:[children]).forEach(function(c){
+      if(c===null||c===undefined)return;
+      el.appendChild(typeof c==="string"||typeof c==="number"?document.createTextNode(c):c);
+    });
+  }
+  return el;
+}
+var app = document.getElementById("app");
+
+var CATS = {
+  render:{label:"تصاویر رندر", prefixes:["render","rndr"]},
+  progress:{label:"عکس‌های پیشرفت ساخت‌وساز", prefixes:["progress","construction","build"]},
+  plan:{label:"پلان‌ها", prefixes:["plan","layout"]},
+  other:{label:"سایر تصاویر", prefixes:[]}
+};
+function categoryOf(filename){
+  var base=filename.toLowerCase();
+  for(var key in CATS){ if(key==="other") continue;
+    if(CATS[key].prefixes.some(function(p){return base.indexOf(p)===0;})) return key;
+  }
+  return "other";
+}
+function stateMsg(title, desc){
+  app.innerHTML="";
+  var box=h("div",{className:"state-msg"});
+  box.appendChild(h("h2",{},[title]));
+  if(desc) box.appendChild(h("p",{style:{color:"#5a7a5e",marginBottom:"14px"}},[desc]));
+  box.appendChild(h("a",{href:"index.html"},["→ بازگشت به سایت"]));
+  app.appendChild(box);
+}
+
+var params = new URLSearchParams(location.search);
+var id = params.get("id");
+if(!id){ stateMsg("پروژه‌ای مشخص نشده","آدرس صفحه ناقص است."); }
+else { loadProject(id); }
+
+/* لایت‌باکس بزرگ‌نمایی عکس */
+function openLightbox(url, caption){
+  var old=document.getElementById("imgModal"); if(old) old.remove();
+  var bg=h("div",{className:"img-modal-bg", id:"imgModal", onclick:function(e){ if(e.target.id==="imgModal") bg.remove(); }});
+  bg.appendChild(h("button",{className:"img-modal-close", onclick:function(){bg.remove();}},["×"]));
+  bg.appendChild(h("img",{className:"img-modal-img", src:url, alt:caption||""}));
+  document.body.appendChild(bg);
+}
+
+async function loadProject(id){
+  var { data: project, error } = await sb.from("projects").select("*").eq("id", id).single();
+  if(error || !project){ stateMsg("پروژه یافت نشد","ممکن است این پروژه حذف شده یا آدرس اشتباه باشد."); return; }
+  document.title = project.name + " | تعاونی مسکن پالایشگاه گاز ولیعصر (عج)";
+
+  var { data: files } = await sb.storage.from("project-photos").list(String(id), { sortBy:{ column:"name", order:"asc" } });
+  var byCat = { render:[], progress:[], plan:[], other:[] };
+  (files||[]).filter(function(f){ return f.name && f.id!==null; }).forEach(function(f){
+    var url = sb.storage.from("project-photos").getPublicUrl(id+"/"+f.name).data.publicUrl;
+    byCat[categoryOf(f.name)].push({ url:url, name:f.name, caption:project.name });
+  });
+  var allPhotos = byCat.render.concat(byCat.progress, byCat.plan, byCat.other);
+  var coverUrl = null;
+  if(project.cover_image){
+    var found = allPhotos.find(function(p){ return p.name===project.cover_image; });
+    coverUrl = found ? found.url : null;
+  }
+  if(!coverUrl) coverUrl = allPhotos[0] ? allPhotos[0].url : null;
+
+  var { data: allProjects } = await sb.from("projects").select("id,name,sort_order").order("sort_order",{ascending:true});
+  var idx = (allProjects||[]).findIndex(function(p){ return String(p.id)===String(project.id); });
+  var neighbors = idx===-1 ? {prev:null,next:null} : {
+    prev: idx>0 ? allProjects[idx-1] : null,
+    next: idx<allProjects.length-1 ? allProjects[idx+1] : null
+  };
+
+  render(project, byCat, coverUrl, neighbors);
+}
+
+function specRows(project){
+  return [["نام پروژه",project.name],["موقعیت",project.location],["کارفرما",project.employer],["مشاور و مجری",project.consultant]].filter(function(r){return r[1];});
+}
+function techRows(project){
+  return [["متراژ زمین",project.land_area],["تعداد بلوک‌ها",project.block_count],["متراژ زیربنا",project.floor_area],
+    ["تعداد طبقات و واحدها",project.floors_units],["اسکلت",project.structure],["سقف",project.roof],["امکانات",project.facilities]
+  ].filter(function(r){return r[1];});
+}
+
+var openInfo = "intro";
+var openGallery = null;
+var slideIndex = {};
+
+function render(project, byCat, coverUrl, neighbors){
+  app.innerHTML = "";
+
+  /* ---------- تور / کاور ---------- */
+  var tourWrap = h("div",{className:"tour-wrap"});
+  var tour = h("div",{className:"tour"});
+  if(coverUrl) tour.appendChild(h("img",{src:coverUrl, alt:project.name}));
+  (project.hotspots||[]).forEach(function(s){
+    var btn = h("button",{className:"hot", style:{right:s.x+"%", top:s.y+"%"}},[s.label]);
+    btn.onclick=function(){
+      openGallery = CATS[s.category] ? s.category : null;
+      if(!openGallery){
+        var firstNonEmpty = ["render","progress","plan","other"].find(function(k){return byCat[k].length;});
+        openGallery = firstNonEmpty || null;
+      }
+      render(project, byCat, coverUrl, neighbors);
+      setTimeout(function(){ var el=document.getElementById("gallery-acc"); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); }, 30);
+    };
+    tour.appendChild(btn);
+  });
+  if(neighbors.prev){
+    var pa=h("a",{className:"nav-arrow prev", href:"project-detail.html?id="+neighbors.prev.id});
+    pa.appendChild(document.createTextNode("‹ پروژه‌ی قبل")); pa.appendChild(h("b",{},[neighbors.prev.name]));
+    tour.appendChild(pa);
+  }
+  if(neighbors.next){
+    var na=h("a",{className:"nav-arrow next", href:"project-detail.html?id="+neighbors.next.id});
+    na.appendChild(document.createTextNode("پروژه‌ی بعد ›")); na.appendChild(h("b",{},[neighbors.next.name]));
+    tour.appendChild(na);
+  }
+  var ct = h("div",{className:"cover-title"});
+  ct.appendChild(h("span",{},["پروژه‌های مسکونی"]));
+  ct.appendChild(h("h1",{},[project.name]));
+  tour.appendChild(ct);
+  tourWrap.appendChild(tour);
+  app.appendChild(tourWrap);
+  if((project.hotspots||[]).length) app.appendChild(h("div",{className:"hint"},["روی نقطه‌های سبز روی عکس بزن تا گالری همون بخش باز بشه."]));
+
+  /* ---------- دو ستونه: اطلاعات + گالری ---------- */
+  var cols = h("div",{className:"cols"});
+
+  // ستون اطلاعات
+  var infoAcc = h("div",{className:"acc"});
+  var infoItems = [];
+  if(project.description) infoItems.push({key:"intro", label:"مقدمه", body:function(){ return h("p",{},[project.description]); }});
+  var sr = specRows(project);
+  if(sr.length) infoItems.push({key:"general", label:"مشخصات عمومی", body:function(){
+    var dl=h("dl",{}); sr.forEach(function(r){ dl.appendChild(h("dt",{},[r[0]])); dl.appendChild(h("dd",{},[r[1]])); }); return dl;
+  }});
+  var tr = techRows(project);
+  if(tr.length) infoItems.push({key:"tech", label:"مشخصات فنی", body:function(){
+    var dl=h("dl",{}); tr.forEach(function(r){ dl.appendChild(h("dt",{},[r[0]])); dl.appendChild(h("dd",{},[r[1]])); }); return dl;
+  }});
+  if(!infoItems.some(function(i){return i.key===openInfo;})) openInfo = infoItems[0] ? infoItems[0].key : null;
+  infoItems.forEach(function(it){
+    var item=h("div",{className:"acc-item"});
+    var head=h("button",{className:"acc-head"+(openInfo===it.key?" on":"")},[it.label, h("span",{className:"plus"},["+"])]);
+    head.onclick=function(){ openInfo = openInfo===it.key ? null : it.key; render(project, byCat, coverUrl, neighbors); };
+    item.appendChild(head);
+    if(openInfo===it.key){ var body=h("div",{className:"acc-body"}); body.appendChild(it.body()); item.appendChild(body); }
+    infoAcc.appendChild(item);
+  });
+  cols.appendChild(infoAcc);
+
+  // ستون گالری
+  var galAcc = h("div",{className:"acc", id:"gallery-acc"});
+  var galItems = [];
+  ["render","progress","plan"].forEach(function(key){ if(byCat[key].length) galItems.push({key:key, label:CATS[key].label, images:byCat[key]}); });
+  if(byCat.other.length) galItems.push({key:"other", label:CATS.other.label, images:byCat.other});
+  var videos = Array.isArray(project.videos) ? project.videos : [];
+  if(videos.length) galItems.push({key:"video", label:"ویدیو", videos:videos});
+
+  if(!openGallery || !galItems.some(function(i){return i.key===openGallery;})) openGallery = galItems[0] ? galItems[0].key : null;
+  galItems.forEach(function(it){
+    var item=h("div",{className:"acc-item"});
+    var head=h("button",{className:"acc-head"+(openGallery===it.key?" on":"")},[it.label, h("span",{className:"plus"},["+"])]);
+    head.onclick=function(){ openGallery = openGallery===it.key ? null : it.key; render(project, byCat, coverUrl, neighbors); };
+    item.appendChild(head);
+    if(openGallery===it.key){
+      var body=h("div",{className:"acc-body"});
+      if(it.images){
+        if(slideIndex[it.key]===undefined) slideIndex[it.key]=0;
+        var si = Math.min(slideIndex[it.key], it.images.length-1);
+        var sl=h("div",{className:"slider"});
+        var main=h("div",{className:"slide-main"});
+        main.appendChild(h("img",{src:it.images[si].url, alt:it.images[si].caption, onclick:function(){ openLightbox(it.images[si].url, it.images[si].caption); }}));
+        if(it.images.length>1){
+          main.appendChild(h("button",{className:"slide-ctl p", onclick:function(){ slideIndex[it.key]=(si+1)%it.images.length; render(project, byCat, coverUrl, neighbors); }},["›"]));
+          main.appendChild(h("button",{className:"slide-ctl n", onclick:function(){ slideIndex[it.key]=(si-1+it.images.length)%it.images.length; render(project, byCat, coverUrl, neighbors); }},["‹"]));
+          main.appendChild(h("span",{className:"slide-count"},[(si+1)+" / "+it.images.length]));
+        }
+        sl.appendChild(main);
+        if(it.images.length>1){
+          var th=h("div",{className:"thumbs"});
+          it.images.forEach(function(im,k){
+            var b=h("button",{className:k===si?"on":""});
+            b.appendChild(h("img",{src:im.url, alt:""}));
+            b.onclick=function(){ slideIndex[it.key]=k; render(project, byCat, coverUrl, neighbors); };
+            th.appendChild(b);
+          });
+          sl.appendChild(th);
+        }
+        body.appendChild(sl);
+      } else {
+        it.videos.forEach(function(v){
+          var vb=h("div",{style:{marginBottom:"14px"}});
+          var box=h("div",{className:"vid-box"});
+          if(v.type==="file"){ box.appendChild(h("video",{src:v.src, controls:"controls", preload:"metadata"})); }
+          else{ box.appendChild(h("iframe",{src:v.src, allowfullscreen:"true", loading:"lazy", title:v.title||project.name})); }
+          vb.appendChild(box);
+          vb.appendChild(h("div",{className:"vid-title"},[v.title||"ویدیوی پروژه"]));
+          body.appendChild(vb);
+        });
+      }
+      item.appendChild(body);
+    }
+    galAcc.appendChild(item);
+  });
+  if(!galItems.length) galAcc.appendChild(h("div",{className:"empty-note", style:{padding:"18px"}},["هنوز عکس یا ویدیویی برای این پروژه ثبت نشده."]));
+  cols.appendChild(galAcc);
+
+  app.appendChild(cols);
+
+  /* ---------- اشتراک‌گذاری ---------- */
+  var shsec = h("section",{className:"sec"});
+  shsec.appendChild(h("span",{className:"section-tag"},["اشتراک‌گذاری"]));
+  shsec.appendChild(h("h2",{},["این صفحه را به اشتراک بگذارید"]));
+  var url = encodeURIComponent(location.href), txt = encodeURIComponent(project.name);
+  var sh = h("div",{className:"share"});
+  sh.appendChild(h("a",{target:"_blank", rel:"noopener", href:"https://wa.me/?text="+txt+"%20"+url},["واتساپ"]));
+  sh.appendChild(h("a",{target:"_blank", rel:"noopener", href:"https://t.me/share/url?url="+url+"&text="+txt},["تلگرام"]));
+  sh.appendChild(h("a",{href:"mailto:?subject="+txt+"&body="+url},["ایمیل"]));
+  shsec.appendChild(sh);
+  app.appendChild(shsec);
+
+  /* ---------- نقشه ---------- */
+  if(project.map_query || project.address){
+    var mapSec = h("section",{className:"sec"});
+    mapSec.appendChild(h("span",{className:"section-tag"},["موقعیت"]));
+    mapSec.appendChild(h("h2",{},["موقعیت روی نقشه"]));
+    if(project.address) mapSec.appendChild(h("p",{style:{color:"#3d6b45",marginBottom:"14px"}},[project.address]));
+    mapSec.appendChild(h("iframe",{className:"map", loading:"lazy", title:"نقشه", src:"https://maps.google.com/maps?q="+encodeURIComponent(project.map_query||project.address)+"&t=m&z=15&output=embed"}));
+    app.appendChild(mapSec);
+  }
+}
+</script>
+</body>
+</html>
