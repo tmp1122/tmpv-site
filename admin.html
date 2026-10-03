@@ -529,9 +529,16 @@ async function loadProjectsAdmin(){
       <div style="margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <label style="font-size:.8rem;color:#555">عکس کاور (بالای صفحه‌ی جزئیات):</label>
         <select id="pcover-${p.id}" style="padding:6px 8px;border-radius:6px;border:1px solid #ccc;min-width:160px"><option value="">— اولین عکس (پیش‌فرض) —</option></select>
+        <label style="font-size:.8rem;color:#555">قسمت مهم عکس:</label>
+        <select id="pcoverpos-${p.id}" style="padding:6px 8px;border-radius:6px;border:1px solid #ccc">
+          <option value="center top" ${p.cover_focus==='center top'?'selected':''}>بالای عکس</option>
+          <option value="center center" ${(!p.cover_focus||p.cover_focus==='center center')?'selected':''}>وسط عکس (پیش‌فرض)</option>
+          <option value="center bottom" ${p.cover_focus==='center bottom'?'selected':''}>پایین عکس</option>
+        </select>
         <button class="btn-upload" onclick="saveCoverImage(${p.id})">ذخیره کاور</button>
         <span id="coverMsg-${p.id}" style="font-size:.8rem"></span>
       </div>
+      <div style="font-size:.75rem;color:#888;margin-top:2px">اگه عکس کاور بالا یا پایینش بریده می‌شه، از «قسمت مهم عکس» بگو کدوم طرف (ساختمون) نباید بریده بشه.</div>
 
       <h2 style="margin-top:6px">🎯 نقطه‌های تور روی عکس کاور</h2>
       <div style="font-size:.8rem;color:#777;margin-bottom:6px">برچسب و دسته رو انتخاب کن، بعد دکمه‌ی زیر رو بزن و روی عکس کلیک کن تا نقطه اضافه بشه.</div>
@@ -725,11 +732,13 @@ async function loadProjectPhotos(projectId){
 
 window.saveCoverImage = async function(projectId){
   const sel = document.getElementById('pcover-'+projectId);
+  const posSel = document.getElementById('pcoverpos-'+projectId);
   const msgEl = document.getElementById('coverMsg-'+projectId);
   const value = sel ? sel.value : '';
+  const posValue = posSel ? posSel.value : 'center center';
   msgEl.style.color = '#c62828';
   msgEl.textContent = '';
-  const { error } = await supabase.from('projects').update({ cover_image: value || null }).eq('id', projectId);
+  const { error } = await supabase.from('projects').update({ cover_image: value || null, cover_focus: posValue }).eq('id', projectId);
   if(error){ msgEl.textContent = 'خطا: ' + error.message; return; }
   projectCoverMap[projectId] = value;
   msgEl.style.color = '#2e7d32';
