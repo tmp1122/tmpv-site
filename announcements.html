@@ -35,7 +35,10 @@ main{max-width:1100px;margin:0 auto;padding:100px 24px 60px}
 .img-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
 .img-modal-close{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:28px;cursor:pointer;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
 .img-modal-close:hover{background:rgba(255,255,255,.3)}
-.img-modal-img{max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain}
+.img-modal-img{max-width:90vw;max-height:78vh;border-radius:12px;object-fit:contain}
+.cap-txt{padding:10px 12px;font-size:13px;line-height:1.7;text-align:center;color:#2e4d32}
+.img-modal-bg{flex-direction:column;gap:12px}
+.img-modal-caption{color:#fff;font-size:15px;line-height:1.8;text-align:center;max-width:90vw}
 </style>
 </head>
 <body>
@@ -72,7 +75,7 @@ const SUPABASE_URL = "https://gsqwuibzplwalrahevdc.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function showImgModal(src){
+function showImgModal(src, caption){
   var bg = document.createElement("div");
   bg.className = "img-modal-bg";
   bg.onclick = function(e){ if(e.target===bg) bg.remove(); };
@@ -85,6 +88,12 @@ function showImgModal(src){
   img.className = "img-modal-img";
   bg.appendChild(close);
   bg.appendChild(img);
+  if(caption){
+    var cap = document.createElement("div");
+    cap.className = "img-modal-caption";
+    cap.textContent = caption;
+    bg.appendChild(cap);
+  }
   document.body.appendChild(bg);
 }
 
@@ -103,19 +112,31 @@ async function loadAnnouncements(){
     grid.textContent = "هنوز اطلاعیه‌ای منتشر نشده است.";
     return;
   }
+  const caps = {};
+  try {
+    const { data: rows } = await supabaseClient.from('image_captions').select('file_name, caption').eq('bucket', 'announcements');
+    (rows || []).forEach(function(r){ caps[r.file_name] = r.caption || ''; });
+  } catch (e) { /* بدون توضیح نشون داده می‌شه */ }
   grid.className = "ann-grid";
   grid.innerHTML = "";
-  files.forEach(function(f){
+  files.filter(function(f){ return f.name !== '.emptyFolderPlaceholder'; }).forEach(function(f){
     const { data: urlData } = supabaseClient.storage.from('announcements').getPublicUrl(f.name);
     const url = urlData.publicUrl;
     const card = document.createElement("div");
     card.className = "ann-card";
-    card.onclick = function(){ showImgModal(url); };
+    const cap = caps[f.name] || '';
+    card.onclick = function(){ showImgModal(url, cap); };
     const img = document.createElement("img");
     img.src = url;
     img.loading = "lazy";
-    img.alt = "اطلاعیه";
+    img.alt = cap || "اطلاعیه";
     card.appendChild(img);
+    if(cap){
+      const t = document.createElement("div");
+      t.className = "cap-txt";
+      t.textContent = cap;
+      card.appendChild(t);
+    }
     grid.appendChild(card);
   });
 }
