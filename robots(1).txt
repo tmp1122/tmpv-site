@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /payments.html
+
+Sitemap: https://tmpv.ir/sitemap.xml

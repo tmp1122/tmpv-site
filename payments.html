@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>واریزی‌های من | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;padding:20px;color:#0d2010}
+.wrap{max-width:760px;margin:0 auto}
+.header{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.1);padding:20px 24px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.header h1{color:#2d7a3a;font-size:1.1rem}
+.header p{color:#666;font-size:.82rem;margin-top:3px}
+.links a{color:#2d7a3a;font-size:.85rem;text-decoration:none;margin-inline-start:14px;font-weight:600}
+.box{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(45,122,58,.08);padding:20px 22px;margin-bottom:16px}
+.box h2{font-size:1rem;color:#2d7a3a;margin-bottom:14px}
+label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
+input{width:100%;padding:10px 12px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.92rem;margin-bottom:12px;background:#fafdfb}
+input:focus{outline:none;border-color:#2d7a3a}
+button.go{background:#2d7a3a;color:#fff;border:none;padding:11px 18px;border-radius:8px;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;width:100%}
+button.go:disabled{opacity:.6;cursor:default}
+.msg{padding:10px 14px;border-radius:8px;font-size:.88rem;margin-bottom:12px;display:none}
+.msg.err{background:#fdecea;color:#c62828}
+.msg.ok{background:#e8f5e9;color:#2e7d32}
+.item{border-top:1px solid #e8f4ea;padding:12px 0}
+.item:first-child{border-top:0}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.amt{font-weight:800;color:#2d7a3a}
+.meta{font-size:.8rem;color:#777;margin-top:3px}
+.st{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+.st.pending{background:#fff3cd;color:#856404}
+.st.confirmed{background:#d4edda;color:#2e7d32}
+.st.rejected{background:#fdecea;color:#c62828}
+.view{background:none;border:1.5px solid #2d7a3a;color:#2d7a3a;padding:4px 10px;border-radius:7px;font-family:inherit;font-size:.78rem;cursor:pointer;margin-top:6px}
+.empty{text-align:center;color:#888;padding:20px;font-size:.9rem}
+.loading{text-align:center;color:#888;padding:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>💰 واریزی‌های من</h1>
+      <p id="who">در حال بررسی ورود...</p>
+    </div>
+    <div class="links"><a href="dashboard.html">بازگشت به پنل من</a><a href="index.html">صفحه اصلی</a></div>
+  </div>
+
+  <div id="loading" class="loading">در حال بارگذاری...</div>
+
+  <div id="content" style="display:none">
+    <div class="box">
+      <h2>ثبت واریزی جدید</h2>
+      <div id="msg" class="msg"></div>
+      <label>مبلغ (تومان)</label>
+      <input type="number" id="amount" min="1" inputmode="numeric" placeholder="مثلاً 5000000">
+      <label>تاریخ واریز</label>
+      <input type="date" id="pdate">
+      <label>توضیحات (اختیاری)</label>
+      <input type="text" id="desc" placeholder="مثلاً قسط ماه مهر">
+      <label>عکس فیش واریزی (اختیاری، حداکثر ۳ مگابایت)</label>
+      <input type="file" id="file" accept="image/*">
+      <button class="go" id="sendBtn" onclick="sendPayment()">ثبت واریزی</button>
+    </div>
+
+    <div class="box">
+      <h2>سابقه‌ی واریزی‌ها</h2>
+      <div id="list"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const supabase = createClient("https://gsqwuibzplwalrahevdc.supabase.co", "sb_publishable_8duEw2Pj-B8fEupNzDzHag_CHN0riMC");
+
+let me = null;
+const ST = { pending:'در انتظار بررسی', confirmed:'تأیید شده', rejected:'رد شده' };
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function show(type, text){
+  const m = $('msg'); m.className = 'msg ' + type; m.textContent = text; m.style.display = 'block';
+}
+
+async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ location.href = 'login.html'; return; }
+  me = session.user;
+
+  const { data: prof } = await supabase.from('profiles').select('first_name,last_name,status').eq('id', me.id).single();
+  if(!prof || prof.status !== 'approved'){
+    $('loading').textContent = 'حساب شما هنوز تأیید نشده است.';
+    $('who').textContent = '';
+    return;
+  }
+  $('who').textContent = ((prof.first_name||'') + ' ' + (prof.last_name||'')).trim();
+  $('pdate').value = new Date().toISOString().slice(0,10);
+  $('loading').style.display = 'none';
+  $('content').style.display = 'block';
+  loadList();
+}
+
+async function loadList(){
+  const { data, error } = await supabase.from('payments').select('*').eq('member_id', me.id).order('created_at', { ascending:false });
+  const el = $('list');
+  if(error){ el.innerHTML = '<div class="empty">خطا در بارگذاری: ' + esc(error.message) + '</div>'; return; }
+  if(!data.length){ el.innerHTML = '<div class="empty">هنوز واریزی‌ای ثبت نکرده‌اید.</div>'; return; }
+  el.innerHTML = data.map(p => `
+    <div class="item">
+      <div class="row">
+        <span class="amt">${Number(p.amount).toLocaleString('fa-IR')} تومان</span>
+        <span class="st ${p.status}">${ST[p.status]||p.status}</span>
+      </div>
+      <div class="meta">تاریخ واریز: ${new Date(p.payment_date).toLocaleDateString('fa-IR')}${p.description ? ' — ' + esc(p.description) : ''}</div>
+      ${p.admin_note ? `<div class="meta">یادداشت مدیر: ${esc(p.admin_note)}</div>` : ''}
+      ${p.receipt_path ? `<button class="view" onclick="viewReceipt('${esc(p.receipt_path)}')">مشاهده فیش</button>` : ''}
+    </div>`).join('');
+}
+
+window.viewReceipt = async function(path){
+  const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 300);
+  if(error || !data){ alert('خطا در باز کردن فیش'); return; }
+  window.open(data.signedUrl, '_blank');
+};
+
+window.sendPayment = async function(){
+  const amount = parseInt($('amount').value, 10);
+  const date = $('pdate').value;
+  const desc = $('desc').value.trim();
+  const file = $('file').files[0];
+  const btn = $('sendBtn');
+  $('msg').style.display = 'none';
+
+  if(!amount || amount <= 0){ show('err', 'مبلغ را وارد کنید'); return; }
+  if(!date){ show('err', 'تاریخ واریز را وارد کنید'); return; }
+  if(file && file.size > 3*1024*1024){ show('err', 'حجم عکس بیشتر از ۳ مگابایت است'); return; }
+
+  btn.disabled = true; btn.textContent = 'در حال ثبت...';
+  try{
+    let path = null;
+    if(file){
+      const m = file.name.match(/\.[0-9a-zA-Z]+$/);
+      const ext = m ? m[0].toLowerCase() : '.jpg';
+      path = me.id + '/' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + ext;
+      const { error: upErr } = await supabase.storage.from('receipts').upload(path, file);
+      if(upErr) throw upErr;
+    }
+    const { error } = await supabase.from('payments').insert({
+      member_id: me.id, amount, payment_date: date, description: desc || null, receipt_path: path
+    });
+    if(error) throw error;
+    $('amount').value = ''; $('desc').value = ''; $('file').value = '';
+    show('ok', '✅ واریزی ثبت شد و در انتظار بررسی مدیر است');
+    loadList();
+  }catch(e){
+    show('err', 'خطا: ' + ((e && e.message) || 'نامشخص'));
+  }finally{
+    btn.disabled = false; btn.textContent = 'ثبت واریزی';
+  }
+};
+
+init();
+</script>
+</body>
+</html>
