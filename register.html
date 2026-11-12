@@ -5,40 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ثبت‌نام | تعاونی مسکن پالایشگاه گاز ولیعصر</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:#f0f7f1;min-height:100vh;display:flex;align-items:center;justify-content:center}
-.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.12);padding:40px 36px;width:100%;max-width:480px;margin:24px}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;background:var(--page-bg,#f0f7f1);min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--page-text,#222)}
+.card{background:var(--card-bg,#fff);border-radius:16px;box-shadow:0 4px 24px rgba(45,122,58,.12);padding:40px 36px;width:100%;max-width:480px;margin:24px;color:var(--card-text,#222)}
 .logo{text-align:center;margin-bottom:28px}
-.logo h1{color:#2d7a3a;font-size:1.3rem;font-weight:700;line-height:1.6}
-.logo p{color:#666;font-size:.85rem;margin-top:4px}
+.logo h1{color:var(--accent-text,#2d7a3a);font-size:1.3rem;font-weight:700;line-height:1.6}
+.logo p{color:var(--card-text,#666);font-size:.85rem;margin-top:4px}
 .step{display:none}
 .step.active{display:block}
 .field{margin-bottom:18px}
-label{display:block;font-size:.85rem;color:#444;margin-bottom:6px;font-weight:600}
+label{display:block;font-size:.85rem;color:var(--card-text,#444);margin-bottom:6px;font-weight:600}
 input,select{width:100%;padding:11px 14px;border:1.5px solid #d0e8d4;border-radius:8px;font-family:inherit;font-size:.95rem;color:#222;background:#fff;transition:border .2s}
-input:focus,select:focus{outline:none;border-color:#2d7a3a}
+input:focus,select:focus{outline:none;border-color:var(--primary,#2d7a3a)}
 input.error{border-color:#e53935}
-.btn{width:100%;padding:13px;background:#2d7a3a;color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
-.btn:hover{background:#235f2c}
+.btn{width:100%;padding:13px;background:var(--primary,#2d7a3a);color:var(--on-primary,#fff);border:none;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn:hover{background:var(--primary-dark,#235f2c)}
 .btn:disabled{background:#aaa;cursor:not-allowed}
-.btn-outline{background:transparent;border:2px solid #2d7a3a;color:#2d7a3a;margin-top:8px}
-.btn-outline:hover{background:#f0f7f1}
+.btn-outline{background:transparent;border:2px solid var(--primary,#2d7a3a);color:var(--accent-text,#2d7a3a);margin-top:8px}
+.btn-outline:hover{background:rgba(var(--primary-rgb,45,122,58),.08)}
 .msg{padding:12px 16px;border-radius:8px;font-size:.9rem;margin-bottom:16px;display:none}
 .msg.error{background:#fdecea;color:#c62828;display:block}
 .msg.success{background:#e8f5e9;color:#2e7d32;display:block}
 .steps-bar{display:flex;gap:8px;margin-bottom:28px}
 .step-dot{flex:1;height:4px;border-radius:2px;background:#d0e8d4;transition:background .3s}
-.step-dot.done{background:#2d7a3a}
-h2{font-size:1.1rem;color:#2d7a3a;margin-bottom:20px;font-weight:700}
+.step-dot.done{background:var(--primary,#2d7a3a)}
+h2{font-size:1.1rem;color:var(--accent-text,#2d7a3a);margin-bottom:20px;font-weight:700}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hint{font-size:.78rem;color:#888;margin-top:4px}
 .success-box{text-align:center;padding:20px 0}
 .success-box .icon{font-size:4rem;margin-bottom:16px}
-.success-box h2{color:#2d7a3a;font-size:1.4rem}
-.success-box p{color:#555;margin-top:8px;line-height:1.7}
-.login-link{text-align:center;margin-top:20px;font-size:.88rem;color:#666}
-.login-link a{color:#2d7a3a;text-decoration:none;font-weight:600}
+.success-box h2{color:var(--accent-text,#2d7a3a);font-size:1.4rem}
+.success-box p{color:var(--card-text,#555);margin-top:8px;line-height:1.7}
+.login-link{text-align:center;margin-top:20px;font-size:.88rem;color:var(--card-text,#666)}
+.login-link a{color:var(--accent-text,#2d7a3a);text-decoration:none;font-weight:600}
 </style>
 </head>
 <body>
